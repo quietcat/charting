@@ -5,64 +5,7 @@ import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
 
-public class GraphingContext {
-    public enum XAnchor {
-        LEFT, MIDDLE, RIGHT
-    }
-
-    public enum YAnchor {
-        TOP, MIDDLE, BOTTOM
-    }
-
-    public static class Anchor {
-        public XAnchor xAnchor;
-        public YAnchor yAnchor;
-
-        public Anchor(XAnchor xAnchor, YAnchor yAnchor) {
-            this.xAnchor = xAnchor;
-            this.yAnchor = yAnchor;
-        }
-    }
-
-    public static class FPoint {
-        public double x, y;
-
-        public FPoint(double x, double y) {
-            this.x = x;
-            this.y = y;
-        }
-    }
-
-    public static class FRectangle {
-
-        public double x, y;
-        public double w, h;
-
-        public FRectangle(double x, double y, double w, double h) {
-            this.x = x;
-            this.y = y;
-            this.w = w;
-            this.h = h;
-        }
-    }
-
-    public static class DrawParameters {
-        public XAnchor xAnchor = XAnchor.LEFT;
-        public YAnchor yAnchor = YAnchor.BOTTOM;
-        public int xMargin = 0, yMargin = 0;
-        public boolean isTransparent = false;
-        public int textExtentFlags = 0;
-
-        public void reset() {
-            xAnchor = XAnchor.LEFT;
-            yAnchor = YAnchor.BOTTOM;
-            xMargin = 0;
-            yMargin = 0;
-            isTransparent = false;
-            textExtentFlags = 0;
-        }
-    }
-
+public class ViewContext<T> {
     public static final int DEFAULT_MARGIN = 10;
     public static final int DEFAULT_X_AXIS_HEIGHT = 20;
     public static final int DEFAULT_Y_AXIS_WIDTH = 40;
@@ -77,6 +20,7 @@ public class GraphingContext {
     private double baseX = 0.0, baseY = 0.0;
     private XAnchor xAnchor = XAnchor.LEFT;
     private YAnchor yAnchor = YAnchor.MIDDLE;
+    private T model;
 
     public int getMarginTop() {
         return topMargin;
@@ -353,4 +297,13 @@ public class GraphingContext {
         }
         gc.drawText(text, ix, iy, dp.isTransparent);
     }
+
+    public T getModel() {
+        return this.model;
+    }
+
+    public void setModel(T model) {
+        this.model = model;
+    }
+
 }

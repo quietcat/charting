@@ -9,7 +9,7 @@ import org.eclipse.swt.widgets.Shell;
 public class Main {
 
     protected Shell shell;
-    private GraphingController<ExampleModel> controller;
+    private ViewController<ExampleModel> controller;
 
     private void run() {
         Display display = Display.getDefault();
@@ -36,11 +36,16 @@ public class Main {
     protected void createContents()
     {
         ExampleModel model = new ExampleModel();
-        GraphingContext grc = new GraphingContext();
-        controller = new GraphingController<>();
+        ViewContext<ExampleModel> vc = new ViewContext<>();
+        vc.setModel(model);
+        controller = new ViewController<>();
         Canvas canvas = new Canvas(shell, SWT.DOUBLE_BUFFERED);
         controller.setCanvas(canvas);
-        controller.setGrc(grc);
-        controller.setModel(model);
+        controller.setViewContext(vc);
+        controller.addViewportDrawer(new ViewportXAxisDrawer());
+        controller.addViewportDrawer(new ViewportYAxisDrawer());
+        controller.addModelDrawer(new ExampleModelRectDrawer());
+        controller.addViewportDrawer(new ViewportZeroMarkDrawer());
+        controller.init();
     }
 }

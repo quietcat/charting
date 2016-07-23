@@ -1,6 +1,7 @@
 package com.denispetrov.graphics;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -22,25 +23,11 @@ import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.widgets.Canvas;
 
-import com.denispetrov.graphics.GraphingContext.FRectangle;
-
-public class GraphingController<T> implements MouseListener, MouseMoveListener, MouseTrackListener,
+public class ViewController<T> implements MouseListener, MouseMoveListener, MouseTrackListener,
         MouseWheelListener, PaintListener, ControlListener, DisposeListener {
 
     enum MouseFn {
         MOVE, NONE, TRACK
-    }
-
-    public static class TrackingObject {
-        public enum Reference {
-            CANVAS, GRAPH
-        }
-
-        public FRectangle fRect;
-        public Rectangle iRect;
-        public Object target;
-        public int xPadding, yPadding;
-        public Reference xReference, yReference;
     }
 
     private Canvas canvas;
@@ -49,45 +36,54 @@ public class GraphingController<T> implements MouseListener, MouseMoveListener, 
 
     private Cursor cursorTrack;
 
-    private GraphingContext grc;
-    private List<GraphingObjectHandler<T>> handlers = new ArrayList<>();
-    T model;
-
+    private ViewContext<T> vc;
+    private List<ModelDrawable<?>> modelDrawers = new ArrayList<>();
+    private List<ViewportDrawer> viewportDrawers = new ArrayList<>();
+    private List<Drawable> rankedDrawables = new ArrayList<>();
     MouseFn mouseFn = MouseFn.NONE;
 
     Object mouseObject = null;
 
     private Set<TrackingObject> objectsUnderMouse = new HashSet<>();
 
-    public void addHandler(GraphingObjectHandler<T> handler) {
-        handlers.add(handler);
-        handler.setGraphingContext(grc);
+    public void addModelDrawer(ModelDrawable<T> handler) {
+        modelDrawers.add(handler);
+        handler.setViewContext(vc);
+    }
+
+    public void addViewportDrawer(ViewportDrawer handler) {
+        viewportDrawers.add(handler);
+        handler.setViewContext(vc);
     }
 
     public Canvas getCanvas() {
         return canvas;
     }
 
-    public GraphingContext getGrc() {
-        return grc;
-    }
-
-    public T getModel() {
-        return this.model;
+    public ViewContext<T> getGrc() {
+        return vc;
     }
 
     public void init() {
         cursorTrack = canvas.getDisplay().getSystemCursor(SWT.CURSOR_HAND);
         cursorDefault = canvas.getCursor();
+        rankedDrawables.addAll(modelDrawers);
+        rankedDrawables.addAll(viewportDrawers);
+        rankedDrawables.sort(new Comparator<Drawable>() {
+            @Override
+            public int compare(Drawable o1, Drawable o2) {
+                return Integer.compare(o1.getRank(), o2.getRank());
+            }
+        });
     }
 
     public Set<TrackingObject> isTracking(int x, int y) {
         objectsUnderMouse.clear();
-        for (GraphingObjectHandler<?> h : handlers) {
+        for (ModelDrawable<?> h : modelDrawers) {
             for (TrackingObject t : h.getTrackingObjects()) {
                 switch (t.xReference) {
                 case GRAPH:
-                    if (grc.x(x + t.xPadding) < t.fRect.x || grc.x(x - t.xPadding) >= t.fRect.x + t.fRect.w) {
+                    if (vc.x(x + t.xPadding) < t.fRect.x || vc.x(x - t.xPadding) >= t.fRect.x + t.fRect.w) {
                         continue;
                     }
                     break;
@@ -99,7 +95,7 @@ public class GraphingController<T> implements MouseListener, MouseMoveListener, 
                 }
                 switch (t.yReference) {
                 case GRAPH:
-                    if (grc.y(y + t.yPadding) < t.fRect.y || grc.y(y - t.yPadding) >= t.fRect.y + t.fRect.h) {
+                    if (vc.y(y + t.yPadding) < t.fRect.y || vc.y(y - t.yPadding) >= t.fRect.y + t.fRect.h) {
                         continue;
                     }
                     break;
@@ -168,8 +164,8 @@ public class GraphingController<T> implements MouseListener, MouseMoveListener, 
     }
 
     public void paint(GC gc) {
-        grc.setGC(gc);
-        for (GraphingObjectHandler<?> h : handlers) {
+        vc.setGC(gc);
+        for (Drawable h : rankedDrawables) {
             h.draw();
         }
         //        dp.reset();
@@ -193,8 +189,8 @@ public class GraphingController<T> implements MouseListener, MouseMoveListener, 
     }
 
     public void setBounds(Rectangle bounds) {
-        grc.setCanvasWidth(bounds.width);
-        grc.setCanvasHeight(bounds.height);
+        vc.setCanvasWidth(bounds.width);
+        vc.setCanvasHeight(bounds.height);
     }
 
     public void setCanvas(Canvas canvas) {
@@ -208,12 +204,8 @@ public class GraphingController<T> implements MouseListener, MouseMoveListener, 
         this.canvas.addMouseWheelListener(this);
     }
 
-    public void setGrc(GraphingContext grc) {
-        this.grc = grc;
-    }
-
-    public void setModel(T model) {
-        this.model = model;
+    public void setViewContext(ViewContext<T> grc) {
+        this.vc = grc;
     }
 
     @Override
