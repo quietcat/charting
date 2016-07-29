@@ -1,72 +1,95 @@
 package com.denispetrov.graphics;
 
-import java.util.ArrayList;
 import java.util.Comparator;
-import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
-import java.util.Set;
 
-import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.ControlEvent;
-import org.eclipse.swt.events.ControlListener;
-import org.eclipse.swt.events.DisposeEvent;
-import org.eclipse.swt.events.DisposeListener;
-import org.eclipse.swt.events.MouseEvent;
-import org.eclipse.swt.events.MouseListener;
-import org.eclipse.swt.events.MouseMoveListener;
-import org.eclipse.swt.events.MouseTrackListener;
-import org.eclipse.swt.events.MouseWheelListener;
 import org.eclipse.swt.events.PaintEvent;
 import org.eclipse.swt.events.PaintListener;
-import org.eclipse.swt.graphics.Cursor;
-import org.eclipse.swt.graphics.GC;
-import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.widgets.Canvas;
 
-public class ViewController<T> implements MouseListener, MouseMoveListener, MouseTrackListener,
-        MouseWheelListener, PaintListener, ControlListener, DisposeListener {
-
-    enum MouseFn {
-        MOVE, NONE, TRACK
-    }
+public class ViewController<T> implements PaintListener {
 
     private Canvas canvas;
 
-    private Cursor cursorDefault;
+    private ViewContext<T> viewContext;
+    private List<ModelDrawable<T>> modelDrawers = new LinkedList<>();
 
-    private Cursor cursorTrack;
-
-    private ViewContext<T> vc;
-    private List<ModelDrawable<?>> modelDrawers = new ArrayList<>();
-    private List<ViewportDrawer> viewportDrawers = new ArrayList<>();
-    private List<Drawable> rankedDrawables = new ArrayList<>();
-    MouseFn mouseFn = MouseFn.NONE;
+    private List<ViewportDrawer> viewportDrawers = new LinkedList<>();
+    private List<Drawable> rankedDrawables = new LinkedList<>();
+    private List<ViewPlugin> viewPlugins = new LinkedList<>();
 
     Object mouseObject = null;
 
-    private Set<TrackingObject> objectsUnderMouse = new HashSet<>();
+    public List<ModelDrawable<T>> getModelDrawers() {
+        return modelDrawers;
+    }
+
+    public List<ViewportDrawer> getViewportDrawers() {
+        return viewportDrawers;
+    }
+
+    public List<ViewPlugin> getViewPlugins() {
+        return viewPlugins;
+    }
 
     public void addModelDrawer(ModelDrawable<T> handler) {
         modelDrawers.add(handler);
-        handler.setViewContext(vc);
     }
 
     public void addViewportDrawer(ViewportDrawer handler) {
         viewportDrawers.add(handler);
-        handler.setViewContext(vc);
+    }
+
+    public void addViewPlugin(ViewPlugin viewPlugin) {
+        viewPlugins.add(viewPlugin);
+    }
+
+    public ViewPlugin findPlugin(Class<? extends ViewPlugin> pluginClass) {
+        for (ViewPlugin viewPlugin : viewPlugins) {
+            if (pluginClass.isAssignableFrom(viewPlugin.getClass())) {
+                return viewPlugin;
+            }
+        }
+        return null;
     }
 
     public Canvas getCanvas() {
         return canvas;
     }
 
-    public ViewContext<T> getGrc() {
-        return vc;
+    public ViewContext<T> getViewContext() {
+        return viewContext;
+    }
+
+    public void setViewContext(ViewContext<T> vc) {
+        this.viewContext = vc;
+        this.viewContext.setCanvas(canvas);
+        for (ModelDrawable<T> modelDrawer : modelDrawers) {
+            modelDrawer.setViewContext(viewContext);
+        }
+
+        for (ViewportDrawer viewportDrawer : viewportDrawers) {
+            viewportDrawer.setViewContext(viewContext);
+        }
+        contextUpdated();
+    }
+
+    public void contextUpdated() {
+        for (ViewPlugin viewPlugin : viewPlugins) {
+            viewPlugin.contextUpdated();
+        }
+        for (ModelDrawable<T> modelDrawer : modelDrawers) {
+            modelDrawer.contextUpdated();
+        }
+
+        for (ViewportDrawer viewportDrawer : viewportDrawers) {
+            viewportDrawer.contextUpdated();
+        }
+        canvas.redraw();
     }
 
     public void init() {
-        cursorTrack = canvas.getDisplay().getSystemCursor(SWT.CURSOR_HAND);
-        cursorDefault = canvas.getCursor();
         rankedDrawables.addAll(modelDrawers);
         rankedDrawables.addAll(viewportDrawers);
         rankedDrawables.sort(new Comparator<Drawable>() {
@@ -75,158 +98,58 @@ public class ViewController<T> implements MouseListener, MouseMoveListener, Mous
                 return Integer.compare(o1.getRank(), o2.getRank());
             }
         });
-    }
-
-    public Set<TrackingObject> isTracking(int x, int y) {
-        objectsUnderMouse.clear();
-        for (ModelDrawable<?> h : modelDrawers) {
-            for (TrackingObject t : h.getTrackingObjects()) {
-                switch (t.xReference) {
-                case GRAPH:
-                    if (vc.x(x + t.xPadding) < t.fRect.x || vc.x(x - t.xPadding) >= t.fRect.x + t.fRect.w) {
-                        continue;
-                    }
-                    break;
-                case CANVAS:
-                    if (x + t.xPadding < t.iRect.x || x - t.xPadding >= t.iRect.x + t.iRect.width) {
-                        continue;
-                    }
-                    break;
-                }
-                switch (t.yReference) {
-                case GRAPH:
-                    if (vc.y(y + t.yPadding) < t.fRect.y || vc.y(y - t.yPadding) >= t.fRect.y + t.fRect.h) {
-                        continue;
-                    }
-                    break;
-                case CANVAS:
-                    if (y + t.yPadding < t.fRect.y || y - t.yPadding >= t.fRect.y + t.fRect.h) {
-                        continue;
-                    }
-                    break;
-                }
-                objectsUnderMouse.add(t);
-            }
+        for (ViewPlugin viewPlugin : viewPlugins) {
+            viewPlugin.init(this);
         }
-        return objectsUnderMouse;
-    }
-
-    @Override
-    public void mouseDoubleClick(MouseEvent e) {
-        // TODO Auto-generated method stub
-
-    }
-
-    @Override
-    public void mouseDown(MouseEvent e) {
-        // TODO Auto-generated method stub
-
-    }
-
-    @Override
-    public void mouseEnter(MouseEvent e) {
-        // TODO Auto-generated method stub
-
-    }
-
-    @Override
-    public void mouseExit(MouseEvent e) {
-        // TODO Auto-generated method stub
-
-    }
-
-    @Override
-    public void mouseHover(MouseEvent e) {
-        // TODO Auto-generated method stub
-
-    }
-
-    @Override
-    public void mouseMove(MouseEvent e) {
-        Set<TrackingObject> objectsUnderMouse = isTracking(e.x, e.y);
-        if (objectsUnderMouse.size() > 0) {
-            canvas.setCursor(cursorTrack);
-        } else {
-            canvas.setCursor(cursorDefault);
-        }
-    }
-
-    @Override
-    public void mouseScrolled(MouseEvent e) {
-        // TODO Auto-generated method stub
-
-    }
-
-    @Override
-    public void mouseUp(MouseEvent e) {
-        // TODO Auto-generated method stub
-
-    }
-
-    public void paint(GC gc) {
-        vc.setGC(gc);
-        for (Drawable h : rankedDrawables) {
-            h.draw();
-        }
-        //        dp.reset();
-        //        drawAxes(gc);
-        //        drawZero(gc);
-        //        Color savedBackground = e.gc.getBackground();
-        //        gc.setBackground(getDisplay().getSystemColor(SWT.COLOR_CYAN));
-        //        draw1(gc, 200, 100);
-        //        e.gc.setBackground(savedBackground);
-        //        dp.reset();
-        //        dp.xMargin = 5;
-        //        dp.yMargin = 5;
-        //        draw1(gc, 200, 300);
-        //        dp.reset();
-        //        dp.isTransparent = true;
-        //        dp.xAnchor = XAnchor.MIDDLE;
-        //        dp.yAnchor = YAnchor.MIDDLE;
-        //        grc.drawLine(200, 400, 300, 400);
-        //        grc.drawText("Transparent", 250, 400, dp);
-        //        grc.drawImage(image, 200, 200, null);
-    }
-
-    public void setBounds(Rectangle bounds) {
-        vc.setCanvasWidth(bounds.width);
-        vc.setCanvasHeight(bounds.height);
     }
 
     public void setCanvas(Canvas canvas) {
         this.canvas = canvas;
         this.canvas.addPaintListener(this);
-        this.canvas.addControlListener(this);
-        this.canvas.addDisposeListener(this);
-        this.canvas.addMouseListener(this);
-        this.canvas.addMouseMoveListener(this);
-        this.canvas.addMouseTrackListener(this);
-        this.canvas.addMouseWheelListener(this);
     }
 
-    public void setViewContext(ViewContext<T> grc) {
-        this.vc = grc;
+    public void setModel(T model) {
+        this.viewContext.setModel(model);
+        modelUpdated();
     }
 
-    @Override
-    public void widgetDisposed(DisposeEvent e) {
-        // TODO Auto-generated method stub
-
-    }
-
-    @Override
-    public void controlMoved(ControlEvent e) {
-        // TODO Auto-generated method stub
-
-    }
-
-    @Override
-    public void controlResized(ControlEvent e) {
-        setBounds(canvas.getBounds());
+    public void modelUpdated() {
+        for (ViewPlugin viewPlugin : viewPlugins) {
+            viewPlugin.modelUpdated();
+        }
+        for (ModelDrawable<T> modelDrawer : modelDrawers) {
+            modelDrawer.modelUpdated();
+        }
+        canvas.redraw();
     }
 
     @Override
     public void paintControl(PaintEvent e) {
-        paint(e.gc);
+        viewContext.setGC(e.gc);
+        for (Drawable h : rankedDrawables) {
+            h.draw();
+        }
     }
 }
+
+//public void paint(GC gc) {
+//        dp.reset();
+//        drawAxes(gc);
+//        drawZero(gc);
+//        Color savedBackground = e.gc.getBackground();
+//        gc.setBackground(getDisplay().getSystemColor(SWT.COLOR_CYAN));
+//        draw1(gc, 200, 100);
+//        e.gc.setBackground(savedBackground);
+//        dp.reset();
+//        dp.xMargin = 5;
+//        dp.yMargin = 5;
+//        draw1(gc, 200, 300);
+//        dp.reset();
+//        dp.isTransparent = true;
+//        dp.xAnchor = XAnchor.MIDDLE;
+//        dp.yAnchor = YAnchor.MIDDLE;
+//        grc.drawLine(200, 400, 300, 400);
+//        grc.drawText("Transparent", 250, 400, dp);
+//        grc.drawImage(image, 200, 200, null);
+//}
+

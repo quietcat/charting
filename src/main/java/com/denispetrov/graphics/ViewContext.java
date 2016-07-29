@@ -4,6 +4,7 @@ import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
+import org.eclipse.swt.widgets.Canvas;
 
 public class ViewContext<T> {
     public static final int DEFAULT_MARGIN = 10;
@@ -13,9 +14,10 @@ public class ViewContext<T> {
 
     private int topMargin = DEFAULT_MARGIN, leftMargin = DEFAULT_MARGIN, rightMargin = DEFAULT_MARGIN,
             bottomMargin = DEFAULT_MARGIN;
-    private int canvasWidth, canvasHeight;
+//    private int canvasWidth, canvasHeight;
     private int xAxisHeight = DEFAULT_X_AXIS_HEIGHT, yAxisWidth = DEFAULT_Y_AXIS_WIDTH;
     private GC gc;
+    private Canvas canvas;
     private double scaleX = DEFAULT_SCALE, scaleY = DEFAULT_SCALE;
     private double baseX = 0.0, baseY = 0.0;
     private XAnchor xAnchor = XAnchor.LEFT;
@@ -62,27 +64,19 @@ public class ViewContext<T> {
     }
 
     public int getCanvasWidth() {
-        return canvasWidth;
-    }
-
-    public void setCanvasWidth(int width) {
-        this.canvasWidth = width;
+        return canvas.getBounds().width;
     }
 
     public double getWidth() {
-        return w(canvasWidth - leftMargin - rightMargin - yAxisWidth);
+        return w(getCanvasWidth() - leftMargin - rightMargin - yAxisWidth);
     }
 
     public int getCanvasHeight() {
-        return canvasHeight;
+        return canvas.getBounds().height;
     }
 
     public double getHeight() {
-        return h(canvasHeight - topMargin - bottomMargin - xAxisHeight);
-    }
-
-    public void setCanvasHeight(int height) {
-        this.canvasHeight = height;
+        return h(getCanvasHeight() - topMargin - bottomMargin - xAxisHeight);
     }
 
     public int getxAxisHeight() {
@@ -182,11 +176,11 @@ public class ViewContext<T> {
     }
 
     public int y(double y) {
-        return canvasHeight - bottomMargin - xAxisHeight - h(y - baseY);
+        return getCanvasHeight() - bottomMargin - xAxisHeight - h(y - baseY);
     }
 
     public double y(int y) {
-        return h(canvasHeight - bottomMargin - xAxisHeight - y) + baseY;
+        return h(getCanvasHeight() - bottomMargin - xAxisHeight - y) + baseY;
     }
 
     public FPoint point(Point p) {
@@ -304,6 +298,14 @@ public class ViewContext<T> {
 
     public void setModel(T model) {
         this.model = model;
+    }
+
+    public Canvas getCanvas() {
+        return canvas;
+    }
+
+    public void setCanvas(Canvas canvas) {
+        this.canvas = canvas;
     }
 
 }

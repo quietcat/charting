@@ -15,4 +15,16 @@ public class ViewportZeroMarkDrawer extends ViewportDrawerBase {
         vc.drawLine(10, -10, -10, 10);
     }
 
+    @Override
+    public void modelUpdated() {
+        // TODO Auto-generated method stub
+        
+    }
+
+    @Override
+    public void contextUpdated() {
+        // TODO Auto-generated method stub
+        
+    }
+
 }

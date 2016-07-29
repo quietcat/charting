@@ -11,4 +11,11 @@ public class FRectangle {
         this.w = w;
         this.h = h;
     }
+
+    public FRectangle(FRectangle rect) {
+        this.x = rect.x;
+        this.y = rect.y;
+        this.w = rect.w;
+        this.h = rect.h;
+    }
 }

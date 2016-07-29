@@ -35,17 +35,25 @@ public class Main {
      */
     protected void createContents()
     {
-        ExampleModel model = new ExampleModel();
-        ViewContext<ExampleModel> vc = new ViewContext<>();
-        vc.setModel(model);
-        controller = new ViewController<>();
         Canvas canvas = new Canvas(shell, SWT.DOUBLE_BUFFERED);
+        controller = new ViewController<>();
         controller.setCanvas(canvas);
-        controller.setViewContext(vc);
+        ObjectTrackerViewPlugin otvp = new ObjectTrackerViewPlugin();
+        controller.addViewPlugin(otvp);
+        PannerViewPlugin pvp = new PannerViewPlugin();
+        controller.addViewPlugin(pvp);
         controller.addViewportDrawer(new ViewportXAxisDrawer());
         controller.addViewportDrawer(new ViewportYAxisDrawer());
-        controller.addModelDrawer(new ExampleModelRectDrawer());
+        ExampleModelRectDrawer emrd = new ExampleModelRectDrawer();
+        emrd.setObjectTracker(otvp);
+        controller.addModelDrawer(emrd);
         controller.addViewportDrawer(new ViewportZeroMarkDrawer());
         controller.init();
+        ViewContext<ExampleModel> viewContext = new ViewContext<>();
+        controller.setViewContext(viewContext);
+        ExampleModel model = new ExampleModel();
+        model.getRectangles().add(new FRectangle(100,100,100,100));
+        model.getRectangles().add(new FRectangle(300,300,100,100));
+        controller.setModel(model);
     }
 }

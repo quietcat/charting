@@ -8,4 +8,7 @@ public interface Drawable {
 
     void draw();
 
+    void modelUpdated();
+
+    void contextUpdated();
 }
