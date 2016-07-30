@@ -20,8 +20,8 @@ public class PannerViewPlugin extends ViewPluginBase implements MouseListener, M
     public void mouseMove(MouseEvent e) {
         if (mouseFn == MouseFn.PAN) {
             ViewContext<?> viewContext = controller.getViewContext();
-            viewContext.setBaseX(contextOrigin.x + (viewContext.w(mouseOrigin.x-e.x)));
-            viewContext.setBaseY(contextOrigin.y + (viewContext.h(e.y-mouseOrigin.y)));
+            viewContext.setBaseX(contextOrigin.x + viewContext.w(mouseOrigin.x-e.x));
+            viewContext.setBaseY(contextOrigin.y + viewContext.h(e.y-mouseOrigin.y));
             controller.contextUpdated();
         }
     }

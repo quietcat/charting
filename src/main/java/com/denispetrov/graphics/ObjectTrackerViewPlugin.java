@@ -67,6 +67,9 @@ public class ObjectTrackerViewPlugin extends ViewPluginBase implements MouseMove
     }
 
     private static boolean isIn(ViewContext<?> viewContext, int x, int y, TrackingObject to) {
+        if (!viewContext.getMainAreaRectangle().contains(x,y)) {
+            return false;
+        }
         switch (to.xReference) {
         case GRAPH:
             if (viewContext.x(x + to.xPadding) < to.fRect.x

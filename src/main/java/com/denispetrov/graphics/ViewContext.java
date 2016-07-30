@@ -308,4 +308,14 @@ public class ViewContext<T> {
         this.canvas = canvas;
     }
 
+    private Rectangle mainAreaRectangle = new Rectangle(0,0,0,0);
+    public Rectangle getMainAreaRectangle() {
+        Rectangle canvasBounds = canvas.getBounds();
+        mainAreaRectangle.x = leftMargin+yAxisWidth;
+        mainAreaRectangle.y = topMargin;
+        mainAreaRectangle.width = canvasBounds.width - rightMargin - mainAreaRectangle.x;
+        mainAreaRectangle.height = canvasBounds.height - (bottomMargin+xAxisHeight) - mainAreaRectangle.y;
+        return mainAreaRectangle;
+    }
+
 }
