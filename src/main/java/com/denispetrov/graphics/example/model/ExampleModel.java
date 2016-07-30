@@ -1,7 +1,9 @@
-package com.denispetrov.graphics;
+package com.denispetrov.graphics.example.model;
 
 import java.util.LinkedList;
 import java.util.List;
+
+import com.denispetrov.graphics.model.FRectangle;
 
 public class ExampleModel {
 

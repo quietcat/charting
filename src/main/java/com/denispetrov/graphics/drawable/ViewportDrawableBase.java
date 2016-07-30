@@ -1,6 +1,8 @@
-package com.denispetrov.graphics;
+package com.denispetrov.graphics.drawable;
 
-public abstract class ViewportDrawerBase implements ViewportDrawer {
+import com.denispetrov.graphics.ViewContext;
+
+public abstract class ViewportDrawableBase implements ViewportDrawable {
 
     protected ViewContext<?> vc;
     protected int rank = 0;

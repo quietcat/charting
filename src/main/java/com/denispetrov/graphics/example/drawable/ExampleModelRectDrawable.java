@@ -1,8 +1,19 @@
-package com.denispetrov.graphics;
+package com.denispetrov.graphics.example.drawable;
 
 import java.util.Set;
 
-public class ExampleModelRectDrawer extends ModelDrawerBase<ExampleModel> implements Trackable {
+import com.denispetrov.graphics.drawable.DrawParameters;
+import com.denispetrov.graphics.drawable.ModelDrawableBase;
+import com.denispetrov.graphics.example.model.ExampleModel;
+import com.denispetrov.graphics.model.FRectangle;
+import com.denispetrov.graphics.model.Reference;
+import com.denispetrov.graphics.model.XAnchor;
+import com.denispetrov.graphics.model.YAnchor;
+import com.denispetrov.graphics.plugin.ObjectTrackerViewPlugin;
+import com.denispetrov.graphics.plugin.Trackable;
+import com.denispetrov.graphics.plugin.TrackingObject;
+
+public class ExampleModelRectDrawable extends ModelDrawableBase<ExampleModel> implements Trackable {
 
     ObjectTrackerViewPlugin objectTracker;
     private DrawParameters dp = new DrawParameters();

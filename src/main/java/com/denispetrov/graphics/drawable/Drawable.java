@@ -1,4 +1,4 @@
-package com.denispetrov.graphics;
+package com.denispetrov.graphics.drawable;
 
 public interface Drawable {
 

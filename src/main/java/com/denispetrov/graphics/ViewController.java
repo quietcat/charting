@@ -8,6 +8,11 @@ import org.eclipse.swt.events.PaintEvent;
 import org.eclipse.swt.events.PaintListener;
 import org.eclipse.swt.widgets.Canvas;
 
+import com.denispetrov.graphics.drawable.Drawable;
+import com.denispetrov.graphics.drawable.ModelDrawable;
+import com.denispetrov.graphics.drawable.ViewportDrawable;
+import com.denispetrov.graphics.plugin.ViewPlugin;
+
 public class ViewController<T> implements PaintListener {
 
     private Canvas canvas;
@@ -15,7 +20,7 @@ public class ViewController<T> implements PaintListener {
     private ViewContext<T> viewContext;
     private List<ModelDrawable<T>> modelDrawers = new LinkedList<>();
 
-    private List<ViewportDrawer> viewportDrawers = new LinkedList<>();
+    private List<ViewportDrawable> viewportDrawers = new LinkedList<>();
     private List<Drawable> rankedDrawables = new LinkedList<>();
     private List<ViewPlugin> viewPlugins = new LinkedList<>();
 
@@ -25,7 +30,7 @@ public class ViewController<T> implements PaintListener {
         return modelDrawers;
     }
 
-    public List<ViewportDrawer> getViewportDrawers() {
+    public List<ViewportDrawable> getViewportDrawers() {
         return viewportDrawers;
     }
 
@@ -37,7 +42,7 @@ public class ViewController<T> implements PaintListener {
         modelDrawers.add(handler);
     }
 
-    public void addViewportDrawer(ViewportDrawer handler) {
+    public void addViewportDrawer(ViewportDrawable handler) {
         viewportDrawers.add(handler);
     }
 
@@ -69,7 +74,7 @@ public class ViewController<T> implements PaintListener {
             modelDrawer.setViewContext(viewContext);
         }
 
-        for (ViewportDrawer viewportDrawer : viewportDrawers) {
+        for (ViewportDrawable viewportDrawer : viewportDrawers) {
             viewportDrawer.setViewContext(viewContext);
         }
         contextUpdated();
@@ -83,7 +88,7 @@ public class ViewController<T> implements PaintListener {
             modelDrawer.contextUpdated();
         }
 
-        for (ViewportDrawer viewportDrawer : viewportDrawers) {
+        for (ViewportDrawable viewportDrawer : viewportDrawers) {
             viewportDrawer.contextUpdated();
         }
         canvas.redraw();

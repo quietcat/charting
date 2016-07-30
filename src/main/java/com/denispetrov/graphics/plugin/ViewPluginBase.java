@@ -1,4 +1,6 @@
-package com.denispetrov.graphics;
+package com.denispetrov.graphics.plugin;
+
+import com.denispetrov.graphics.ViewController;
 
 public abstract class ViewPluginBase implements ViewPlugin {
 

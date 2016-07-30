@@ -1,4 +1,4 @@
-package com.denispetrov.graphics;
+package com.denispetrov.graphics.plugin;
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -12,6 +12,10 @@ import org.eclipse.swt.events.MouseListener;
 import org.eclipse.swt.events.MouseMoveListener;
 import org.eclipse.swt.graphics.Cursor;
 import org.eclipse.swt.graphics.Point;
+
+import com.denispetrov.graphics.ViewContext;
+import com.denispetrov.graphics.ViewController;
+import com.denispetrov.graphics.drawable.ModelDrawable;
 
 public class ObjectTrackerViewPlugin extends ViewPluginBase implements MouseMoveListener, MouseListener {
 

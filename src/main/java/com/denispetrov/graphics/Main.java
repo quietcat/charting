@@ -6,6 +6,15 @@ import org.eclipse.swt.widgets.Canvas;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 
+import com.denispetrov.graphics.example.drawable.ExampleModelRectDrawable;
+import com.denispetrov.graphics.example.drawable.ViewportXAxisDrawable;
+import com.denispetrov.graphics.example.drawable.ViewportYAxisDrawable;
+import com.denispetrov.graphics.example.drawable.ViewportZeroMarkDrawable;
+import com.denispetrov.graphics.example.model.ExampleModel;
+import com.denispetrov.graphics.model.FRectangle;
+import com.denispetrov.graphics.plugin.ObjectTrackerViewPlugin;
+import com.denispetrov.graphics.plugin.PannerViewPlugin;
+
 public class Main {
 
     protected Shell shell;
@@ -42,12 +51,12 @@ public class Main {
         controller.addViewPlugin(otvp);
         PannerViewPlugin pvp = new PannerViewPlugin();
         controller.addViewPlugin(pvp);
-        controller.addViewportDrawer(new ViewportXAxisDrawer());
-        controller.addViewportDrawer(new ViewportYAxisDrawer());
-        ExampleModelRectDrawer emrd = new ExampleModelRectDrawer();
+        controller.addViewportDrawer(new ViewportXAxisDrawable());
+        controller.addViewportDrawer(new ViewportYAxisDrawable());
+        ExampleModelRectDrawable emrd = new ExampleModelRectDrawable();
         emrd.setObjectTracker(otvp);
         controller.addModelDrawer(emrd);
-        controller.addViewportDrawer(new ViewportZeroMarkDrawer());
+        controller.addViewportDrawer(new ViewportZeroMarkDrawable());
         controller.init();
         ViewContext<ExampleModel> viewContext = new ViewContext<>();
         controller.setViewContext(viewContext);

@@ -1,10 +1,13 @@
-package com.denispetrov.graphics;
+package com.denispetrov.graphics.example.drawable;
+
+import com.denispetrov.graphics.drawable.ViewportDrawableBase;
 
 
-public class ViewportXAxisDrawer extends ViewportDrawerBase {
+
+public class ViewportXAxisDrawable extends ViewportDrawableBase {
 
     public static int X_AXIS_RANK = 1010000;
-    public ViewportXAxisDrawer() {
+    public ViewportXAxisDrawable() {
         super();
         setRank(X_AXIS_RANK);
     }

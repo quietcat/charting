@@ -1,4 +1,7 @@
-package com.denispetrov.graphics;
+package com.denispetrov.graphics.drawable;
+
+import com.denispetrov.graphics.model.XAnchor;
+import com.denispetrov.graphics.model.YAnchor;
 
 public class DrawParameters {
     public XAnchor xAnchor = XAnchor.LEFT;

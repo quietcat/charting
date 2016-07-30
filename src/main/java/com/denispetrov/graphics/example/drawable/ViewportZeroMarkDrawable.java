@@ -1,10 +1,13 @@
-package com.denispetrov.graphics;
+package com.denispetrov.graphics.example.drawable;
+
+import com.denispetrov.graphics.drawable.ViewportDrawableBase;
 
 
-public class ViewportZeroMarkDrawer extends ViewportDrawerBase {
+
+public class ViewportZeroMarkDrawable extends ViewportDrawableBase {
 
     public static int ZERO_MARK_RANK = 1100000;
-    public ViewportZeroMarkDrawer() {
+    public ViewportZeroMarkDrawable() {
         super();
         setRank(ZERO_MARK_RANK);
     }

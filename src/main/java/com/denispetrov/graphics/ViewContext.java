@@ -6,16 +6,22 @@ import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.widgets.Canvas;
 
+import com.denispetrov.graphics.drawable.DrawParameters;
+import com.denispetrov.graphics.model.FPoint;
+import com.denispetrov.graphics.model.FRectangle;
+import com.denispetrov.graphics.model.XAnchor;
+import com.denispetrov.graphics.model.YAnchor;
+
 public class ViewContext<T> {
     public static final int DEFAULT_MARGIN = 10;
-    public static final int DEFAULT_X_AXIS_HEIGHT = 20;
-    public static final int DEFAULT_Y_AXIS_WIDTH = 40;
+//    public static final int DEFAULT_X_AXIS_HEIGHT = 20;
+//    public static final int DEFAULT_Y_AXIS_WIDTH = 40;
     public static final double DEFAULT_SCALE = 1.0;
 
     private int topMargin = DEFAULT_MARGIN, leftMargin = DEFAULT_MARGIN, rightMargin = DEFAULT_MARGIN,
             bottomMargin = DEFAULT_MARGIN;
 //    private int canvasWidth, canvasHeight;
-    private int xAxisHeight = DEFAULT_X_AXIS_HEIGHT, yAxisWidth = DEFAULT_Y_AXIS_WIDTH;
+//    private int xAxisHeight = DEFAULT_X_AXIS_HEIGHT, yAxisWidth = DEFAULT_Y_AXIS_WIDTH;
     private GC gc;
     private Canvas canvas;
     private double scaleX = DEFAULT_SCALE, scaleY = DEFAULT_SCALE;
@@ -68,7 +74,7 @@ public class ViewContext<T> {
     }
 
     public double getWidth() {
-        return w(getCanvasWidth() - leftMargin - rightMargin - yAxisWidth);
+        return w(getCanvasWidth() - leftMargin - rightMargin);
     }
 
     public int getCanvasHeight() {
@@ -76,23 +82,7 @@ public class ViewContext<T> {
     }
 
     public double getHeight() {
-        return h(getCanvasHeight() - topMargin - bottomMargin - xAxisHeight);
-    }
-
-    public int getxAxisHeight() {
-        return xAxisHeight;
-    }
-
-    public void setxAxisHeight(int xAxisHeight) {
-        this.xAxisHeight = xAxisHeight;
-    }
-
-    public int getyAxisWidth() {
-        return yAxisWidth;
-    }
-
-    public void setyAxisWidth(int yAxisWidth) {
-        this.yAxisWidth = yAxisWidth;
+        return h(getCanvasHeight() - topMargin - bottomMargin);
     }
 
     public GC getGC() {
@@ -160,11 +150,11 @@ public class ViewContext<T> {
     }
 
     public int x(double x) {
-        return leftMargin + yAxisWidth + w(x - baseX);
+        return leftMargin + w(x - baseX);
     }
 
     public double x(int x) {
-        return w(x - leftMargin - yAxisWidth) + baseX;
+        return w(x - leftMargin) + baseX;
     }
 
     public int h(double h) {
@@ -176,11 +166,11 @@ public class ViewContext<T> {
     }
 
     public int y(double y) {
-        return getCanvasHeight() - bottomMargin - xAxisHeight - h(y - baseY);
+        return getCanvasHeight() - bottomMargin - h(y - baseY);
     }
 
     public double y(int y) {
-        return h(getCanvasHeight() - bottomMargin - xAxisHeight - y) + baseY;
+        return h(getCanvasHeight() - bottomMargin - y) + baseY;
     }
 
     public FPoint point(Point p) {
@@ -311,10 +301,10 @@ public class ViewContext<T> {
     private Rectangle mainAreaRectangle = new Rectangle(0,0,0,0);
     public Rectangle getMainAreaRectangle() {
         Rectangle canvasBounds = canvas.getBounds();
-        mainAreaRectangle.x = leftMargin+yAxisWidth;
+        mainAreaRectangle.x = leftMargin;
         mainAreaRectangle.y = topMargin;
         mainAreaRectangle.width = canvasBounds.width - rightMargin - mainAreaRectangle.x;
-        mainAreaRectangle.height = canvasBounds.height - (bottomMargin+xAxisHeight) - mainAreaRectangle.y;
+        mainAreaRectangle.height = canvasBounds.height - bottomMargin - mainAreaRectangle.y;
         return mainAreaRectangle;
     }
 

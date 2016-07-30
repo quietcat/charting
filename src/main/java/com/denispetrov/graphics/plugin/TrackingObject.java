@@ -1,6 +1,9 @@
-package com.denispetrov.graphics;
+package com.denispetrov.graphics.plugin;
 
 import org.eclipse.swt.graphics.Rectangle;
+
+import com.denispetrov.graphics.model.FRectangle;
+import com.denispetrov.graphics.model.Reference;
 
 public class TrackingObject {
     public FRectangle fRect;

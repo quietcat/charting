@@ -1,4 +1,6 @@
-package com.denispetrov.graphics;
+package com.denispetrov.graphics.drawable;
+
+import com.denispetrov.graphics.ViewContext;
 
 
 public interface ModelDrawable<T> extends Drawable {

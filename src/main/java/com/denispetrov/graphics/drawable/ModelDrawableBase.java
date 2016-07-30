@@ -1,8 +1,10 @@
-package com.denispetrov.graphics;
+package com.denispetrov.graphics.drawable;
+
+import com.denispetrov.graphics.ViewContext;
 
 
 
-public abstract class ModelDrawerBase<T> implements ModelDrawable<T> {
+public abstract class ModelDrawableBase<T> implements ModelDrawable<T> {
 
     protected ViewContext<T> vc;
     protected int rank = 0;

@@ -1,4 +1,5 @@
-package com.denispetrov.graphics;
+package com.denispetrov.graphics.model;
+
 
 public class Anchor {
     public XAnchor xAnchor;
