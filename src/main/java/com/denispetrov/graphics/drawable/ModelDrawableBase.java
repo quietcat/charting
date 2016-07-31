@@ -6,12 +6,12 @@ import com.denispetrov.graphics.ViewContext;
 
 public abstract class ModelDrawableBase<T> implements ModelDrawable<T> {
 
-    protected ViewContext<T> vc;
+    protected ViewContext<T> viewContext;
     protected int rank = 0;
 
     @Override
     public void setViewContext(ViewContext<T> vc) {
-        this.vc = vc;
+        this.viewContext = vc;
     }
 
     @Override

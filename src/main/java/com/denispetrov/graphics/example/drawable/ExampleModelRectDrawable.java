@@ -21,7 +21,7 @@ public class ExampleModelRectDrawable extends ModelDrawableBase<ExampleModel> im
     @Override
     public void modelUpdated() {
         objectTracker.clearTrackingObjects(this);
-        for (FRectangle rect : this.vc.getModel().getRectangles()) {
+        for (FRectangle rect : this.viewContext.getModel().getRectangles()) {
             TrackingObject trackingObject = new TrackingObject();
             trackingObject.target = rect;
             trackingObject.fRect = new FRectangle(rect);
@@ -35,23 +35,23 @@ public class ExampleModelRectDrawable extends ModelDrawableBase<ExampleModel> im
 
     @Override
     public void draw() {
-        for (FRectangle rect : this.vc.getModel().getRectangles()) {
-            vc.drawRectangle(rect.x, rect.y, rect.w, rect.h);
-            vc.drawLine(rect.x, rect.y + rect.h / 2, rect.x + rect.w, rect.y + rect.h / 2);
+        for (FRectangle rect : this.viewContext.getModel().getRectangles()) {
+            viewContext.drawRectangle(rect.x, rect.y, rect.w, rect.h);
+            viewContext.drawLine(rect.x, rect.y + rect.h / 2, rect.x + rect.w, rect.y + rect.h / 2);
             dp.xAnchor = XAnchor.LEFT;
             dp.yAnchor = YAnchor.BOTTOM;
-            vc.drawText("Default", rect.x + rect.w, rect.y + rect.h, dp);
+            viewContext.drawText("Default", rect.x + rect.w, rect.y + rect.h, dp);
             dp.yAnchor = YAnchor.MIDDLE;
-            vc.drawText("YAnchor MIDDLE", rect.x + rect.w, rect.y + rect.h / 2, dp);
+            viewContext.drawText("YAnchor MIDDLE", rect.x + rect.w, rect.y + rect.h / 2, dp);
             dp.yAnchor = YAnchor.TOP;
-            vc.drawText("YAnchor TOP", rect.x + rect.w, rect.y, dp);
+            viewContext.drawText("YAnchor TOP", rect.x + rect.w, rect.y, dp);
             dp.xAnchor = XAnchor.RIGHT;
             dp.yAnchor = YAnchor.BOTTOM;
-            vc.drawText("YAnchor BOTTOM", rect.x, rect.y + rect.h, dp);
+            viewContext.drawText("YAnchor BOTTOM", rect.x, rect.y + rect.h, dp);
             dp.yAnchor = YAnchor.MIDDLE;
-            vc.drawText("YAnchor MIDDLE", rect.x, rect.y + rect.h / 2, dp);
+            viewContext.drawText("YAnchor MIDDLE", rect.x, rect.y + rect.h / 2, dp);
             dp.yAnchor = YAnchor.TOP;
-            vc.drawText("YAnchor TOP", rect.x, rect.y, dp);
+            viewContext.drawText("YAnchor TOP", rect.x, rect.y, dp);
         }
     }
 

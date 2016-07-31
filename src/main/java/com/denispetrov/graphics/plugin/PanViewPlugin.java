@@ -9,7 +9,7 @@ import com.denispetrov.graphics.ViewContext;
 import com.denispetrov.graphics.ViewController;
 import com.denispetrov.graphics.model.FPoint;
 
-public class PannerViewPlugin extends ViewPluginBase implements MouseListener, MouseMoveListener {
+public class PanViewPlugin extends ViewPluginBase implements MouseListener, MouseMoveListener {
 
     private enum MouseFn {
         NONE, PAN

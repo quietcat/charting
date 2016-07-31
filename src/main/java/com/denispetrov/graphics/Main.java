@@ -13,7 +13,8 @@ import com.denispetrov.graphics.example.drawable.ViewportZeroMarkDrawable;
 import com.denispetrov.graphics.example.model.ExampleModel;
 import com.denispetrov.graphics.model.FRectangle;
 import com.denispetrov.graphics.plugin.ObjectTrackerViewPlugin;
-import com.denispetrov.graphics.plugin.PannerViewPlugin;
+import com.denispetrov.graphics.plugin.PanViewPlugin;
+import com.denispetrov.graphics.plugin.ZoomViewPlugin;
 
 public class Main {
 
@@ -49,16 +50,19 @@ public class Main {
         controller.setCanvas(canvas);
         ObjectTrackerViewPlugin otvp = new ObjectTrackerViewPlugin();
         controller.addViewPlugin(otvp);
-        PannerViewPlugin pvp = new PannerViewPlugin();
+        PanViewPlugin pvp = new PanViewPlugin();
         controller.addViewPlugin(pvp);
         controller.addViewportDrawer(new ViewportXAxisDrawable());
         controller.addViewportDrawer(new ViewportYAxisDrawable());
+        ZoomViewPlugin ysvp = new ZoomViewPlugin();
+        controller.addViewPlugin(ysvp);
         ExampleModelRectDrawable emrd = new ExampleModelRectDrawable();
         emrd.setObjectTracker(otvp);
         controller.addModelDrawer(emrd);
         controller.addViewportDrawer(new ViewportZeroMarkDrawable());
         controller.init();
         ViewContext<ExampleModel> viewContext = new ViewContext<>();
+        viewContext.setMargin(20);
         controller.setViewContext(viewContext);
         ExampleModel model = new ExampleModel();
         model.getRectangles().add(new FRectangle(100,100,100,100));
