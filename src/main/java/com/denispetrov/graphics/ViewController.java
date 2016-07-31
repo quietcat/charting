@@ -38,11 +38,11 @@ public class ViewController<T> implements PaintListener {
         return viewPlugins;
     }
 
-    public void addModelDrawer(ModelDrawable<T> handler) {
+    public void addModelDrawable(ModelDrawable<T> handler) {
         modelDrawers.add(handler);
     }
 
-    public void addViewportDrawer(ViewportDrawable handler) {
+    public void addViewportDrawable(ViewportDrawable handler) {
         viewportDrawers.add(handler);
     }
 

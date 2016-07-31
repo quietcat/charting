@@ -19,7 +19,7 @@ import com.denispetrov.graphics.plugin.ZoomViewPlugin;
 public class Main {
 
     protected Shell shell;
-    private ViewController<ExampleModel> controller;
+    private ViewController<ExampleModel> viewController;
 
     private void run() {
         Display display = Display.getDefault();
@@ -46,27 +46,27 @@ public class Main {
     protected void createContents()
     {
         Canvas canvas = new Canvas(shell, SWT.DOUBLE_BUFFERED);
-        controller = new ViewController<>();
-        controller.setCanvas(canvas);
+        viewController = new ViewController<>();
+        viewController.setCanvas(canvas);
         ObjectTrackerViewPlugin otvp = new ObjectTrackerViewPlugin();
-        controller.addViewPlugin(otvp);
+        viewController.addViewPlugin(otvp);
         PanViewPlugin pvp = new PanViewPlugin();
-        controller.addViewPlugin(pvp);
-        controller.addViewportDrawer(new ViewportXAxisDrawable());
-        controller.addViewportDrawer(new ViewportYAxisDrawable());
+        viewController.addViewPlugin(pvp);
         ZoomViewPlugin ysvp = new ZoomViewPlugin();
-        controller.addViewPlugin(ysvp);
+        viewController.addViewPlugin(ysvp);
+        viewController.addViewportDrawable(new ViewportXAxisDrawable());
+        viewController.addViewportDrawable(new ViewportYAxisDrawable());
+        viewController.addViewportDrawable(new ViewportZeroMarkDrawable());
         ExampleModelRectDrawable emrd = new ExampleModelRectDrawable();
         emrd.setObjectTracker(otvp);
-        controller.addModelDrawer(emrd);
-        controller.addViewportDrawer(new ViewportZeroMarkDrawable());
-        controller.init();
+        viewController.addModelDrawable(emrd);
+        viewController.init();
         ViewContext<ExampleModel> viewContext = new ViewContext<>();
         viewContext.setMargin(20);
-        controller.setViewContext(viewContext);
+        viewController.setViewContext(viewContext);
         ExampleModel model = new ExampleModel();
         model.getRectangles().add(new FRectangle(100,100,100,100));
         model.getRectangles().add(new FRectangle(300,300,100,100));
-        controller.setModel(model);
+        viewController.setModel(model);
     }
 }

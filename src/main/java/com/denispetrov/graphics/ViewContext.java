@@ -14,20 +14,18 @@ import com.denispetrov.graphics.model.YAnchor;
 
 public class ViewContext<T> {
     public static final int DEFAULT_MARGIN = 10;
-//    public static final int DEFAULT_X_AXIS_HEIGHT = 20;
-//    public static final int DEFAULT_Y_AXIS_WIDTH = 40;
     public static final double DEFAULT_SCALE = 1.0;
+    private static final int DEFAULT_DRAG_THRESHOLD = 4;
 
     private int topMargin = DEFAULT_MARGIN, leftMargin = DEFAULT_MARGIN, rightMargin = DEFAULT_MARGIN,
             bottomMargin = DEFAULT_MARGIN;
-//    private int canvasWidth, canvasHeight;
-//    private int xAxisHeight = DEFAULT_X_AXIS_HEIGHT, yAxisWidth = DEFAULT_Y_AXIS_WIDTH;
     private GC gc;
     private Canvas canvas;
     private double scaleX = DEFAULT_SCALE, scaleY = DEFAULT_SCALE;
     private double baseX = 0.0, baseY = 0.0;
     private XAnchor xAnchor = XAnchor.LEFT;
     private YAnchor yAnchor = YAnchor.MIDDLE;
+    private int dragThreshold = DEFAULT_DRAG_THRESHOLD;
     private T model;
 
     public int getMarginTop() {
@@ -306,6 +304,14 @@ public class ViewContext<T> {
         mainAreaRectangle.width = canvasBounds.width - rightMargin - mainAreaRectangle.x;
         mainAreaRectangle.height = canvasBounds.height - bottomMargin - mainAreaRectangle.y;
         return mainAreaRectangle;
+    }
+
+    public int getDragThreshold() {
+        return dragThreshold;
+    }
+
+    public void setDragThreshold(int dragThreshold) {
+        this.dragThreshold = dragThreshold;
     }
 
 }

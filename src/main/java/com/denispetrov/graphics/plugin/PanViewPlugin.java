@@ -12,7 +12,7 @@ import com.denispetrov.graphics.model.FPoint;
 public class PanViewPlugin extends ViewPluginBase implements MouseListener, MouseMoveListener {
 
     private enum MouseFn {
-        NONE, PAN
+        NONE, MAYBE_PAN, PAN
     }
 
     private MouseFn mouseFn = MouseFn.NONE;
@@ -22,11 +22,23 @@ public class PanViewPlugin extends ViewPluginBase implements MouseListener, Mous
 
     @Override
     public void mouseMove(MouseEvent e) {
-        if (mouseFn == MouseFn.PAN) {
-            ViewContext<?> viewContext = controller.getViewContext();
+        ViewContext<?> viewContext;
+        switch (mouseFn) {
+        case MAYBE_PAN:
+            viewContext = controller.getViewContext();
+            if (Math.abs(e.x - mouseOrigin.x) >= viewContext.getDragThreshold()
+                    || Math.abs(e.y - mouseOrigin.y) >= viewContext.getDragThreshold()) {
+                mouseFn = MouseFn.PAN;
+            }
+            break;
+        case PAN:
+            viewContext = controller.getViewContext();
             viewContext.setBaseX(contextOrigin.x + viewContext.w(mouseOrigin.x-e.x));
             viewContext.setBaseY(contextOrigin.y + viewContext.h(e.y-mouseOrigin.y));
             controller.contextUpdated();
+            break;
+        default:
+            break;
         }
     }
 
@@ -38,7 +50,7 @@ public class PanViewPlugin extends ViewPluginBase implements MouseListener, Mous
     public void mouseDown(MouseEvent e) {
         if (e.button == 3) {
             ViewContext<?> viewContext = controller.getViewContext();
-            mouseFn = MouseFn.PAN;
+            mouseFn = MouseFn.MAYBE_PAN;
             mouseOrigin = new Point(e.x, e.y);
             contextOrigin = new FPoint(viewContext.getBaseX(), viewContext.getBaseY());
         }
