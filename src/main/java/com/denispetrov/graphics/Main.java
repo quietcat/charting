@@ -12,7 +12,7 @@ import com.denispetrov.graphics.example.drawable.ViewportYAxisDrawable;
 import com.denispetrov.graphics.example.drawable.ViewportZeroMarkDrawable;
 import com.denispetrov.graphics.example.model.ExampleModel;
 import com.denispetrov.graphics.model.FRectangle;
-import com.denispetrov.graphics.plugin.ObjectTrackerViewPlugin;
+import com.denispetrov.graphics.plugin.TrackerViewPlugin;
 import com.denispetrov.graphics.plugin.PanViewPlugin;
 import com.denispetrov.graphics.plugin.ZoomViewPlugin;
 
@@ -48,7 +48,7 @@ public class Main {
         Canvas canvas = new Canvas(shell, SWT.DOUBLE_BUFFERED);
         viewController = new ViewController<>();
         viewController.setCanvas(canvas);
-        ObjectTrackerViewPlugin otvp = new ObjectTrackerViewPlugin();
+        TrackerViewPlugin otvp = new TrackerViewPlugin();
         viewController.addViewPlugin(otvp);
         PanViewPlugin pvp = new PanViewPlugin();
         viewController.addViewPlugin(pvp);

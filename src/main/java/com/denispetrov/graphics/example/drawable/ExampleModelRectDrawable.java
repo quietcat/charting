@@ -9,13 +9,13 @@ import com.denispetrov.graphics.model.FRectangle;
 import com.denispetrov.graphics.model.Reference;
 import com.denispetrov.graphics.model.XAnchor;
 import com.denispetrov.graphics.model.YAnchor;
-import com.denispetrov.graphics.plugin.ObjectTrackerViewPlugin;
+import com.denispetrov.graphics.plugin.TrackerViewPlugin;
 import com.denispetrov.graphics.plugin.Trackable;
 import com.denispetrov.graphics.plugin.TrackingObject;
 
 public class ExampleModelRectDrawable extends ModelDrawableBase<ExampleModel> implements Trackable {
 
-    ObjectTrackerViewPlugin objectTracker;
+    TrackerViewPlugin objectTracker;
     private DrawParameters dp = new DrawParameters();
 
     @Override
@@ -56,7 +56,7 @@ public class ExampleModelRectDrawable extends ModelDrawableBase<ExampleModel> im
     }
 
     @Override
-    public void setObjectTracker(ObjectTrackerViewPlugin objectTracker) {
+    public void setObjectTracker(TrackerViewPlugin objectTracker) {
         this.objectTracker = objectTracker;
     }
 

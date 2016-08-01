@@ -26,7 +26,7 @@ public class ViewController<T> implements PaintListener {
 
     Object mouseObject = null;
 
-    public List<ModelDrawable<T>> getModelDrawers() {
+    public List<ModelDrawable<T>> getModelDrawables() {
         return modelDrawers;
     }
 
@@ -136,25 +136,3 @@ public class ViewController<T> implements PaintListener {
         }
     }
 }
-
-//public void paint(GC gc) {
-//        dp.reset();
-//        drawAxes(gc);
-//        drawZero(gc);
-//        Color savedBackground = e.gc.getBackground();
-//        gc.setBackground(getDisplay().getSystemColor(SWT.COLOR_CYAN));
-//        draw1(gc, 200, 100);
-//        e.gc.setBackground(savedBackground);
-//        dp.reset();
-//        dp.xMargin = 5;
-//        dp.yMargin = 5;
-//        draw1(gc, 200, 300);
-//        dp.reset();
-//        dp.isTransparent = true;
-//        dp.xAnchor = XAnchor.MIDDLE;
-//        dp.yAnchor = YAnchor.MIDDLE;
-//        grc.drawLine(200, 400, 300, 400);
-//        grc.drawText("Transparent", 250, 400, dp);
-//        grc.drawImage(image, 200, 200, null);
-//}
-

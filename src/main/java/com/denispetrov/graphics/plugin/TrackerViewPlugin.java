@@ -17,9 +17,7 @@ import com.denispetrov.graphics.ViewContext;
 import com.denispetrov.graphics.ViewController;
 import com.denispetrov.graphics.drawable.ModelDrawable;
 
-public class ObjectTrackerViewPlugin extends ViewPluginBase implements MouseMoveListener, MouseListener {
-
-    public final static int MAX_MOUSE_MOVE_WITHOUT_RESET = 3;
+public class TrackerViewPlugin extends ViewPluginBase implements MouseMoveListener, MouseListener {
 
     enum MouseFn {
         NONE, TRACK, BUTTON_DOWN
@@ -41,9 +39,9 @@ public class ObjectTrackerViewPlugin extends ViewPluginBase implements MouseMove
         super.init(controller);
         controller.getCanvas().addMouseMoveListener(this);
         controller.getCanvas().addMouseListener(this);
-        for (ModelDrawable<?> modelDrawer : controller.getModelDrawers()) {
-            if (Trackable.class.isAssignableFrom(modelDrawer.getClass())) {
-                ((Trackable)modelDrawer).setObjectTracker(this);
+        for (ModelDrawable<?> modelDrawable : controller.getModelDrawables()) {
+            if (Trackable.class.isAssignableFrom(modelDrawable.getClass())) {
+                ((Trackable)modelDrawable).setObjectTracker(this);
             }
         }
         cursorTrack = controller.getCanvas().getDisplay().getSystemCursor(SWT.CURSOR_HAND);
@@ -184,8 +182,9 @@ public class ObjectTrackerViewPlugin extends ViewPluginBase implements MouseMove
     public void mouseUp(MouseEvent e) {
         System.out.println("mouseUp, button =" + e.button);
         if (e.button == 1 && mouseFn == MouseFn.BUTTON_DOWN) {
-            if (Math.abs(e.x - mouseCoordinatesOnMouseDown.x) < MAX_MOUSE_MOVE_WITHOUT_RESET
-                    && Math.abs(e.y - mouseCoordinatesOnMouseDown.y) < MAX_MOUSE_MOVE_WITHOUT_RESET) {
+            ViewContext<?> viewContext = controller.getViewContext();
+            if (Math.abs(e.x - mouseCoordinatesOnMouseDown.x) < viewContext.getDragThreshold()
+                    && Math.abs(e.y - mouseCoordinatesOnMouseDown.y) < viewContext.getDragThreshold()) {
                 for (Trackable t : objectsOnMouseDown.keySet()) {
                     t.objectClicked(objectsOnMouseDown.get(t));
                 }
