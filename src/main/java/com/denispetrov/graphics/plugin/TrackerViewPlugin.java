@@ -8,37 +8,33 @@ import java.util.Set;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.MouseEvent;
-import org.eclipse.swt.events.MouseListener;
 import org.eclipse.swt.events.MouseMoveListener;
 import org.eclipse.swt.graphics.Cursor;
-import org.eclipse.swt.graphics.Point;
 
 import com.denispetrov.graphics.ViewContext;
 import com.denispetrov.graphics.ViewController;
 import com.denispetrov.graphics.drawable.ModelDrawable;
 
-public class TrackerViewPlugin extends ViewPluginBase implements MouseMoveListener, MouseListener {
+public class TrackerViewPlugin extends ViewPluginBase implements MouseMoveListener {
 
     enum MouseFn {
-        NONE, TRACK, BUTTON_DOWN
+        NONE, TRACK
     }
 
     private MouseFn mouseFn = MouseFn.NONE;
 
-    private Map<Trackable,Set<TrackingObject>> objectsBeingTracked = new HashMap<>();
-
-    private Map<Trackable,Set<TrackingObject>> objectsOnMouseDown = new HashMap<>();
-    private Point mouseCoordinatesOnMouseDown;
+    private Map<Trackable,Set<SimpleTrackingObject>> objectsBeingTracked = new HashMap<>();
 
     private Cursor cursorDefault;
 
     private Cursor cursorTrack;
 
+    private SimpleTrackingObject firstObjectUnderMouse = null;
+
     @Override
     public void init(ViewController<?> controller) {
         super.init(controller);
         controller.getCanvas().addMouseMoveListener(this);
-        controller.getCanvas().addMouseListener(this);
         for (ModelDrawable<?> modelDrawable : controller.getModelDrawables()) {
             if (Trackable.class.isAssignableFrom(modelDrawable.getClass())) {
                 ((Trackable)modelDrawable).setObjectTracker(this);
@@ -48,7 +44,7 @@ public class TrackerViewPlugin extends ViewPluginBase implements MouseMoveListen
         cursorDefault = controller.getCanvas().getCursor();
     }
 
-    public Collection<TrackingObject> getTrackables(Trackable trackable) {
+    public Collection<SimpleTrackingObject> getTrackables(Trackable trackable) {
         return objectsBeingTracked.get(trackable);
     }
 
@@ -57,7 +53,11 @@ public class TrackerViewPlugin extends ViewPluginBase implements MouseMoveListen
         ViewContext<?> viewContext = controller.getViewContext();
         if (isTracking(e.x, e.y)) {
             if (mouseFn == MouseFn.NONE) {
-                viewContext.getCanvas().setCursor(cursorTrack);
+                if (firstObjectUnderMouse.cursor != null) {
+                    viewContext.getCanvas().setCursor(firstObjectUnderMouse.cursor);
+                } else {
+                    viewContext.getCanvas().setCursor(cursorTrack);
+                }
                 mouseFn = MouseFn.TRACK;
             }
         } else {
@@ -68,7 +68,7 @@ public class TrackerViewPlugin extends ViewPluginBase implements MouseMoveListen
         }
     }
 
-    private static boolean isIn(ViewContext<?> viewContext, int x, int y, TrackingObject to) {
+    private static boolean isIn(ViewContext<?> viewContext, int x, int y, SimpleTrackingObject to) {
         if (!viewContext.getMainAreaRectangle().contains(x,y)) {
             return false;
         }
@@ -105,25 +105,27 @@ public class TrackerViewPlugin extends ViewPluginBase implements MouseMoveListen
     public boolean isTracking(int x, int y) {
         ViewContext<?> viewContext = controller.getViewContext();
         for (Trackable t : objectsBeingTracked.keySet()) {
-            Set<TrackingObject> trackable = objectsBeingTracked.get(t);
-            for (TrackingObject to : trackable) {
+            Set<SimpleTrackingObject> trackable = objectsBeingTracked.get(t);
+            for (SimpleTrackingObject to : trackable) {
                 if (isIn(viewContext, x, y, to)) {
+                    firstObjectUnderMouse = to;
                     return true;
                 }
             }
         }
+        firstObjectUnderMouse = null;
         return false;
     }
 
-    public Map<Trackable,Set<TrackingObject>> getObjectsUnderMouse(int x, int y) {
-        Map<Trackable,Set<TrackingObject>> objectsUnderMouse = new HashMap<>();
+    public Map<Trackable,Set<SimpleTrackingObject>> getObjectsUnderMouse(int x, int y) {
+        Map<Trackable,Set<SimpleTrackingObject>> objectsUnderMouse = new HashMap<>();
         ViewContext<?> viewContext = controller.getViewContext();
         objectsUnderMouse.clear();
         for (Trackable t : objectsBeingTracked.keySet()) {
-            Set<TrackingObject> trackable = objectsBeingTracked.get(t);
-            for (TrackingObject to : trackable) {
+            Set<SimpleTrackingObject> trackable = objectsBeingTracked.get(t);
+            for (SimpleTrackingObject to : trackable) {
                 if (isIn(viewContext, x, y, to)) {
-                    Set<TrackingObject> trackingObjectsForTrackable = objectsUnderMouse.get(t);
+                    Set<SimpleTrackingObject> trackingObjectsForTrackable = objectsUnderMouse.get(t);
                     if (trackingObjectsForTrackable == null) {
                         trackingObjectsForTrackable = new HashSet<>();
                         objectsUnderMouse.put(t, trackingObjectsForTrackable);
@@ -139,9 +141,9 @@ public class TrackerViewPlugin extends ViewPluginBase implements MouseMoveListen
         objectsBeingTracked.remove(trackable);
     }
 
-    public void addTrackingObject(Trackable trackable, TrackingObject trackingObject) {
+    public void addTrackingObject(Trackable trackable, SimpleTrackingObject trackingObject) {
         ViewContext<?> viewContext = controller.getViewContext();
-        Set<TrackingObject> objects = objectsBeingTracked.get(trackable);
+        Set<SimpleTrackingObject> objects = objectsBeingTracked.get(trackable);
         if (objects == null) {
             objects = new HashSet<>();
             objectsBeingTracked.put(trackable, objects);
@@ -151,46 +153,13 @@ public class TrackerViewPlugin extends ViewPluginBase implements MouseMoveListen
     }
 
     @Override
-    public void modelUpdated() {
-    }
-
-    @Override
     public void contextUpdated() {
         ViewContext<?> viewContext = controller.getViewContext();
-        for (Set<TrackingObject> trackable : objectsBeingTracked.values()) {
-            for (TrackingObject trackingObject : trackable) {
+        for (Set<SimpleTrackingObject> trackable : objectsBeingTracked.values()) {
+            for (SimpleTrackingObject trackingObject : trackable) {
                 trackingObject.iRect = viewContext.rectangle(trackingObject.fRect);
             }
         }
-    }
-
-    @Override
-    public void mouseDoubleClick(MouseEvent e) {
-    }
-
-    @Override
-    public void mouseDown(MouseEvent e) {
-        System.out.println("mouseDown, button =" + e.button);
-        if (e.button == 1 && mouseFn == MouseFn.TRACK) {
-            objectsOnMouseDown = getObjectsUnderMouse(e.x, e.y);
-            mouseCoordinatesOnMouseDown = new Point(e.x, e.y);
-            mouseFn = MouseFn.BUTTON_DOWN;
-        }
-    }
-
-    @Override
-    public void mouseUp(MouseEvent e) {
-        System.out.println("mouseUp, button =" + e.button);
-        if (e.button == 1 && mouseFn == MouseFn.BUTTON_DOWN) {
-            ViewContext<?> viewContext = controller.getViewContext();
-            if (Math.abs(e.x - mouseCoordinatesOnMouseDown.x) < viewContext.getDragThreshold()
-                    && Math.abs(e.y - mouseCoordinatesOnMouseDown.y) < viewContext.getDragThreshold()) {
-                for (Trackable t : objectsOnMouseDown.keySet()) {
-                    t.objectClicked(objectsOnMouseDown.get(t));
-                }
-            }
-        }
-        mouseFn = MouseFn.NONE;
     }
 
 }

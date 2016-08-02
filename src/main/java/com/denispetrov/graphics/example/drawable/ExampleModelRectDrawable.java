@@ -11,6 +11,7 @@ import com.denispetrov.graphics.model.XAnchor;
 import com.denispetrov.graphics.model.YAnchor;
 import com.denispetrov.graphics.plugin.TrackerViewPlugin;
 import com.denispetrov.graphics.plugin.Trackable;
+import com.denispetrov.graphics.plugin.SimpleTrackingObject;
 import com.denispetrov.graphics.plugin.TrackingObject;
 
 public class ExampleModelRectDrawable extends ModelDrawableBase<ExampleModel> implements Trackable {
@@ -22,7 +23,7 @@ public class ExampleModelRectDrawable extends ModelDrawableBase<ExampleModel> im
     public void modelUpdated() {
         objectTracker.clearTrackingObjects(this);
         for (FRectangle rect : this.viewContext.getModel().getRectangles()) {
-            TrackingObject trackingObject = new TrackingObject();
+            SimpleTrackingObject trackingObject = new SimpleTrackingObject();
             trackingObject.target = rect;
             trackingObject.fRect = new FRectangle(rect);
             trackingObject.xPadding = 1;
@@ -65,7 +66,7 @@ public class ExampleModelRectDrawable extends ModelDrawableBase<ExampleModel> im
     }
 
     @Override
-    public void objectClicked(Set<TrackingObject> objects) {
+    public void objectClicked(Set<SimpleTrackingObject> objects, int button) {
         for (TrackingObject o : objects) {
             System.out.println(o);
         }

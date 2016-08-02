@@ -70,12 +70,4 @@ public class PanViewPlugin extends ViewPluginBase implements MouseListener, Mous
         controller.getCanvas().addMouseListener(this);
     }
 
-    @Override
-    public void modelUpdated() {
-    }
-
-    @Override
-    public void contextUpdated() {
-    }
-
 }

@@ -11,6 +11,14 @@ public abstract class ViewPluginBase implements ViewPlugin {
         this.controller = controller;
     }
 
+    @Override
+    public void modelUpdated() {
+    }
+
+    @Override
+    public void contextUpdated() {
+    }
+
     public ViewController<?> getController() {
         return controller;
     }

@@ -34,18 +34,6 @@ public class ZoomViewPlugin extends ViewPluginBase implements MouseMoveListener,
     }
 
     @Override
-    public void modelUpdated() {
-        // TODO Auto-generated method stub
-        
-    }
-
-    @Override
-    public void contextUpdated() {
-        // TODO Auto-generated method stub
-        
-    }
-
-    @Override
     public void mouseDoubleClick(MouseEvent e) {
         // TODO Auto-generated method stub
         
