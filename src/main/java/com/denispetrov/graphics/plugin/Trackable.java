@@ -7,5 +7,5 @@ public interface Trackable {
 
     void setObjectTracker(TrackerViewPlugin objectTracker);
 
-    void objectClicked(Set<TrackingObject> objects, int button);
+    void objectClicked(Set<TrackableObject> objects, int button);
 }

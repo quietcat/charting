@@ -6,7 +6,7 @@ import org.eclipse.swt.graphics.Rectangle;
 import com.denispetrov.graphics.model.FRectangle;
 import com.denispetrov.graphics.model.Reference;
 
-public interface TrackingObject {
+public interface TrackableObject {
 
     FRectangle getFRect();
 

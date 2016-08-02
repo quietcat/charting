@@ -12,7 +12,7 @@ import com.denispetrov.graphics.model.YAnchor;
 import com.denispetrov.graphics.plugin.TrackerViewPlugin;
 import com.denispetrov.graphics.plugin.Trackable;
 import com.denispetrov.graphics.plugin.SimpleTrackingObject;
-import com.denispetrov.graphics.plugin.TrackingObject;
+import com.denispetrov.graphics.plugin.TrackableObject;
 
 public class ExampleModelRectDrawable extends ModelDrawableBase<ExampleModel> implements Trackable {
 
@@ -66,8 +66,8 @@ public class ExampleModelRectDrawable extends ModelDrawableBase<ExampleModel> im
     }
 
     @Override
-    public void objectClicked(Set<TrackingObject> objects, int button) {
-        for (TrackingObject o : objects) {
+    public void objectClicked(Set<TrackableObject> objects, int button) {
+        for (TrackableObject o : objects) {
             System.out.println(o);
         }
     }

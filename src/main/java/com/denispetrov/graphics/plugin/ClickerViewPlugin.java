@@ -20,7 +20,7 @@ public class ClickerViewPlugin extends ViewPluginBase implements MouseListener {
     private MouseFn mouseFn;
     private int button = 0;
 
-    private Map<Trackable,Set<TrackingObject>> objectsOnMouseDown = new HashMap<>();
+    private Map<Trackable,Set<TrackableObject>> objectsOnMouseDown = new HashMap<>();
     private Point mouseCoordinatesOnMouseDown;
 
     private TrackerViewPlugin trackerViewPlugin;

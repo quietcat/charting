@@ -17,8 +17,8 @@ public class PanViewPlugin extends ViewPluginBase implements MouseListener, Mous
 
     private MouseFn mouseFn = MouseFn.NONE;
 
-    Point mouseOrigin = new Point(0, 0);
-    FPoint contextOrigin = new FPoint(0, 0);
+    private Point mouseOrigin = new Point(0, 0);
+    private FPoint contextOrigin = new FPoint(0, 0);
 
     @Override
     public void mouseMove(MouseEvent e) {
