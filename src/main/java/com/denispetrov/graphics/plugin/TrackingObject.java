@@ -8,13 +8,13 @@ import com.denispetrov.graphics.model.Reference;
 
 public interface TrackingObject {
 
-    FRectangle getfRect();
+    FRectangle getFRect();
 
-    void setfRect(FRectangle fRect);
+    void setFRect(FRectangle fRect);
 
-    Rectangle getiRect();
+    Rectangle getIRect();
 
-    void setiRect(Rectangle iRect);
+    void setIRect(Rectangle iRect);
 
     Object getTarget();
 
@@ -22,19 +22,19 @@ public interface TrackingObject {
 
     int getxPadding();
 
-    void setxPadding(int xPadding);
+    void setXPadding(int xPadding);
 
     int getyPadding();
 
-    void setyPadding(int yPadding);
+    void setYPadding(int yPadding);
 
-    Reference getxReference();
+    Reference getXReference();
 
-    void setxReference(Reference xReference);
+    void setXReference(Reference xReference);
 
-    Reference getyReference();
+    Reference getYReference();
 
-    void setyReference(Reference yReference);
+    void setYReference(Reference yReference);
 
     Cursor getCursor();
 

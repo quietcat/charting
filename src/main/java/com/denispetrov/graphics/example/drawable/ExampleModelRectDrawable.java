@@ -24,12 +24,12 @@ public class ExampleModelRectDrawable extends ModelDrawableBase<ExampleModel> im
         objectTracker.clearTrackingObjects(this);
         for (FRectangle rect : this.viewContext.getModel().getRectangles()) {
             SimpleTrackingObject trackingObject = new SimpleTrackingObject();
-            trackingObject.target = rect;
-            trackingObject.fRect = new FRectangle(rect);
-            trackingObject.xPadding = 1;
-            trackingObject.yPadding = 1;
-            trackingObject.xReference = Reference.GRAPH;
-            trackingObject.yReference = Reference.GRAPH;
+            trackingObject.setTarget(rect);
+            trackingObject.setFRect(new FRectangle(rect));
+            trackingObject.setXPadding(1);
+            trackingObject.setYPadding(1);
+            trackingObject.setXReference(Reference.CHART);
+            trackingObject.setYReference(Reference.CHART);
             objectTracker.addTrackingObject(this,trackingObject);
         }
     }
@@ -66,7 +66,7 @@ public class ExampleModelRectDrawable extends ModelDrawableBase<ExampleModel> im
     }
 
     @Override
-    public void objectClicked(Set<SimpleTrackingObject> objects, int button) {
+    public void objectClicked(Set<TrackingObject> objects, int button) {
         for (TrackingObject o : objects) {
             System.out.println(o);
         }

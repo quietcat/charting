@@ -8,18 +8,18 @@ import com.denispetrov.graphics.model.Reference;
 
 public class SimpleTrackingObject implements TrackingObject {
 
-    public FRectangle fRect;
-    public Rectangle iRect;
-    public Object target;
-    public int xPadding, yPadding;
-    public Reference xReference, yReference;
-    public Cursor cursor;
+    private FRectangle fRect;
+    private Rectangle iRect;
+    private Object target;
+    private int xPadding, yPadding;
+    private Reference xReference, yReference;
+    private Cursor cursor;
 
     /* (non-Javadoc)
      * @see com.denispetrov.graphics.plugin.TrackingObject#getfRect()
      */
     @Override
-    public FRectangle getfRect() {
+    public FRectangle getFRect() {
         return fRect;
     }
 
@@ -27,7 +27,7 @@ public class SimpleTrackingObject implements TrackingObject {
      * @see com.denispetrov.graphics.plugin.TrackingObject#setfRect(com.denispetrov.graphics.model.FRectangle)
      */
     @Override
-    public void setfRect(FRectangle fRect) {
+    public void setFRect(FRectangle fRect) {
         this.fRect = fRect;
     }
 
@@ -35,7 +35,7 @@ public class SimpleTrackingObject implements TrackingObject {
      * @see com.denispetrov.graphics.plugin.TrackingObject#getiRect()
      */
     @Override
-    public Rectangle getiRect() {
+    public Rectangle getIRect() {
         return iRect;
     }
 
@@ -43,7 +43,7 @@ public class SimpleTrackingObject implements TrackingObject {
      * @see com.denispetrov.graphics.plugin.TrackingObject#setiRect(org.eclipse.swt.graphics.Rectangle)
      */
     @Override
-    public void setiRect(Rectangle iRect) {
+    public void setIRect(Rectangle iRect) {
         this.iRect = iRect;
     }
 
@@ -75,7 +75,7 @@ public class SimpleTrackingObject implements TrackingObject {
      * @see com.denispetrov.graphics.plugin.TrackingObject#setxPadding(int)
      */
     @Override
-    public void setxPadding(int xPadding) {
+    public void setXPadding(int xPadding) {
         this.xPadding = xPadding;
     }
 
@@ -91,7 +91,7 @@ public class SimpleTrackingObject implements TrackingObject {
      * @see com.denispetrov.graphics.plugin.TrackingObject#setyPadding(int)
      */
     @Override
-    public void setyPadding(int yPadding) {
+    public void setYPadding(int yPadding) {
         this.yPadding = yPadding;
     }
 
@@ -99,7 +99,7 @@ public class SimpleTrackingObject implements TrackingObject {
      * @see com.denispetrov.graphics.plugin.TrackingObject#getxReference()
      */
     @Override
-    public Reference getxReference() {
+    public Reference getXReference() {
         return xReference;
     }
 
@@ -107,7 +107,7 @@ public class SimpleTrackingObject implements TrackingObject {
      * @see com.denispetrov.graphics.plugin.TrackingObject#setxReference(com.denispetrov.graphics.model.Reference)
      */
     @Override
-    public void setxReference(Reference xReference) {
+    public void setXReference(Reference xReference) {
         this.xReference = xReference;
     }
 
@@ -115,7 +115,7 @@ public class SimpleTrackingObject implements TrackingObject {
      * @see com.denispetrov.graphics.plugin.TrackingObject#getyReference()
      */
     @Override
-    public Reference getyReference() {
+    public Reference getYReference() {
         return yReference;
     }
 
@@ -123,7 +123,7 @@ public class SimpleTrackingObject implements TrackingObject {
      * @see com.denispetrov.graphics.plugin.TrackingObject#setyReference(com.denispetrov.graphics.model.Reference)
      */
     @Override
-    public void setyReference(Reference yReference) {
+    public void setYReference(Reference yReference) {
         this.yReference = yReference;
     }
 
