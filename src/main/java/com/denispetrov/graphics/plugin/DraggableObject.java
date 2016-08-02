@@ -1,5 +1,11 @@
 package com.denispetrov.graphics.plugin;
 
-public interface DraggableObject extends TrackableObject {
+import com.denispetrov.graphics.model.FRectangle;
+
+public interface DraggableObject {
+
+    void setOrigin(double originX);
+
+    FRectangle getOrigin();
 
 }

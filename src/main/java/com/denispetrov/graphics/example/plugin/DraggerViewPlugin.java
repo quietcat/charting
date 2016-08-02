@@ -10,11 +10,8 @@ import org.eclipse.swt.graphics.Point;
 
 import com.denispetrov.graphics.ViewContext;
 import com.denispetrov.graphics.ViewController;
-import com.denispetrov.graphics.plugin.DraggableObject;
-import com.denispetrov.graphics.plugin.Trackable;
-import com.denispetrov.graphics.plugin.TrackerViewPlugin;
-import com.denispetrov.graphics.plugin.TrackableObject;
-import com.denispetrov.graphics.plugin.ViewPluginBase;
+import com.denispetrov.graphics.model.FPoint;
+import com.denispetrov.graphics.plugin.*;
 
 public class DraggerViewPlugin extends ViewPluginBase implements MouseListener, MouseMoveListener {
 
@@ -24,6 +21,7 @@ public class DraggerViewPlugin extends ViewPluginBase implements MouseListener, 
 
     private MouseFn mouseFn = MouseFn.NONE;
     private Point mouseOrigin = new Point(0,0);
+    private FPoint objectOrigin = new FPoint(0,0);
     private DraggableObject objectBeingDragged;
 
     private TrackerViewPlugin trackerViewPlugin;
@@ -74,13 +72,15 @@ public class DraggerViewPlugin extends ViewPluginBase implements MouseListener, 
                 for (TrackableObject object : objects) {
                     if (DraggableObject.class.isAssignableFrom(object.getClass())) {
                         objectBeingDragged = (DraggableObject)object;
+                        mouseOrigin.x = e.x;
+                        mouseOrigin.y = e.y;
+                        objectOrigin.x = objectBeingDragged.getOrigin().x;
+                        objectOrigin.y = objectBeingDragged.getOrigin().y;
+                        mouseFn = MouseFn.MAYBE_DRAGGING;
                         break;
                     }
                 }
             }
-            mouseOrigin.x = e.x;
-            mouseOrigin.y = e.y;
-            mouseFn = MouseFn.MAYBE_DRAGGING;
         }
     }
 
