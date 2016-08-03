@@ -1,11 +1,11 @@
 package com.denispetrov.graphics.plugin;
 
-import com.denispetrov.graphics.model.FRectangle;
+import com.denispetrov.graphics.model.FPoint;
 
 public interface DraggableObject {
 
-    void setOrigin(double originX);
+    void setOrigin(FPoint origin);
 
-    FRectangle getOrigin();
+    FPoint getOrigin();
 
 }

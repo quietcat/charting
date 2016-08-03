@@ -6,12 +6,15 @@ import java.util.Set;
 import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.events.MouseListener;
 import org.eclipse.swt.events.MouseMoveListener;
-import org.eclipse.swt.graphics.Point;
 
 import com.denispetrov.graphics.ViewContext;
 import com.denispetrov.graphics.ViewController;
 import com.denispetrov.graphics.model.FPoint;
-import com.denispetrov.graphics.plugin.*;
+import com.denispetrov.graphics.plugin.DraggableObject;
+import com.denispetrov.graphics.plugin.Trackable;
+import com.denispetrov.graphics.plugin.TrackableObject;
+import com.denispetrov.graphics.plugin.TrackerViewPlugin;
+import com.denispetrov.graphics.plugin.ViewPluginBase;
 
 public class DraggerViewPlugin extends ViewPluginBase implements MouseListener, MouseMoveListener {
 
@@ -20,7 +23,7 @@ public class DraggerViewPlugin extends ViewPluginBase implements MouseListener, 
     }
 
     private MouseFn mouseFn = MouseFn.NONE;
-    private Point mouseOrigin = new Point(0,0);
+    private FPoint mouseOrigin = new FPoint(0,0);
     private FPoint objectOrigin = new FPoint(0,0);
     private DraggableObject objectBeingDragged;
 
@@ -53,6 +56,13 @@ public class DraggerViewPlugin extends ViewPluginBase implements MouseListener, 
             }
             break;
         case DRAGGING:
+            if (objectBeingDragged != null) {
+                viewContext = controller.getViewContext();
+                FPoint origin = objectBeingDragged.getOrigin();
+                origin.x = objectOrigin.x + (viewContext.x(e.x) - mouseOrigin.x);
+                origin.y = objectOrigin.y + (viewContext.y(e.y) - mouseOrigin.y);
+                objectBeingDragged.setOrigin(origin);
+            }
             break;
         case NONE:
             break;
@@ -71,9 +81,10 @@ public class DraggerViewPlugin extends ViewPluginBase implements MouseListener, 
             for (Set<TrackableObject> objects : clickedOn.values()) {
                 for (TrackableObject object : objects) {
                     if (DraggableObject.class.isAssignableFrom(object.getClass())) {
+                        ViewContext<?> viewContext = controller.getViewContext();
                         objectBeingDragged = (DraggableObject)object;
-                        mouseOrigin.x = e.x;
-                        mouseOrigin.y = e.y;
+                        mouseOrigin.x = viewContext.x(e.x);
+                        mouseOrigin.y = viewContext.y(e.y);
                         objectOrigin.x = objectBeingDragged.getOrigin().x;
                         objectOrigin.y = objectBeingDragged.getOrigin().y;
                         mouseFn = MouseFn.MAYBE_DRAGGING;

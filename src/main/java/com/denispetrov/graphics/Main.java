@@ -11,6 +11,7 @@ import com.denispetrov.graphics.example.drawable.ViewportXAxisDrawable;
 import com.denispetrov.graphics.example.drawable.ViewportYAxisDrawable;
 import com.denispetrov.graphics.example.drawable.ViewportZeroMarkDrawable;
 import com.denispetrov.graphics.example.model.ExampleModel;
+import com.denispetrov.graphics.example.plugin.DraggerViewPlugin;
 import com.denispetrov.graphics.model.FRectangle;
 import com.denispetrov.graphics.plugin.ClickerViewPlugin;
 import com.denispetrov.graphics.plugin.PanViewPlugin;
@@ -50,22 +51,25 @@ public class Main {
         viewController = new ViewController<>();
         viewController.setCanvas(canvas);
 
-        TrackerViewPlugin otvp = new TrackerViewPlugin();
-        viewController.addViewPlugin(otvp);
+        TrackerViewPlugin tvp = new TrackerViewPlugin();
+        viewController.addViewPlugin(tvp);
         PanViewPlugin pvp = new PanViewPlugin();
         viewController.addViewPlugin(pvp);
-        ZoomViewPlugin ysvp = new ZoomViewPlugin();
-        viewController.addViewPlugin(ysvp);
+        ZoomViewPlugin zvp = new ZoomViewPlugin();
+        viewController.addViewPlugin(zvp);
         ClickerViewPlugin cvp = new ClickerViewPlugin();
-        cvp.setTrackerViewPlugin(otvp);
+        cvp.setTrackerViewPlugin(tvp);
         viewController.addViewPlugin(cvp);
+        DraggerViewPlugin dvp = new DraggerViewPlugin();
+        dvp.setTrackerViewPlugin(tvp);
+        viewController.addViewPlugin(dvp);
 
         viewController.addViewportDrawable(new ViewportXAxisDrawable());
         viewController.addViewportDrawable(new ViewportYAxisDrawable());
         viewController.addViewportDrawable(new ViewportZeroMarkDrawable());
 
         ExampleModelRectDrawable emrd = new ExampleModelRectDrawable();
-        emrd.setObjectTracker(otvp);
+        emrd.setObjectTracker(tvp);
         viewController.addModelDrawable(emrd);
 
         viewController.init();
