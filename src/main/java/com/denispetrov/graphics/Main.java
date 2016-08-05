@@ -10,6 +10,7 @@ import com.denispetrov.graphics.example.drawable.ExampleModelRectDrawable;
 import com.denispetrov.graphics.example.drawable.ViewportXAxisDrawable;
 import com.denispetrov.graphics.example.drawable.ViewportYAxisDrawable;
 import com.denispetrov.graphics.example.drawable.ViewportZeroMarkDrawable;
+import com.denispetrov.graphics.example.model.DraggableRectangle;
 import com.denispetrov.graphics.example.model.ExampleModel;
 import com.denispetrov.graphics.example.plugin.DraggerViewPlugin;
 import com.denispetrov.graphics.model.FRectangle;
@@ -81,6 +82,8 @@ public class Main {
         ExampleModel model = new ExampleModel();
         model.getRectangles().add(new FRectangle(100,100,100,100));
         model.getRectangles().add(new FRectangle(300,300,100,100));
+        model.getDraggableRectangles().add(new DraggableRectangle(300, 100, 100, 100));
+        model.getDraggableRectangles().add(new DraggableRectangle(100, 300, 100, 100));
         viewController.setModel(model);
     }
 }

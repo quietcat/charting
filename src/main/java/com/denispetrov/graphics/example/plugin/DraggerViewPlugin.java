@@ -62,6 +62,7 @@ public class DraggerViewPlugin extends ViewPluginBase implements MouseListener, 
                 origin.x = objectOrigin.x + (viewContext.x(e.x) - mouseOrigin.x);
                 origin.y = objectOrigin.y + (viewContext.y(e.y) - mouseOrigin.y);
                 objectBeingDragged.setOrigin(origin);
+                controller.modelUpdated();
             }
             break;
         case NONE:

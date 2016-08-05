@@ -2,17 +2,22 @@ package com.denispetrov.graphics.example.drawable;
 
 import java.util.Set;
 
+import org.eclipse.swt.SWT;
+
 import com.denispetrov.graphics.drawable.DrawParameters;
 import com.denispetrov.graphics.drawable.ModelDrawableBase;
+import com.denispetrov.graphics.example.model.DraggableRectangle;
 import com.denispetrov.graphics.example.model.ExampleModel;
+import com.denispetrov.graphics.model.FPoint;
 import com.denispetrov.graphics.model.FRectangle;
 import com.denispetrov.graphics.model.Reference;
 import com.denispetrov.graphics.model.XAnchor;
 import com.denispetrov.graphics.model.YAnchor;
-import com.denispetrov.graphics.plugin.TrackerViewPlugin;
-import com.denispetrov.graphics.plugin.Trackable;
+import com.denispetrov.graphics.plugin.SimpleDraggableObject;
 import com.denispetrov.graphics.plugin.SimpleTrackableObject;
+import com.denispetrov.graphics.plugin.Trackable;
 import com.denispetrov.graphics.plugin.TrackableObject;
+import com.denispetrov.graphics.plugin.TrackerViewPlugin;
 
 public class ExampleModelRectDrawable extends ModelDrawableBase<ExampleModel> implements Trackable {
 
@@ -30,6 +35,18 @@ public class ExampleModelRectDrawable extends ModelDrawableBase<ExampleModel> im
             trackingObject.setYPadding(1);
             trackingObject.setXReference(Reference.CHART);
             trackingObject.setYReference(Reference.CHART);
+            objectTracker.addTrackingObject(this,trackingObject);
+        }
+        for (DraggableRectangle rect : this.viewContext.getModel().getDraggableRectangles()) {
+            SimpleDraggableObject trackingObject = new SimpleDraggableObject();
+            trackingObject.setTarget(rect);
+            trackingObject.setFRect(new FRectangle(rect));
+            trackingObject.setXPadding(1);
+            trackingObject.setYPadding(1);
+            trackingObject.setXReference(Reference.CHART);
+            trackingObject.setYReference(Reference.CHART);
+            trackingObject.setCursor(this.viewContext.getCanvas().getDisplay().getSystemCursor(SWT.CURSOR_SIZEALL));
+            trackingObject.setOrigin(new FPoint(trackingObject.getFRect().x,trackingObject.getFRect().y));
             objectTracker.addTrackingObject(this,trackingObject);
         }
     }
@@ -53,6 +70,9 @@ public class ExampleModelRectDrawable extends ModelDrawableBase<ExampleModel> im
             viewContext.drawText("YAnchor MIDDLE", rect.x, rect.y + rect.h / 2, dp);
             dp.yAnchor = YAnchor.TOP;
             viewContext.drawText("YAnchor TOP", rect.x, rect.y, dp);
+        }
+        for (FRectangle rect : this.viewContext.getModel().getDraggableRectangles()) {
+            viewContext.drawRectangle(rect.x, rect.y, rect.w, rect.h);
         }
     }
 
