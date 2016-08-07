@@ -23,8 +23,8 @@ public class ZoomViewPlugin extends ViewPluginBase implements MouseMoveListener,
     private Cursor cursorTrackX, cursorTrackY;
 
     @Override
-    public void init(ViewController<?> controller) {
-        super.init(controller);
+    public void setViewController(ViewController<?> controller) {
+        super.setViewController(controller);
         controller.getCanvas().addMouseListener(this);
         controller.getCanvas().addMouseWheelListener(this);
         controller.getCanvas().addMouseMoveListener(this);

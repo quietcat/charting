@@ -1,10 +1,6 @@
 package com.denispetrov.graphics.plugin;
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.MouseEvent;
@@ -13,7 +9,6 @@ import org.eclipse.swt.graphics.Cursor;
 
 import com.denispetrov.graphics.ViewContext;
 import com.denispetrov.graphics.ViewController;
-import com.denispetrov.graphics.drawable.ModelDrawable;
 
 public class TrackerViewPlugin extends ViewPluginBase implements MouseMoveListener {
 
@@ -32,14 +27,9 @@ public class TrackerViewPlugin extends ViewPluginBase implements MouseMoveListen
     private TrackableObject firstObjectUnderMouse = null;
 
     @Override
-    public void init(ViewController<?> controller) {
-        super.init(controller);
+    public void setViewController(ViewController<?> controller) {
+        super.setViewController(controller);
         controller.getCanvas().addMouseMoveListener(this);
-        for (ModelDrawable<?> modelDrawable : controller.getModelDrawables()) {
-            if (Trackable.class.isAssignableFrom(modelDrawable.getClass())) {
-                ((Trackable)modelDrawable).setObjectTracker(this);
-            }
-        }
         cursorTrack = controller.getCanvas().getDisplay().getSystemCursor(SWT.CURSOR_HAND);
         cursorDefault = controller.getCanvas().getCursor();
     }

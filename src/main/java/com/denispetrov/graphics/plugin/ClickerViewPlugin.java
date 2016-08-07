@@ -25,18 +25,11 @@ public class ClickerViewPlugin extends ViewPluginBase implements MouseListener {
 
     private TrackerViewPlugin trackerViewPlugin;
 
-    public TrackerViewPlugin getTrackerViewPlugin() {
-        return trackerViewPlugin;
-    }
-
-    public void setTrackerViewPlugin(TrackerViewPlugin trackerViewPlugin) {
-        this.trackerViewPlugin = trackerViewPlugin;
-    }
-
     @Override
-    public void init(ViewController<?> controller) {
-        super.init(controller);
+    public void setViewController(ViewController<?> controller) {
+        super.setViewController(controller);
         controller.getCanvas().addMouseListener(this);
+        trackerViewPlugin = controller.findPlugin(TrackerViewPlugin.class);
     }
 
     @Override

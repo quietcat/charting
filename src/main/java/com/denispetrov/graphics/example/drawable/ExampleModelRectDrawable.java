@@ -2,6 +2,7 @@ package com.denispetrov.graphics.example.drawable;
 
 import java.util.Set;
 
+import com.denispetrov.graphics.ViewController;
 import com.denispetrov.graphics.drawable.DrawParameters;
 import com.denispetrov.graphics.drawable.ModelDrawableBase;
 import com.denispetrov.graphics.example.model.ExampleModel;
@@ -16,7 +17,7 @@ import com.denispetrov.graphics.plugin.TrackableObject;
 
 public class ExampleModelRectDrawable extends ModelDrawableBase<ExampleModel> implements Trackable {
 
-    TrackerViewPlugin objectTracker;
+    private TrackerViewPlugin trackerViewPlugin;
     private DrawParameters dp = new DrawParameters();
 
     @Override
@@ -43,7 +44,7 @@ public class ExampleModelRectDrawable extends ModelDrawableBase<ExampleModel> im
 
     @Override
     public void modelUpdated() {
-        objectTracker.clearTrackingObjects(this);
+        trackerViewPlugin.clearTrackingObjects(this);
         for (FRectangle rect : this.viewContext.getModel().getRectangles()) {
             SimpleTrackableObject trackingObject = new SimpleTrackableObject();
             trackingObject.setTarget(rect);
@@ -52,13 +53,8 @@ public class ExampleModelRectDrawable extends ModelDrawableBase<ExampleModel> im
             trackingObject.setYPadding(1);
             trackingObject.setXReference(Reference.CHART);
             trackingObject.setYReference(Reference.CHART);
-            objectTracker.addTrackingObject(this,trackingObject);
+            trackerViewPlugin.addTrackingObject(this,trackingObject);
         }
-    }
-
-    @Override
-    public void setObjectTracker(TrackerViewPlugin objectTracker) {
-        this.objectTracker = objectTracker;
     }
 
     @Override
@@ -70,6 +66,12 @@ public class ExampleModelRectDrawable extends ModelDrawableBase<ExampleModel> im
         for (TrackableObject o : objects) {
             System.out.println(o);
         }
+    }
+
+    @Override
+    public void setViewController(ViewController<?> viewController) {
+        super.setViewController(viewController);
+        trackerViewPlugin = viewController.findPlugin(TrackerViewPlugin.class);
     }
 
 }
