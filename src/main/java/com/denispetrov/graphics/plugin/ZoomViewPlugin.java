@@ -90,16 +90,32 @@ public class ZoomViewPlugin extends ViewPluginBase implements MouseMoveListener,
             }
             switch (mouseFn) {
             case X_SCALING:
-                scaleX(viewContext, m, x);
+                if (!viewContext.isAllowNegativeBaseX() && viewContext.getBaseX() == 0.0) {
+                    scaleX(viewContext, m, 0.0);
+                } else {
+                    scaleX(viewContext, m, x);
+                }
                 controller.contextUpdated();
                 break;
             case Y_SCALING:
-                scaleY(viewContext, m, y);
+                if (!viewContext.isAllowNegativeBaseY() && viewContext.getBaseY() == 0.0) {
+                    scaleY(viewContext, m, 0.0);
+                } else {
+                    scaleY(viewContext, m, y);
+                }
                 controller.contextUpdated();
                 break;
             case ZOOMING:
-                scaleX(viewContext, m, x);
-                scaleY(viewContext, m, y);
+                if (!viewContext.isAllowNegativeBaseX() && viewContext.getBaseX() == 0.0) {
+                    scaleX(viewContext, m, 0.0);
+                } else {
+                    scaleX(viewContext, m, x);
+                }
+                if (!viewContext.isAllowNegativeBaseY() && viewContext.getBaseY() == 0.0) {
+                    scaleY(viewContext, m, 0.0);
+                } else {
+                    scaleY(viewContext, m, y);
+                }
                 controller.contextUpdated();
                 break;
             default:
