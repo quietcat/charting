@@ -20,21 +20,6 @@ public class ExampleModelRectDrawable extends ModelDrawableBase<ExampleModel> im
     private DrawParameters dp = new DrawParameters();
 
     @Override
-    public void modelUpdated() {
-        objectTracker.clearTrackingObjects(this);
-        for (FRectangle rect : this.viewContext.getModel().getRectangles()) {
-            SimpleTrackableObject trackingObject = new SimpleTrackableObject();
-            trackingObject.setTarget(rect);
-            trackingObject.setFRect(new FRectangle(rect));
-            trackingObject.setXPadding(1);
-            trackingObject.setYPadding(1);
-            trackingObject.setXReference(Reference.CHART);
-            trackingObject.setYReference(Reference.CHART);
-            objectTracker.addTrackingObject(this,trackingObject);
-        }
-    }
-
-    @Override
     public void draw() {
         for (FRectangle rect : this.viewContext.getModel().getRectangles()) {
             viewContext.drawRectangle(rect.x, rect.y, rect.w, rect.h);
@@ -53,6 +38,21 @@ public class ExampleModelRectDrawable extends ModelDrawableBase<ExampleModel> im
             viewContext.drawText("YAnchor MIDDLE", rect.x, rect.y + rect.h / 2, dp);
             dp.yAnchor = YAnchor.TOP;
             viewContext.drawText("YAnchor TOP", rect.x, rect.y, dp);
+        }
+    }
+
+    @Override
+    public void modelUpdated() {
+        objectTracker.clearTrackingObjects(this);
+        for (FRectangle rect : this.viewContext.getModel().getRectangles()) {
+            SimpleTrackableObject trackingObject = new SimpleTrackableObject();
+            trackingObject.setTarget(rect);
+            trackingObject.setFRect(new FRectangle(rect));
+            trackingObject.setXPadding(1);
+            trackingObject.setYPadding(1);
+            trackingObject.setXReference(Reference.CHART);
+            trackingObject.setYReference(Reference.CHART);
+            objectTracker.addTrackingObject(this,trackingObject);
         }
     }
 

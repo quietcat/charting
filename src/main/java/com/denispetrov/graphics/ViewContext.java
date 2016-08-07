@@ -30,6 +30,8 @@ public class ViewContext<T> {
     private Color backgroundColor;
     private Color foregroundColor;
     private Rectangle mainAreaRectangle = new Rectangle(0,0,0,0);
+    private boolean allowNegativeBaseX = true;
+    private boolean allowNegativeBaseY = true;
 
     public int getMarginTop() {
         return topMargin;
@@ -115,7 +117,11 @@ public class ViewContext<T> {
     }
 
     public void setBaseX(double baseX) {
-        this.baseX = baseX;
+        if (!allowNegativeBaseX && baseX < 0) {
+            this.baseX = 0.0;
+        } else {
+            this.baseX = baseX;
+        }
     }
 
     public double getBaseY() {
@@ -123,7 +129,11 @@ public class ViewContext<T> {
     }
 
     public void setBaseY(double baseY) {
-        this.baseY = baseY;
+        if (!allowNegativeBaseY && baseY < 0) {
+            this.baseY = 0.0;
+        } else {
+            this.baseY = baseY;
+        }
     }
 
     public XAnchor getxAnchor() {
@@ -336,6 +346,22 @@ public class ViewContext<T> {
 
     public void setForegroundColor(Color foregroundColor) {
         this.foregroundColor = foregroundColor;
+    }
+
+    public boolean isAllowNegativeBaseX() {
+        return allowNegativeBaseX;
+    }
+
+    public void setAllowNegativeBaseX(boolean allowNegativeBaseX) {
+        this.allowNegativeBaseX = allowNegativeBaseX;
+    }
+
+    public boolean isAllowNegativeBaseY() {
+        return allowNegativeBaseY;
+    }
+
+    public void setAllowNegativeBaseY(boolean allowNegativeBaseY) {
+        this.allowNegativeBaseY = allowNegativeBaseY;
     }
 
 }
