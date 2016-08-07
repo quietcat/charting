@@ -52,24 +52,18 @@ public class Main {
         viewController = new ViewController<>();
         viewController.setCanvas(canvas);
 
-        TrackerViewPlugin trackerViewPlugin = new TrackerViewPlugin();
-        viewController.addViewPlugin(trackerViewPlugin);
-        PanViewPlugin panViewPlugin = new PanViewPlugin();
-        viewController.addViewPlugin(panViewPlugin);
-        ZoomViewPlugin zoomViewPlugin = new ZoomViewPlugin();
-        viewController.addViewPlugin(zoomViewPlugin);
-        ClickerViewPlugin clickerViewPlugin = new ClickerViewPlugin();
-        viewController.addViewPlugin(clickerViewPlugin);
-        DraggerViewPlugin draggerViewPlugin = new DraggerViewPlugin();
-        viewController.addViewPlugin(draggerViewPlugin);
+        viewController.addViewPlugin(new TrackerViewPlugin());
+        viewController.addViewPlugin(new PanViewPlugin());
+        viewController.addViewPlugin(new ZoomViewPlugin());
+        viewController.addViewPlugin(new ClickerViewPlugin());
+        viewController.addViewPlugin(new DraggerViewPlugin());
 
         viewController.addViewportDrawable(new ViewportBackgroundDrawable());
         viewController.addViewportDrawable(new ViewportXAxisDrawable());
         viewController.addViewportDrawable(new ViewportYAxisDrawable());
         viewController.addViewportDrawable(new ViewportZeroMarkDrawable());
 
-        ExampleModelRectDrawable exampleModelRectDrawable = new ExampleModelRectDrawable();
-        viewController.addModelDrawable(exampleModelRectDrawable);
+        viewController.addModelDrawable(new ExampleModelRectDrawable());
 
         viewController.init();
 

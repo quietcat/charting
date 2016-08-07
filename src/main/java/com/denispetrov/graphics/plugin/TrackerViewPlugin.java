@@ -24,7 +24,7 @@ public class TrackerViewPlugin extends ViewPluginBase implements MouseMoveListen
 
     private Cursor cursorTrack;
 
-    private TrackableObject firstObjectUnderMouse = null;
+    private Trackable firstTrackableUnderMouse = null;
 
     @Override
     public void setViewController(ViewController<?> controller) {
@@ -43,8 +43,8 @@ public class TrackerViewPlugin extends ViewPluginBase implements MouseMoveListen
         ViewContext<?> viewContext = controller.getViewContext();
         if (isTracking(e.x, e.y)) {
             if (mouseFn == MouseFn.NONE) {
-                if (firstObjectUnderMouse.getCursor() != null) {
-                    viewContext.getCanvas().setCursor(firstObjectUnderMouse.getCursor());
+                if (firstTrackableUnderMouse.getCursor() != null) {
+                    viewContext.getCanvas().setCursor(firstTrackableUnderMouse.getCursor());
                 } else {
                     viewContext.getCanvas().setCursor(cursorTrack);
                 }
@@ -98,12 +98,12 @@ public class TrackerViewPlugin extends ViewPluginBase implements MouseMoveListen
             Set<TrackableObject> trackable = objectsBeingTracked.get(t);
             for (TrackableObject to : trackable) {
                 if (isIn(viewContext, x, y, to)) {
-                    firstObjectUnderMouse = to;
+                    firstTrackableUnderMouse = t;
                     return true;
                 }
             }
         }
-        firstObjectUnderMouse = null;
+        firstTrackableUnderMouse = null;
         return false;
     }
 

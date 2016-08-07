@@ -2,6 +2,9 @@ package com.denispetrov.graphics.example.drawable;
 
 import java.util.Set;
 
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.graphics.Cursor;
+
 import com.denispetrov.graphics.ViewController;
 import com.denispetrov.graphics.drawable.DrawParameters;
 import com.denispetrov.graphics.drawable.ModelDrawableBase;
@@ -19,6 +22,7 @@ public class ExampleModelRectDrawable extends ModelDrawableBase<ExampleModel> im
 
     private TrackerViewPlugin trackerViewPlugin;
     private DrawParameters dp = new DrawParameters();
+    private Cursor cursor;
 
     @Override
     public void draw() {
@@ -72,6 +76,17 @@ public class ExampleModelRectDrawable extends ModelDrawableBase<ExampleModel> im
     public void setViewController(ViewController<?> viewController) {
         super.setViewController(viewController);
         trackerViewPlugin = viewController.findPlugin(TrackerViewPlugin.class);
+        this.cursor = viewController.getCanvas().getDisplay().getSystemCursor(SWT.CURSOR_HAND);
+    }
+
+    @Override
+    public void setCursor(Cursor cursor) {
+        this.cursor = cursor;
+    }
+
+    @Override
+    public Cursor getCursor() {
+        return cursor;
     }
 
 }
