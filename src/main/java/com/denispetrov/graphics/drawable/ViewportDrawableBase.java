@@ -4,8 +4,9 @@ import com.denispetrov.graphics.ViewContext;
 
 public abstract class ViewportDrawableBase implements ViewportDrawable {
 
+    public static final int DEFAULT_VIEWPORT_DRAWABLE_RANK = 10000;
     protected ViewContext<?> vc;
-    protected int rank = 0;
+    protected int rank = DEFAULT_VIEWPORT_DRAWABLE_RANK;
 
     @Override
     public int getRank() {

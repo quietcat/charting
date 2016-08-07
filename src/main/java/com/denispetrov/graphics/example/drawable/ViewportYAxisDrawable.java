@@ -6,12 +6,6 @@ import com.denispetrov.graphics.drawable.ViewportDrawableBase;
 
 public class ViewportYAxisDrawable extends ViewportDrawableBase {
 
-    public static int Y_AXIS_RANK = 1000000;
-    public ViewportYAxisDrawable() {
-        super();
-        setRank(Y_AXIS_RANK);
-    }
-
     @Override
     public void draw() {
         vc.drawLine(vc.getBaseX(), vc.getBaseY(), vc.getBaseX(), vc.getBaseY() + vc.getHeight());

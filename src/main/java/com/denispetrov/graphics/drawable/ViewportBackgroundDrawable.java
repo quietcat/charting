@@ -1,17 +1,11 @@
 package com.denispetrov.graphics.drawable;
 
-import org.eclipse.swt.SWT;
-import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.GC;
-
-import com.denispetrov.graphics.ViewContext;
 
 public class ViewportBackgroundDrawable extends ViewportDrawableBase implements ViewportDrawable {
 
-    public static int BACKGROUND_RANK = 10000;
+    public static final int BACKGROUND_RANK = 0;
 
-    Color backgroundColor;
-    Color foregroundColor;
     public ViewportBackgroundDrawable() {
         super();
         setRank(BACKGROUND_RANK);
@@ -20,8 +14,8 @@ public class ViewportBackgroundDrawable extends ViewportDrawableBase implements 
     @Override
     public void draw() {
         GC gc = vc.getGC();
-        gc.setBackground(backgroundColor);
-        gc.setForeground(foregroundColor);
+        gc.setBackground(vc.getBackgroundColor());
+        gc.setForeground(vc.getForegroundColor());
         gc.fillRectangle(0, 0, vc.getCanvasWidth(), vc.getCanvasHeight());
     }
 
@@ -35,13 +29,6 @@ public class ViewportBackgroundDrawable extends ViewportDrawableBase implements 
     public void contextUpdated() {
         // TODO Auto-generated method stub
 
-    }
-
-    @Override
-    public void setViewContext(ViewContext<?> vc) {
-        super.setViewContext(vc);
-        backgroundColor = vc.getCanvas().getDisplay().getSystemColor(SWT.COLOR_BLACK);
-        foregroundColor = vc.getCanvas().getDisplay().getSystemColor(SWT.COLOR_GRAY);
     }
 
 }

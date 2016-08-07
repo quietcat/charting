@@ -16,14 +16,8 @@ import com.denispetrov.graphics.plugin.TrackableObject;
 
 public class ExampleModelRectDrawable extends ModelDrawableBase<ExampleModel> implements Trackable {
 
-    public static int EXAMPLE_RECT_DRAWABLE_RANK = 200000;
     TrackerViewPlugin objectTracker;
     private DrawParameters dp = new DrawParameters();
-
-    public ExampleModelRectDrawable() {
-        super();
-        setRank(EXAMPLE_RECT_DRAWABLE_RANK);
-    }
 
     @Override
     public void modelUpdated() {
