@@ -7,7 +7,7 @@ public abstract class ViewPluginBase implements ViewPlugin {
     protected ViewController<?> controller;
 
     @Override
-    public void init(ViewController<?> controller) {
+    public void setViewController(ViewController<?> controller) {
         this.controller = controller;
     }
 

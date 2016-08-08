@@ -8,7 +8,7 @@ public class ViewportYAxisDrawable extends ViewportDrawableBase {
 
     @Override
     public void draw() {
-        vc.drawLine(vc.getBaseX(), vc.getBaseY(), vc.getBaseX(), vc.getBaseY() + vc.getHeight());
+        viewContext.drawLine(viewContext.getBaseX(), viewContext.getBaseY(), viewContext.getBaseX(), viewContext.getBaseY() + viewContext.getHeight());
     }
 
     @Override

@@ -50,10 +50,10 @@ public class ViewController<T> implements PaintListener {
         viewPlugins.add(viewPlugin);
     }
 
-    public ViewPlugin findPlugin(Class<? extends ViewPlugin> pluginClass) {
+    public <S extends ViewPlugin> S findPlugin(Class<S> pluginClass) {
         for (ViewPlugin viewPlugin : viewPlugins) {
             if (pluginClass.isAssignableFrom(viewPlugin.getClass())) {
-                return viewPlugin;
+                return pluginClass.cast(viewPlugin);
             }
         }
         return null;
@@ -104,7 +104,10 @@ public class ViewController<T> implements PaintListener {
             }
         });
         for (ViewPlugin viewPlugin : viewPlugins) {
-            viewPlugin.init(this);
+            viewPlugin.setViewController(this);
+        }
+        for (Drawable drawable : rankedDrawables) {
+            drawable.setViewController(this);
         }
     }
 

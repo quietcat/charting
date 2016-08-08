@@ -1,6 +1,5 @@
 package com.denispetrov.graphics.plugin;
 
-import org.eclipse.swt.graphics.Cursor;
 import org.eclipse.swt.graphics.Rectangle;
 
 import com.denispetrov.graphics.model.FRectangle;
@@ -13,7 +12,6 @@ public class SimpleTrackableObject implements TrackableObject {
     private Object target;
     private int xPadding, yPadding;
     private Reference xReference, yReference;
-    private Cursor cursor;
 
     /* (non-Javadoc)
      * @see com.denispetrov.graphics.plugin.TrackingObject#getfRect()
@@ -125,22 +123,6 @@ public class SimpleTrackableObject implements TrackableObject {
     @Override
     public void setYReference(Reference yReference) {
         this.yReference = yReference;
-    }
-
-    /* (non-Javadoc)
-     * @see com.denispetrov.graphics.plugin.TrackingObject#getCursor()
-     */
-    @Override
-    public Cursor getCursor() {
-        return cursor;
-    }
-
-    /* (non-Javadoc)
-     * @see com.denispetrov.graphics.plugin.TrackingObject#setCursor(org.eclipse.swt.graphics.Cursor)
-     */
-    @Override
-    public void setCursor(Cursor cursor) {
-        this.cursor = cursor;
     }
 
 }

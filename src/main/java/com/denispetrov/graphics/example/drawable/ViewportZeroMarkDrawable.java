@@ -8,8 +8,8 @@ public class ViewportZeroMarkDrawable extends ViewportDrawableBase {
 
     @Override
     public void draw() {
-        vc.drawLine(-10, -10, 10, 10);
-        vc.drawLine(10, -10, -10, 10);
+        viewContext.drawLine(-10, -10, 10, 10);
+        viewContext.drawLine(10, -10, -10, 10);
     }
 
     @Override

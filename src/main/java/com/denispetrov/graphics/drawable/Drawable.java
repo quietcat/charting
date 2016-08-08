@@ -1,5 +1,7 @@
 package com.denispetrov.graphics.drawable;
 
+import com.denispetrov.graphics.ViewController;
+
 public interface Drawable {
 
     int getRank();
@@ -11,4 +13,6 @@ public interface Drawable {
     void modelUpdated();
 
     void contextUpdated();
+
+    void setViewController(ViewController<?> viewController);
 }

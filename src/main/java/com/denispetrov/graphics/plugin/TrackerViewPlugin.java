@@ -1,10 +1,6 @@
 package com.denispetrov.graphics.plugin;
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.MouseEvent;
@@ -13,7 +9,6 @@ import org.eclipse.swt.graphics.Cursor;
 
 import com.denispetrov.graphics.ViewContext;
 import com.denispetrov.graphics.ViewController;
-import com.denispetrov.graphics.drawable.ModelDrawable;
 
 public class TrackerViewPlugin extends ViewPluginBase implements MouseMoveListener {
 
@@ -29,17 +24,12 @@ public class TrackerViewPlugin extends ViewPluginBase implements MouseMoveListen
 
     private Cursor cursorTrack;
 
-    private TrackableObject firstObjectUnderMouse = null;
+    private Trackable firstTrackableUnderMouse = null;
 
     @Override
-    public void init(ViewController<?> controller) {
-        super.init(controller);
+    public void setViewController(ViewController<?> controller) {
+        super.setViewController(controller);
         controller.getCanvas().addMouseMoveListener(this);
-        for (ModelDrawable<?> modelDrawable : controller.getModelDrawables()) {
-            if (Trackable.class.isAssignableFrom(modelDrawable.getClass())) {
-                ((Trackable)modelDrawable).setObjectTracker(this);
-            }
-        }
         cursorTrack = controller.getCanvas().getDisplay().getSystemCursor(SWT.CURSOR_HAND);
         cursorDefault = controller.getCanvas().getCursor();
     }
@@ -53,8 +43,8 @@ public class TrackerViewPlugin extends ViewPluginBase implements MouseMoveListen
         ViewContext<?> viewContext = controller.getViewContext();
         if (isTracking(e.x, e.y)) {
             if (mouseFn == MouseFn.NONE) {
-                if (firstObjectUnderMouse.getCursor() != null) {
-                    viewContext.getCanvas().setCursor(firstObjectUnderMouse.getCursor());
+                if (firstTrackableUnderMouse.getCursor() != null) {
+                    viewContext.getCanvas().setCursor(firstTrackableUnderMouse.getCursor());
                 } else {
                     viewContext.getCanvas().setCursor(cursorTrack);
                 }
@@ -108,12 +98,12 @@ public class TrackerViewPlugin extends ViewPluginBase implements MouseMoveListen
             Set<TrackableObject> trackable = objectsBeingTracked.get(t);
             for (TrackableObject to : trackable) {
                 if (isIn(viewContext, x, y, to)) {
-                    firstObjectUnderMouse = to;
+                    firstTrackableUnderMouse = t;
                     return true;
                 }
             }
         }
-        firstObjectUnderMouse = null;
+        firstTrackableUnderMouse = null;
         return false;
     }
 

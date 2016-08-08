@@ -13,10 +13,10 @@ public class ViewportBackgroundDrawable extends ViewportDrawableBase implements 
 
     @Override
     public void draw() {
-        GC gc = vc.getGC();
-        gc.setBackground(vc.getBackgroundColor());
-        gc.setForeground(vc.getForegroundColor());
-        gc.fillRectangle(0, 0, vc.getCanvasWidth(), vc.getCanvasHeight());
+        GC gc = viewContext.getGC();
+        gc.setBackground(viewContext.getBackgroundColor());
+        gc.setForeground(viewContext.getForegroundColor());
+        gc.fillRectangle(0, 0, viewContext.getCanvasWidth(), viewContext.getCanvasHeight());
     }
 
     @Override

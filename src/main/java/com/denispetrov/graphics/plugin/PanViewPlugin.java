@@ -64,8 +64,8 @@ public class PanViewPlugin extends ViewPluginBase implements MouseListener, Mous
     }
 
     @Override
-    public void init(ViewController<?> controller) {
-        super.init(controller);
+    public void setViewController(ViewController<?> controller) {
+        super.setViewController(controller);
         controller.getCanvas().addMouseMoveListener(this);
         controller.getCanvas().addMouseListener(this);
     }

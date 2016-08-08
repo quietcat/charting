@@ -1,6 +1,5 @@
 package com.denispetrov.graphics.plugin;
 
-import org.eclipse.swt.graphics.Cursor;
 import org.eclipse.swt.graphics.Rectangle;
 
 import com.denispetrov.graphics.model.FRectangle;
@@ -35,9 +34,4 @@ public interface TrackableObject {
     Reference getYReference();
 
     void setYReference(Reference yReference);
-
-    Cursor getCursor();
-
-    void setCursor(Cursor cursor);
-
 }
