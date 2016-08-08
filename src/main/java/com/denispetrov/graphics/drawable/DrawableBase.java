@@ -1,13 +1,13 @@
 package com.denispetrov.graphics.drawable;
 
 import com.denispetrov.graphics.ViewContext;
-import com.denispetrov.graphics.ViewController;
+import com.denispetrov.graphics.View;
 
 public abstract class DrawableBase implements Drawable {
 
     public static final int DEFAULT_MODEL_DRAWABLE_RANK = 1000;
     protected ViewContext viewContext;
-    protected ViewController viewController;
+    protected View view;
     protected int rank = DEFAULT_MODEL_DRAWABLE_RANK;
 
     @Override
@@ -21,8 +21,8 @@ public abstract class DrawableBase implements Drawable {
     }
 
     @Override
-    public void setViewController(ViewController viewController) {
-        this.viewController = viewController;
+    public void setView(View view) {
+        this.view = view;
     }
 
     @Override

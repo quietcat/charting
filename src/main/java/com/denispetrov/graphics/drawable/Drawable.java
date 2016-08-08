@@ -1,7 +1,7 @@
 package com.denispetrov.graphics.drawable;
 
 import com.denispetrov.graphics.ViewContext;
-import com.denispetrov.graphics.ViewController;
+import com.denispetrov.graphics.View;
 
 public interface Drawable {
 
@@ -15,7 +15,7 @@ public interface Drawable {
 
     void contextUpdated();
 
-    void setViewController(ViewController viewController);
+    void setView(View view);
 
     void setViewContext(ViewContext viewContext);
 }

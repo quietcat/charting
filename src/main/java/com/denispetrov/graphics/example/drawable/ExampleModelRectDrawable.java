@@ -5,7 +5,7 @@ import java.util.Set;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Cursor;
 
-import com.denispetrov.graphics.ViewController;
+import com.denispetrov.graphics.View;
 import com.denispetrov.graphics.drawable.DrawParameters;
 import com.denispetrov.graphics.drawable.DrawableBase;
 import com.denispetrov.graphics.example.model.ExampleModel;
@@ -64,10 +64,6 @@ public class ExampleModelRectDrawable extends DrawableBase implements Trackable 
     }
 
     @Override
-    public void contextUpdated() {
-    }
-
-    @Override
     public void objectClicked(Set<TrackableObject> objects, int button) {
         for (TrackableObject o : objects) {
             System.out.println(o);
@@ -75,10 +71,10 @@ public class ExampleModelRectDrawable extends DrawableBase implements Trackable 
     }
 
     @Override
-    public void setViewController(ViewController viewController) {
-        super.setViewController(viewController);
-        trackerViewPlugin = viewController.findPlugin(TrackerViewPlugin.class);
-        this.cursor = viewController.getCanvas().getDisplay().getSystemCursor(SWT.CURSOR_HAND);
+    public void setView(View view) {
+        super.setView(view);
+        trackerViewPlugin = view.findPlugin(TrackerViewPlugin.class);
+        this.cursor = view.getCanvas().getDisplay().getSystemCursor(SWT.CURSOR_HAND);
     }
 
     @Override

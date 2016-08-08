@@ -6,10 +6,10 @@ import org.eclipse.swt.events.MouseMoveListener;
 import org.eclipse.swt.graphics.Point;
 
 import com.denispetrov.graphics.ViewContext;
-import com.denispetrov.graphics.ViewController;
+import com.denispetrov.graphics.View;
 import com.denispetrov.graphics.model.FPoint;
 
-public class PanViewPlugin extends ViewPluginBase implements MouseListener, MouseMoveListener {
+public class PanViewPlugin extends PluginBase implements MouseListener, MouseMoveListener {
 
     private enum MouseFn {
         NONE, MAYBE_PAN, PAN
@@ -25,17 +25,17 @@ public class PanViewPlugin extends ViewPluginBase implements MouseListener, Mous
         ViewContext viewContext;
         switch (mouseFn) {
         case MAYBE_PAN:
-            viewContext = controller.getViewContext();
+            viewContext = view.getViewContext();
             if (Math.abs(e.x - mouseOrigin.x) >= viewContext.getDragThreshold()
                     || Math.abs(e.y - mouseOrigin.y) >= viewContext.getDragThreshold()) {
                 mouseFn = MouseFn.PAN;
             }
             break;
         case PAN:
-            viewContext = controller.getViewContext();
+            viewContext = view.getViewContext();
             viewContext.setBaseX(contextOrigin.x + viewContext.w(mouseOrigin.x-e.x));
             viewContext.setBaseY(contextOrigin.y + viewContext.h(e.y-mouseOrigin.y));
-            controller.contextUpdated();
+            view.contextUpdated();
             break;
         default:
             break;
@@ -49,7 +49,7 @@ public class PanViewPlugin extends ViewPluginBase implements MouseListener, Mous
     @Override
     public void mouseDown(MouseEvent e) {
         if (e.button == 3) {
-            ViewContext viewContext = controller.getViewContext();
+            ViewContext viewContext = view.getViewContext();
             mouseFn = MouseFn.MAYBE_PAN;
             mouseOrigin = new Point(e.x, e.y);
             contextOrigin = new FPoint(viewContext.getBaseX(), viewContext.getBaseY());
@@ -64,10 +64,10 @@ public class PanViewPlugin extends ViewPluginBase implements MouseListener, Mous
     }
 
     @Override
-    public void setViewController(ViewController controller) {
-        super.setViewController(controller);
-        controller.getCanvas().addMouseMoveListener(this);
-        controller.getCanvas().addMouseListener(this);
+    public void setView(View view) {
+        super.setView(view);
+        view.getCanvas().addMouseMoveListener(this);
+        view.getCanvas().addMouseListener(this);
     }
 
 }

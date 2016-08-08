@@ -8,9 +8,9 @@ import org.eclipse.swt.events.MouseWheelListener;
 import org.eclipse.swt.graphics.Cursor;
 
 import com.denispetrov.graphics.ViewContext;
-import com.denispetrov.graphics.ViewController;
+import com.denispetrov.graphics.View;
 
-public class ZoomViewPlugin extends ViewPluginBase implements MouseMoveListener, MouseListener, MouseWheelListener {
+public class ZoomViewPlugin extends PluginBase implements MouseMoveListener, MouseListener, MouseWheelListener {
 
     private static enum MouseFn {
         NONE, X_SCALING, Y_SCALING, ZOOMING
@@ -23,14 +23,14 @@ public class ZoomViewPlugin extends ViewPluginBase implements MouseMoveListener,
     private Cursor cursorTrackX, cursorTrackY;
 
     @Override
-    public void setViewController(ViewController controller) {
-        super.setViewController(controller);
-        controller.getCanvas().addMouseListener(this);
-        controller.getCanvas().addMouseWheelListener(this);
-        controller.getCanvas().addMouseMoveListener(this);
-        cursorTrackX = controller.getCanvas().getDisplay().getSystemCursor(SWT.CURSOR_SIZEWE);
-        cursorTrackY = controller.getCanvas().getDisplay().getSystemCursor(SWT.CURSOR_SIZENS);
-        cursorDefault = controller.getCanvas().getCursor();
+    public void setView(View view) {
+        super.setView(view);
+        view.getCanvas().addMouseListener(this);
+        view.getCanvas().addMouseWheelListener(this);
+        view.getCanvas().addMouseMoveListener(this);
+        cursorTrackX = view.getCanvas().getDisplay().getSystemCursor(SWT.CURSOR_SIZEWE);
+        cursorTrackY = view.getCanvas().getDisplay().getSystemCursor(SWT.CURSOR_SIZENS);
+        cursorDefault = view.getCanvas().getCursor();
     }
 
     @Override
@@ -53,26 +53,26 @@ public class ZoomViewPlugin extends ViewPluginBase implements MouseMoveListener,
 
     @Override
     public void mouseMove(MouseEvent e) {
-        ViewContext viewContext = controller.getViewContext();
+        ViewContext viewContext = view.getViewContext();
         if (e.x >= viewContext.getMarginLeft() && e.x < viewContext.getCanvasWidth() - viewContext.getMarginRight() 
                 && e.y >= viewContext.getCanvasHeight() - viewContext.getMarginBottom() && e.y < viewContext.getCanvasHeight()) {
             if (mouseFn != MouseFn.X_SCALING) {
-                controller.getCanvas().setCursor(cursorTrackX);
+                view.getCanvas().setCursor(cursorTrackX);
                 mouseFn = MouseFn.X_SCALING;
             }
         } else if (e.x >= 0 && e.x < viewContext.getMarginLeft() && e.y >= viewContext.getMarginTop() && e.y < viewContext.getCanvasHeight() - viewContext.getMarginBottom()) {
             if (mouseFn != MouseFn.Y_SCALING) {
-                controller.getCanvas().setCursor(cursorTrackY);
+                view.getCanvas().setCursor(cursorTrackY);
                 mouseFn = MouseFn.Y_SCALING;
             }
         } else if (viewContext.getMainAreaRectangle().contains(e.x, e.y)) {
             if (mouseFn != MouseFn.ZOOMING) {
-                controller.getCanvas().setCursor(cursorDefault);
+                view.getCanvas().setCursor(cursorDefault);
                 mouseFn = MouseFn.ZOOMING;
             }
         } else {
             if (mouseFn != MouseFn.NONE) {
-                controller.getCanvas().setCursor(cursorDefault);
+                view.getCanvas().setCursor(cursorDefault);
                 mouseFn = MouseFn.NONE;
             }
         }
@@ -81,7 +81,7 @@ public class ZoomViewPlugin extends ViewPluginBase implements MouseMoveListener,
     @Override
     public void mouseScrolled(MouseEvent e) {
         if (mouseFn != MouseFn.NONE) {
-            ViewContext viewContext = controller.getViewContext();
+            ViewContext viewContext = view.getViewContext();
             double x = viewContext.x(e.x);
             double y = viewContext.y(e.y);
             double m = 1.1;
@@ -95,7 +95,7 @@ public class ZoomViewPlugin extends ViewPluginBase implements MouseMoveListener,
                 } else {
                     scaleX(viewContext, m, x);
                 }
-                controller.contextUpdated();
+                view.contextUpdated();
                 break;
             case Y_SCALING:
                 if (!viewContext.isAllowNegativeBaseY() && viewContext.getBaseY() == 0.0) {
@@ -103,7 +103,7 @@ public class ZoomViewPlugin extends ViewPluginBase implements MouseMoveListener,
                 } else {
                     scaleY(viewContext, m, y);
                 }
-                controller.contextUpdated();
+                view.contextUpdated();
                 break;
             case ZOOMING:
                 if (!viewContext.isAllowNegativeBaseX() && viewContext.getBaseX() == 0.0) {
@@ -116,7 +116,7 @@ public class ZoomViewPlugin extends ViewPluginBase implements MouseMoveListener,
                 } else {
                     scaleY(viewContext, m, y);
                 }
-                controller.contextUpdated();
+                view.contextUpdated();
                 break;
             default:
                 break;

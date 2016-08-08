@@ -9,34 +9,34 @@ import org.eclipse.swt.events.PaintListener;
 import org.eclipse.swt.widgets.Canvas;
 
 import com.denispetrov.graphics.drawable.Drawable;
-import com.denispetrov.graphics.plugin.ViewPlugin;
+import com.denispetrov.graphics.plugin.Plugin;
 
-public class ViewController implements PaintListener {
+public class View implements PaintListener {
 
     private Canvas canvas;
 
     private ViewContext viewContext;
-    private List<Drawable> rankedDrawables = new LinkedList<>();
-    private List<ViewPlugin> viewPlugins = new LinkedList<>();
+    private List<Drawable> drawables = new LinkedList<>();
+    private List<Plugin> plugins = new LinkedList<>();
 
     Object mouseObject = null;
 
-    public List<ViewPlugin> getViewPlugins() {
-        return viewPlugins;
+    public List<Plugin> getViewPlugins() {
+        return plugins;
     }
 
     public void addDrawable(Drawable drawable) {
-        rankedDrawables.add(drawable);
+        drawables.add(drawable);
     }
 
-    public void addViewPlugin(ViewPlugin viewPlugin) {
-        viewPlugins.add(viewPlugin);
+    public void addViewPlugin(Plugin plugin) {
+        plugins.add(plugin);
     }
 
-    public <S extends ViewPlugin> S findPlugin(Class<S> pluginClass) {
-        for (ViewPlugin viewPlugin : viewPlugins) {
-            if (pluginClass.isAssignableFrom(viewPlugin.getClass())) {
-                return pluginClass.cast(viewPlugin);
+    public <S extends Plugin> S findPlugin(Class<S> pluginClass) {
+        for (Plugin plugin : plugins) {
+            if (pluginClass.isAssignableFrom(plugin.getClass())) {
+                return pluginClass.cast(plugin);
             }
         }
         return null;
@@ -53,34 +53,34 @@ public class ViewController implements PaintListener {
     public void setViewContext(ViewContext viewContext) {
         this.viewContext = viewContext;
         this.viewContext.setCanvas(canvas);
-        for (Drawable drawable : rankedDrawables) {
+        for (Drawable drawable : drawables) {
             drawable.setViewContext(viewContext);
         }
         contextUpdated();
     }
 
     public void contextUpdated() {
-        for (ViewPlugin viewPlugin : viewPlugins) {
-            viewPlugin.contextUpdated();
+        for (Plugin plugin : plugins) {
+            plugin.contextUpdated();
         }
-        for (Drawable drawable : rankedDrawables) {
+        for (Drawable drawable : drawables) {
             drawable.contextUpdated();
         }
         canvas.redraw();
     }
 
     public void init() {
-        rankedDrawables.sort(new Comparator<Drawable>() {
+        drawables.sort(new Comparator<Drawable>() {
             @Override
             public int compare(Drawable o1, Drawable o2) {
                 return Integer.compare(o1.getRank(), o2.getRank());
             }
         });
-        for (ViewPlugin viewPlugin : viewPlugins) {
-            viewPlugin.setViewController(this);
+        for (Plugin plugin : plugins) {
+            plugin.setView(this);
         }
-        for (Drawable drawable : rankedDrawables) {
-            drawable.setViewController(this);
+        for (Drawable drawable : drawables) {
+            drawable.setView(this);
         }
     }
 
@@ -95,10 +95,10 @@ public class ViewController implements PaintListener {
     }
 
     public void modelUpdated() {
-        for (ViewPlugin viewPlugin : viewPlugins) {
-            viewPlugin.modelUpdated();
+        for (Plugin plugin : plugins) {
+            plugin.modelUpdated();
         }
-        for (Drawable drawable : rankedDrawables) {
+        for (Drawable drawable : drawables) {
             drawable.modelUpdated();
         }
         canvas.redraw();
@@ -107,7 +107,7 @@ public class ViewController implements PaintListener {
     @Override
     public void paintControl(PaintEvent e) {
         viewContext.setGC(e.gc);
-        for (Drawable h : rankedDrawables) {
+        for (Drawable h : drawables) {
             h.draw();
         }
     }
