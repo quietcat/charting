@@ -2,7 +2,7 @@ package com.denispetrov.graphics.plugin;
 
 import com.denispetrov.graphics.View;
 
-public abstract class PluginBase implements Plugin {
+public abstract class ViewPluginBase implements ViewPlugin {
 
     protected View view;
 

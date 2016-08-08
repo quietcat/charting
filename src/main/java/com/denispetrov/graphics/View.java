@@ -9,7 +9,7 @@ import org.eclipse.swt.events.PaintListener;
 import org.eclipse.swt.widgets.Canvas;
 
 import com.denispetrov.graphics.drawable.Drawable;
-import com.denispetrov.graphics.plugin.Plugin;
+import com.denispetrov.graphics.plugin.ViewPlugin;
 
 public class View implements PaintListener {
 
@@ -17,26 +17,26 @@ public class View implements PaintListener {
 
     private ViewContext viewContext;
     private List<Drawable> drawables = new LinkedList<>();
-    private List<Plugin> plugins = new LinkedList<>();
+    private List<ViewPlugin> viewPlugins = new LinkedList<>();
 
     Object mouseObject = null;
 
-    public List<Plugin> getViewPlugins() {
-        return plugins;
+    public List<ViewPlugin> getViewPlugins() {
+        return viewPlugins;
     }
 
     public void addDrawable(Drawable drawable) {
         drawables.add(drawable);
     }
 
-    public void addViewPlugin(Plugin plugin) {
-        plugins.add(plugin);
+    public void addViewPlugin(ViewPlugin viewPlugin) {
+        viewPlugins.add(viewPlugin);
     }
 
-    public <S extends Plugin> S findPlugin(Class<S> pluginClass) {
-        for (Plugin plugin : plugins) {
-            if (pluginClass.isAssignableFrom(plugin.getClass())) {
-                return pluginClass.cast(plugin);
+    public <S extends ViewPlugin> S findPlugin(Class<S> pluginClass) {
+        for (ViewPlugin viewPlugin : viewPlugins) {
+            if (pluginClass.isAssignableFrom(viewPlugin.getClass())) {
+                return pluginClass.cast(viewPlugin);
             }
         }
         return null;
@@ -60,8 +60,8 @@ public class View implements PaintListener {
     }
 
     public void contextUpdated() {
-        for (Plugin plugin : plugins) {
-            plugin.contextUpdated();
+        for (ViewPlugin viewPlugin : viewPlugins) {
+            viewPlugin.contextUpdated();
         }
         for (Drawable drawable : drawables) {
             drawable.contextUpdated();
@@ -76,8 +76,8 @@ public class View implements PaintListener {
                 return Integer.compare(o1.getRank(), o2.getRank());
             }
         });
-        for (Plugin plugin : plugins) {
-            plugin.setView(this);
+        for (ViewPlugin viewPlugin : viewPlugins) {
+            viewPlugin.setView(this);
         }
         for (Drawable drawable : drawables) {
             drawable.setView(this);
@@ -95,8 +95,8 @@ public class View implements PaintListener {
     }
 
     public void modelUpdated() {
-        for (Plugin plugin : plugins) {
-            plugin.modelUpdated();
+        for (ViewPlugin viewPlugin : viewPlugins) {
+            viewPlugin.modelUpdated();
         }
         for (Drawable drawable : drawables) {
             drawable.modelUpdated();

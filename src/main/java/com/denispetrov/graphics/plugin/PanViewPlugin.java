@@ -9,7 +9,7 @@ import com.denispetrov.graphics.ViewContext;
 import com.denispetrov.graphics.View;
 import com.denispetrov.graphics.model.FPoint;
 
-public class PanViewPlugin extends PluginBase implements MouseListener, MouseMoveListener {
+public class PanViewPlugin extends ViewPluginBase implements MouseListener, MouseMoveListener {
 
     private enum MouseFn {
         NONE, MAYBE_PAN, PAN

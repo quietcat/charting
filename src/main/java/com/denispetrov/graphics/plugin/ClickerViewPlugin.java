@@ -11,7 +11,7 @@ import org.eclipse.swt.graphics.Point;
 import com.denispetrov.graphics.ViewContext;
 import com.denispetrov.graphics.View;
 
-public class ClickerViewPlugin extends PluginBase implements MouseListener {
+public class ClickerViewPlugin extends ViewPluginBase implements MouseListener {
 
     enum MouseFn {
         NONE, BUTTON_DOWN

@@ -14,9 +14,9 @@ import com.denispetrov.graphics.plugin.DraggableObject;
 import com.denispetrov.graphics.plugin.Trackable;
 import com.denispetrov.graphics.plugin.TrackableObject;
 import com.denispetrov.graphics.plugin.TrackerViewPlugin;
-import com.denispetrov.graphics.plugin.PluginBase;
+import com.denispetrov.graphics.plugin.ViewPluginBase;
 
-public class DraggerViewPlugin extends PluginBase implements MouseListener, MouseMoveListener {
+public class DraggerViewPlugin extends ViewPluginBase implements MouseListener, MouseMoveListener {
 
     private enum MouseFn {
         NONE, MAYBE_DRAGGING, DRAGGING

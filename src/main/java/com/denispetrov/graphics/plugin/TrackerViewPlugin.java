@@ -10,7 +10,7 @@ import org.eclipse.swt.graphics.Cursor;
 import com.denispetrov.graphics.ViewContext;
 import com.denispetrov.graphics.View;
 
-public class TrackerViewPlugin extends PluginBase implements MouseMoveListener {
+public class TrackerViewPlugin extends ViewPluginBase implements MouseMoveListener {
 
     enum MouseFn {
         NONE, TRACK

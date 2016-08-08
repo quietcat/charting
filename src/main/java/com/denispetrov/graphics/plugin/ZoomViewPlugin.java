@@ -10,7 +10,7 @@ import org.eclipse.swt.graphics.Cursor;
 import com.denispetrov.graphics.ViewContext;
 import com.denispetrov.graphics.View;
 
-public class ZoomViewPlugin extends PluginBase implements MouseMoveListener, MouseListener, MouseWheelListener {
+public class ZoomViewPlugin extends ViewPluginBase implements MouseMoveListener, MouseListener, MouseWheelListener {
 
     private static enum MouseFn {
         NONE, X_SCALING, Y_SCALING, ZOOMING

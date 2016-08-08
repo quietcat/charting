@@ -2,7 +2,7 @@ package com.denispetrov.graphics.plugin;
 
 import com.denispetrov.graphics.View;
 
-public interface Plugin {
+public interface ViewPlugin {
 
     public void setView(View view);
 
