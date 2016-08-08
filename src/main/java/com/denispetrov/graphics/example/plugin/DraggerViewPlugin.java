@@ -3,14 +3,15 @@ package com.denispetrov.graphics.example.plugin;
 import java.util.Map;
 import java.util.Set;
 
+import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.events.MouseListener;
 import org.eclipse.swt.events.MouseMoveListener;
+import org.eclipse.swt.graphics.*;
 
-import com.denispetrov.graphics.ViewContext;
 import com.denispetrov.graphics.View;
+import com.denispetrov.graphics.ViewContext;
 import com.denispetrov.graphics.model.FPoint;
-import com.denispetrov.graphics.plugin.DraggableObject;
 import com.denispetrov.graphics.plugin.Trackable;
 import com.denispetrov.graphics.plugin.TrackableObject;
 import com.denispetrov.graphics.plugin.TrackerViewPlugin;
@@ -29,12 +30,25 @@ public class DraggerViewPlugin extends ViewPluginBase implements MouseListener, 
 
     private TrackerViewPlugin trackerViewPlugin;
 
+    private Cursor cursorHidden;
+    private Cursor saveCursor;
+
     @Override
     public void setView(View view) {
         super.setView(view);
         view.getCanvas().addMouseListener(this);
         view.getCanvas().addMouseMoveListener(this);
         trackerViewPlugin = view.findPlugin(TrackerViewPlugin.class);
+        
+        // create a cursor with a transparent image
+        Color colorWhite = view.getCanvas().getDisplay().getSystemColor(SWT.COLOR_WHITE);
+        Color colorBlack = view.getCanvas().getDisplay().getSystemColor(SWT.COLOR_BLACK);
+        PaletteData palette = new PaletteData(new RGB[] { colorWhite.getRGB(),
+                colorBlack.getRGB() });
+        ImageData sourceData = new ImageData(16, 16, 1, palette);
+        sourceData.transparentPixel = 0;
+        cursorHidden = new Cursor(view.getCanvas().getDisplay(), sourceData, 0, 0);
+
     }
 
     @Override
@@ -46,6 +60,8 @@ public class DraggerViewPlugin extends ViewPluginBase implements MouseListener, 
             if (Math.abs(e.x - mouseOrigin.x) >= viewContext.getDragThreshold()
                     || Math.abs(e.y - mouseOrigin.y) >= viewContext.getDragThreshold()) {
                 mouseFn = MouseFn.DRAGGING;
+                saveCursor = viewContext.getCanvas().getCursor();
+                viewContext.getCanvas().setCursor(cursorHidden);
             }
             break;
         case DRAGGING:
@@ -92,6 +108,7 @@ public class DraggerViewPlugin extends ViewPluginBase implements MouseListener, 
     @Override
     public void mouseUp(MouseEvent e) {
         if (e.button == 1) {
+            view.getCanvas().setCursor(saveCursor);
             mouseFn = MouseFn.NONE;
         }
     }

@@ -8,8 +8,8 @@ import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.events.MouseListener;
 import org.eclipse.swt.graphics.Point;
 
-import com.denispetrov.graphics.ViewContext;
 import com.denispetrov.graphics.View;
+import com.denispetrov.graphics.ViewContext;
 
 public class ClickerViewPlugin extends ViewPluginBase implements MouseListener {
 
@@ -20,7 +20,7 @@ public class ClickerViewPlugin extends ViewPluginBase implements MouseListener {
     private MouseFn mouseFn;
     private int button = 0;
 
-    private Map<Trackable,Set<TrackableObject>> objectsOnMouseDown = new HashMap<>();
+    private Map<Clickable,Set<TrackableObject>> clickables = new HashMap<>();
     private Point mouseCoordinatesOnMouseDown;
 
     private TrackerViewPlugin trackerViewPlugin;
@@ -39,8 +39,14 @@ public class ClickerViewPlugin extends ViewPluginBase implements MouseListener {
     @Override
     public void mouseDown(MouseEvent e) {
         System.out.println("mouseDown, button =" + e.button);
-        if (trackerViewPlugin.isTracking(e.x, e.y)) {
-            objectsOnMouseDown = trackerViewPlugin.getObjectsUnderMouse(e.x, e.y);
+        if (trackerViewPlugin.isTracking(e.x, e.y) && mouseFn == MouseFn.NONE) {
+            clickables.clear();
+            Map<Trackable,Set<TrackableObject>> objectsOnMouseDown = trackerViewPlugin.getObjectsUnderMouse(e.x, e.y);
+            for (Trackable t : objectsOnMouseDown.keySet()) {
+                if (Clickable.class.isAssignableFrom(t.getClass())) {
+                    clickables.put((Clickable)t, objectsOnMouseDown.get(t));
+                }
+            }
             mouseCoordinatesOnMouseDown = new Point(e.x, e.y);
             mouseFn = MouseFn.BUTTON_DOWN;
             button = e.button;
@@ -54,8 +60,8 @@ public class ClickerViewPlugin extends ViewPluginBase implements MouseListener {
             ViewContext viewContext = view.getViewContext();
             if (Math.abs(e.x - mouseCoordinatesOnMouseDown.x) < viewContext.getDragThreshold()
                     && Math.abs(e.y - mouseCoordinatesOnMouseDown.y) < viewContext.getDragThreshold()) {
-                for (Trackable t : objectsOnMouseDown.keySet()) {
-                    t.objectClicked(objectsOnMouseDown.get(t), e.button);
+                for (Clickable t : clickables.keySet()) {
+                    t.objectClicked(clickables.get(t), e.button);
                 }
             }
         }

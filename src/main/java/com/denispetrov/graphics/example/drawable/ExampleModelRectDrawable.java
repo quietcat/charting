@@ -8,20 +8,14 @@ import org.eclipse.swt.graphics.Cursor;
 import com.denispetrov.graphics.View;
 import com.denispetrov.graphics.drawable.DrawParameters;
 import com.denispetrov.graphics.drawable.DrawableBase;
-import com.denispetrov.graphics.example.model.DraggableRectangle;
 import com.denispetrov.graphics.example.model.ExampleModel;
-import com.denispetrov.graphics.model.FPoint;
 import com.denispetrov.graphics.model.FRectangle;
 import com.denispetrov.graphics.model.Reference;
 import com.denispetrov.graphics.model.XAnchor;
 import com.denispetrov.graphics.model.YAnchor;
-import com.denispetrov.graphics.plugin.SimpleDraggableObject;
-import com.denispetrov.graphics.plugin.SimpleTrackableObject;
-import com.denispetrov.graphics.plugin.Trackable;
-import com.denispetrov.graphics.plugin.TrackableObject;
-import com.denispetrov.graphics.plugin.TrackerViewPlugin;
+import com.denispetrov.graphics.plugin.*;
 
-public class ExampleModelRectDrawable extends DrawableBase implements Trackable {
+public class ExampleModelRectDrawable extends DrawableBase implements Trackable, Clickable {
 
     private TrackerViewPlugin trackerViewPlugin;
     private DrawParameters dp = new DrawParameters();
@@ -48,9 +42,6 @@ public class ExampleModelRectDrawable extends DrawableBase implements Trackable 
             dp.yAnchor = YAnchor.TOP;
             viewContext.drawText("YAnchor TOP", rect.x, rect.y, dp);
         }
-        for (FRectangle rect : model.getDraggableRectangles()) {
-            viewContext.drawRectangle(rect.x, rect.y, rect.w, rect.h);
-        }
     }
 
     @Override
@@ -65,17 +56,6 @@ public class ExampleModelRectDrawable extends DrawableBase implements Trackable 
             trackingObject.setYPadding(1);
             trackingObject.setXReference(Reference.CHART);
             trackingObject.setYReference(Reference.CHART);
-            trackerViewPlugin.addTrackingObject(this,trackingObject);
-        }
-        for (DraggableRectangle rect : model.getDraggableRectangles()) {
-            SimpleDraggableObject trackingObject = new SimpleDraggableObject();
-            trackingObject.setTarget(rect);
-            trackingObject.setFRect(new FRectangle(rect));
-            trackingObject.setXPadding(1);
-            trackingObject.setYPadding(1);
-            trackingObject.setXReference(Reference.CHART);
-            trackingObject.setYReference(Reference.CHART);
-            trackingObject.setOrigin(new FPoint(trackingObject.getFRect().x,trackingObject.getFRect().y));
             trackerViewPlugin.addTrackingObject(this,trackingObject);
         }
     }

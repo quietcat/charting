@@ -1,6 +1,7 @@
 package com.denispetrov.graphics.plugin;
 
 import com.denispetrov.graphics.example.model.DraggableRectangle;
+import com.denispetrov.graphics.example.plugin.DraggableObject;
 import com.denispetrov.graphics.model.FPoint;
 
 public class SimpleDraggableObject extends SimpleTrackableObject implements DraggableObject {

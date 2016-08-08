@@ -7,10 +7,7 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 
 import com.denispetrov.graphics.drawable.ViewportBackgroundDrawable;
-import com.denispetrov.graphics.example.drawable.ExampleModelRectDrawable;
-import com.denispetrov.graphics.example.drawable.ViewportXAxisDrawable;
-import com.denispetrov.graphics.example.drawable.ViewportYAxisDrawable;
-import com.denispetrov.graphics.example.drawable.ViewportZeroMarkDrawable;
+import com.denispetrov.graphics.example.drawable.*;
 import com.denispetrov.graphics.example.model.DraggableRectangle;
 import com.denispetrov.graphics.example.model.ExampleModel;
 import com.denispetrov.graphics.example.plugin.DraggerViewPlugin;
@@ -65,6 +62,7 @@ public class Main {
         view.addDrawable(new ViewportZeroMarkDrawable());
 
         view.addDrawable(new ExampleModelRectDrawable());
+        view.addDrawable(new ExampleModelDraggableRectDrawable());
 
         view.init();
 

@@ -34,7 +34,7 @@ public class TrackerViewPlugin extends ViewPluginBase implements MouseMoveListen
         cursorDefault = view.getCanvas().getCursor();
     }
 
-    public Collection<TrackableObject> getTrackables(Trackable trackable) {
+    public Collection<TrackableObject> getTrackables(Clickable trackable) {
         return objectsBeingTracked.get(trackable);
     }
 

@@ -1,4 +1,4 @@
-package com.denispetrov.graphics.plugin;
+package com.denispetrov.graphics.example.plugin;
 
 import com.denispetrov.graphics.model.FPoint;
 
