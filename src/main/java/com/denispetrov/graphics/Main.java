@@ -79,6 +79,8 @@ public class Main {
 
         ViewContext<ExampleModel> viewContext = new ViewContext<>();
         viewContext.setMargin(20);
+        viewContext.setAllowNegativeBaseX(false);
+        viewContext.setAllowNegativeBaseY(false);
         viewController.setViewContext(viewContext);
 
         ExampleModel model = new ExampleModel();
