@@ -1,14 +1,14 @@
 package com.denispetrov.graphics.plugin;
 
-import com.denispetrov.graphics.ViewController;
+import com.denispetrov.graphics.View;
 
 public abstract class ViewPluginBase implements ViewPlugin {
 
-    protected ViewController<?> controller;
+    protected View view;
 
     @Override
-    public void setViewController(ViewController<?> controller) {
-        this.controller = controller;
+    public void setView(View view) {
+        this.view = view;
     }
 
     @Override
@@ -18,13 +18,4 @@ public abstract class ViewPluginBase implements ViewPlugin {
     @Override
     public void contextUpdated() {
     }
-
-    public ViewController<?> getController() {
-        return controller;
-    }
-
-    public void setController(ViewController<?> controller) {
-        this.controller = controller;
-    }
-
 }

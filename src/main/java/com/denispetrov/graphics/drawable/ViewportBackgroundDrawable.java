@@ -2,7 +2,7 @@ package com.denispetrov.graphics.drawable;
 
 import org.eclipse.swt.graphics.GC;
 
-public class ViewportBackgroundDrawable extends ViewportDrawableBase implements ViewportDrawable {
+public class ViewportBackgroundDrawable extends DrawableBase {
 
     public static final int BACKGROUND_RANK = 0;
 
@@ -17,18 +17,6 @@ public class ViewportBackgroundDrawable extends ViewportDrawableBase implements 
         gc.setBackground(viewContext.getBackgroundColor());
         gc.setForeground(viewContext.getForegroundColor());
         gc.fillRectangle(0, 0, viewContext.getCanvasWidth(), viewContext.getCanvasHeight());
-    }
-
-    @Override
-    public void modelUpdated() {
-        // TODO Auto-generated method stub
-
-    }
-
-    @Override
-    public void contextUpdated() {
-        // TODO Auto-generated method stub
-
     }
 
 }

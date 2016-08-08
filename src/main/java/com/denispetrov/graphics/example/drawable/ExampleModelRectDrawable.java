@@ -5,9 +5,9 @@ import java.util.Set;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Cursor;
 
-import com.denispetrov.graphics.ViewController;
+import com.denispetrov.graphics.View;
 import com.denispetrov.graphics.drawable.DrawParameters;
-import com.denispetrov.graphics.drawable.ModelDrawableBase;
+import com.denispetrov.graphics.drawable.DrawableBase;
 import com.denispetrov.graphics.example.model.DraggableRectangle;
 import com.denispetrov.graphics.example.model.ExampleModel;
 import com.denispetrov.graphics.model.FPoint;
@@ -21,41 +21,16 @@ import com.denispetrov.graphics.plugin.Trackable;
 import com.denispetrov.graphics.plugin.TrackableObject;
 import com.denispetrov.graphics.plugin.TrackerViewPlugin;
 
-public class ExampleModelRectDrawable extends ModelDrawableBase<ExampleModel> implements Trackable {
+public class ExampleModelRectDrawable extends DrawableBase implements Trackable {
 
     private TrackerViewPlugin trackerViewPlugin;
     private DrawParameters dp = new DrawParameters();
     private Cursor cursor;
 
     @Override
-    public void modelUpdated() {
-        trackerViewPlugin.clearTrackingObjects(this);
-        for (FRectangle rect : this.viewContext.getModel().getRectangles()) {
-            SimpleTrackableObject trackingObject = new SimpleTrackableObject();
-            trackingObject.setTarget(rect);
-            trackingObject.setFRect(new FRectangle(rect));
-            trackingObject.setXPadding(1);
-            trackingObject.setYPadding(1);
-            trackingObject.setXReference(Reference.CHART);
-            trackingObject.setYReference(Reference.CHART);
-            trackerViewPlugin.addTrackingObject(this,trackingObject);
-        }
-        for (DraggableRectangle rect : this.viewContext.getModel().getDraggableRectangles()) {
-            SimpleDraggableObject trackingObject = new SimpleDraggableObject();
-            trackingObject.setTarget(rect);
-            trackingObject.setFRect(new FRectangle(rect));
-            trackingObject.setXPadding(1);
-            trackingObject.setYPadding(1);
-            trackingObject.setXReference(Reference.CHART);
-            trackingObject.setYReference(Reference.CHART);
-            trackingObject.setOrigin(new FPoint(trackingObject.getFRect().x,trackingObject.getFRect().y));
-            trackerViewPlugin.addTrackingObject(this,trackingObject);
-        }
-    }
-
-    @Override
     public void draw() {
-        for (FRectangle rect : this.viewContext.getModel().getRectangles()) {
+        ExampleModel model = (ExampleModel) this.viewContext.getModel();
+        for (FRectangle rect : model.getRectangles()) {
             viewContext.drawRectangle(rect.x, rect.y, rect.w, rect.h);
             viewContext.drawLine(rect.x, rect.y + rect.h / 2, rect.x + rect.w, rect.y + rect.h / 2);
             dp.xAnchor = XAnchor.LEFT;
@@ -73,13 +48,36 @@ public class ExampleModelRectDrawable extends ModelDrawableBase<ExampleModel> im
             dp.yAnchor = YAnchor.TOP;
             viewContext.drawText("YAnchor TOP", rect.x, rect.y, dp);
         }
-        for (FRectangle rect : this.viewContext.getModel().getDraggableRectangles()) {
+        for (FRectangle rect : model.getDraggableRectangles()) {
             viewContext.drawRectangle(rect.x, rect.y, rect.w, rect.h);
         }
     }
 
     @Override
-    public void contextUpdated() {
+    public void modelUpdated() {
+        ExampleModel model = (ExampleModel) this.viewContext.getModel();
+        trackerViewPlugin.clearTrackingObjects(this);
+        for (FRectangle rect : model.getRectangles()) {
+            SimpleTrackableObject trackingObject = new SimpleTrackableObject();
+            trackingObject.setTarget(rect);
+            trackingObject.setFRect(new FRectangle(rect));
+            trackingObject.setXPadding(1);
+            trackingObject.setYPadding(1);
+            trackingObject.setXReference(Reference.CHART);
+            trackingObject.setYReference(Reference.CHART);
+            trackerViewPlugin.addTrackingObject(this,trackingObject);
+        }
+        for (DraggableRectangle rect : model.getDraggableRectangles()) {
+            SimpleDraggableObject trackingObject = new SimpleDraggableObject();
+            trackingObject.setTarget(rect);
+            trackingObject.setFRect(new FRectangle(rect));
+            trackingObject.setXPadding(1);
+            trackingObject.setYPadding(1);
+            trackingObject.setXReference(Reference.CHART);
+            trackingObject.setYReference(Reference.CHART);
+            trackingObject.setOrigin(new FPoint(trackingObject.getFRect().x,trackingObject.getFRect().y));
+            trackerViewPlugin.addTrackingObject(this,trackingObject);
+        }
     }
 
     @Override
@@ -90,10 +88,10 @@ public class ExampleModelRectDrawable extends ModelDrawableBase<ExampleModel> im
     }
 
     @Override
-    public void setViewController(ViewController<?> viewController) {
-        super.setViewController(viewController);
-        trackerViewPlugin = viewController.findPlugin(TrackerViewPlugin.class);
-        this.cursor = viewController.getCanvas().getDisplay().getSystemCursor(SWT.CURSOR_HAND);
+    public void setView(View view) {
+        super.setView(view);
+        trackerViewPlugin = view.findPlugin(TrackerViewPlugin.class);
+        this.cursor = view.getCanvas().getDisplay().getSystemCursor(SWT.CURSOR_HAND);
     }
 
     @Override

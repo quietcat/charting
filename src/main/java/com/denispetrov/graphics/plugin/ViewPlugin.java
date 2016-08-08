@@ -1,10 +1,10 @@
 package com.denispetrov.graphics.plugin;
 
-import com.denispetrov.graphics.ViewController;
+import com.denispetrov.graphics.View;
 
 public interface ViewPlugin {
 
-    public void setViewController(ViewController<?> controller);
+    public void setView(View view);
 
     void modelUpdated();
 

@@ -8,7 +8,7 @@ import org.eclipse.swt.events.MouseListener;
 import org.eclipse.swt.events.MouseMoveListener;
 
 import com.denispetrov.graphics.ViewContext;
-import com.denispetrov.graphics.ViewController;
+import com.denispetrov.graphics.View;
 import com.denispetrov.graphics.model.FPoint;
 import com.denispetrov.graphics.plugin.DraggableObject;
 import com.denispetrov.graphics.plugin.Trackable;
@@ -30,19 +30,19 @@ public class DraggerViewPlugin extends ViewPluginBase implements MouseListener, 
     private TrackerViewPlugin trackerViewPlugin;
 
     @Override
-    public void setViewController(ViewController<?> controller) {
-        super.setViewController(controller);
-        controller.getCanvas().addMouseListener(this);
-        controller.getCanvas().addMouseMoveListener(this);
-        trackerViewPlugin = controller.findPlugin(TrackerViewPlugin.class);
+    public void setView(View view) {
+        super.setView(view);
+        view.getCanvas().addMouseListener(this);
+        view.getCanvas().addMouseMoveListener(this);
+        trackerViewPlugin = view.findPlugin(TrackerViewPlugin.class);
     }
 
     @Override
     public void mouseMove(MouseEvent e) {
-        ViewContext<?> viewContext;
+        ViewContext viewContext;
         switch (mouseFn) {
         case MAYBE_DRAGGING:
-            viewContext = controller.getViewContext();
+            viewContext = view.getViewContext();
             if (Math.abs(e.x - mouseOrigin.x) >= viewContext.getDragThreshold()
                     || Math.abs(e.y - mouseOrigin.y) >= viewContext.getDragThreshold()) {
                 mouseFn = MouseFn.DRAGGING;
@@ -50,12 +50,12 @@ public class DraggerViewPlugin extends ViewPluginBase implements MouseListener, 
             break;
         case DRAGGING:
             if (objectBeingDragged != null) {
-                viewContext = controller.getViewContext();
+                viewContext = view.getViewContext();
                 FPoint origin = objectBeingDragged.getOrigin();
                 origin.x = objectOrigin.x + (viewContext.x(e.x) - mouseOrigin.x);
                 origin.y = objectOrigin.y + (viewContext.y(e.y) - mouseOrigin.y);
                 objectBeingDragged.setOrigin(origin);
-                controller.modelUpdated();
+                view.modelUpdated();
             }
             break;
         case NONE:
@@ -75,7 +75,7 @@ public class DraggerViewPlugin extends ViewPluginBase implements MouseListener, 
             for (Set<TrackableObject> objects : clickedOn.values()) {
                 for (TrackableObject object : objects) {
                     if (DraggableObject.class.isAssignableFrom(object.getClass())) {
-                        ViewContext<?> viewContext = controller.getViewContext();
+                        ViewContext viewContext = view.getViewContext();
                         objectBeingDragged = (DraggableObject)object;
                         mouseOrigin.x = viewContext.x(e.x);
                         mouseOrigin.y = viewContext.y(e.y);

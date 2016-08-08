@@ -23,7 +23,7 @@ import com.denispetrov.graphics.plugin.ZoomViewPlugin;
 public class Main {
 
     protected Shell shell;
-    private ViewController<ExampleModel> viewController;
+    private View view;
 
     private void run() {
         Display display = Display.getDefault();
@@ -50,35 +50,35 @@ public class Main {
     protected void createContents()
     {
         Canvas canvas = new Canvas(shell, SWT.DOUBLE_BUFFERED|SWT.NO_BACKGROUND);
-        viewController = new ViewController<>();
-        viewController.setCanvas(canvas);
+        view = new View();
+        view.setCanvas(canvas);
 
-        viewController.addViewPlugin(new TrackerViewPlugin());
-        viewController.addViewPlugin(new PanViewPlugin());
-        viewController.addViewPlugin(new ZoomViewPlugin());
-        viewController.addViewPlugin(new ClickerViewPlugin());
-        viewController.addViewPlugin(new DraggerViewPlugin());
+        view.addViewPlugin(new TrackerViewPlugin());
+        view.addViewPlugin(new PanViewPlugin());
+        view.addViewPlugin(new ZoomViewPlugin());
+        view.addViewPlugin(new ClickerViewPlugin());
+        view.addViewPlugin(new DraggerViewPlugin());
 
-        viewController.addViewportDrawable(new ViewportBackgroundDrawable());
-        viewController.addViewportDrawable(new ViewportXAxisDrawable());
-        viewController.addViewportDrawable(new ViewportYAxisDrawable());
-        viewController.addViewportDrawable(new ViewportZeroMarkDrawable());
+        view.addDrawable(new ViewportBackgroundDrawable());
+        view.addDrawable(new ViewportXAxisDrawable());
+        view.addDrawable(new ViewportYAxisDrawable());
+        view.addDrawable(new ViewportZeroMarkDrawable());
 
-        viewController.addModelDrawable(new ExampleModelRectDrawable());
+        view.addDrawable(new ExampleModelRectDrawable());
 
-        viewController.init();
+        view.init();
 
-        ViewContext<ExampleModel> viewContext = new ViewContext<>();
+        ViewContext viewContext = new ViewContext();
         viewContext.setMargin(20);
         viewContext.setAllowNegativeBaseX(false);
         viewContext.setAllowNegativeBaseY(false);
-        viewController.setViewContext(viewContext);
+        view.setViewContext(viewContext);
 
         ExampleModel model = new ExampleModel();
         model.getRectangles().add(new FRectangle(100,100,100,100));
         model.getRectangles().add(new FRectangle(300,300,100,100));
         model.getDraggableRectangles().add(new DraggableRectangle(300, 100, 100, 100));
         model.getDraggableRectangles().add(new DraggableRectangle(100, 300, 100, 100));
-        viewController.setModel(model);
+        view.setModel(model);
     }
 }
