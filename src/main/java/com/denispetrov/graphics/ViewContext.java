@@ -10,7 +10,7 @@ import com.denispetrov.graphics.model.FRectangle;
 import com.denispetrov.graphics.model.XAnchor;
 import com.denispetrov.graphics.model.YAnchor;
 
-public class ViewContext<T> {
+public class ViewContext {
     public static final int DEFAULT_MARGIN = 10;
     public static final double DEFAULT_SCALE = 1.0;
     private static final int DEFAULT_DRAG_THRESHOLD = 4;
@@ -26,7 +26,7 @@ public class ViewContext<T> {
     private XAnchor xAnchor = XAnchor.LEFT;
     private YAnchor yAnchor = YAnchor.MIDDLE;
     private int dragThreshold = DEFAULT_DRAG_THRESHOLD;
-    private T model;
+    private Object model;
     private Color backgroundColor;
     private Color foregroundColor;
     private Rectangle mainAreaRectangle = new Rectangle(0,0,0,0);
@@ -293,11 +293,11 @@ public class ViewContext<T> {
         gc.drawText(text, ix, iy, dp.isTransparent);
     }
 
-    public T getModel() {
+    public Object getModel() {
         return this.model;
     }
 
-    public void setModel(T model) {
+    public void setModel(Object model) {
         this.model = model;
     }
 

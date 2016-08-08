@@ -30,7 +30,7 @@ public class DraggerViewPlugin extends ViewPluginBase implements MouseListener, 
     private TrackerViewPlugin trackerViewPlugin;
 
     @Override
-    public void setViewController(ViewController<?> controller) {
+    public void setViewController(ViewController controller) {
         super.setViewController(controller);
         controller.getCanvas().addMouseListener(this);
         controller.getCanvas().addMouseMoveListener(this);
@@ -39,7 +39,7 @@ public class DraggerViewPlugin extends ViewPluginBase implements MouseListener, 
 
     @Override
     public void mouseMove(MouseEvent e) {
-        ViewContext<?> viewContext;
+        ViewContext viewContext;
         switch (mouseFn) {
         case MAYBE_DRAGGING:
             viewContext = controller.getViewContext();
@@ -74,7 +74,7 @@ public class DraggerViewPlugin extends ViewPluginBase implements MouseListener, 
             for (Set<TrackableObject> objects : clickedOn.values()) {
                 for (TrackableObject object : objects) {
                     if (DraggableObject.class.isAssignableFrom(object.getClass())) {
-                        ViewContext<?> viewContext = controller.getViewContext();
+                        ViewContext viewContext = controller.getViewContext();
                         objectBeingDragged = (DraggableObject)object;
                         mouseOrigin.x = viewContext.x(e.x);
                         mouseOrigin.y = viewContext.y(e.y);

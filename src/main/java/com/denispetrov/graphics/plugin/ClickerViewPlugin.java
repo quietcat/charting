@@ -26,7 +26,7 @@ public class ClickerViewPlugin extends ViewPluginBase implements MouseListener {
     private TrackerViewPlugin trackerViewPlugin;
 
     @Override
-    public void setViewController(ViewController<?> controller) {
+    public void setViewController(ViewController controller) {
         super.setViewController(controller);
         controller.getCanvas().addMouseListener(this);
         trackerViewPlugin = controller.findPlugin(TrackerViewPlugin.class);
@@ -51,7 +51,7 @@ public class ClickerViewPlugin extends ViewPluginBase implements MouseListener {
     public void mouseUp(MouseEvent e) {
         System.out.println("mouseUp, button =" + e.button);
         if (e.button == button && mouseFn == MouseFn.BUTTON_DOWN) {
-            ViewContext<?> viewContext = controller.getViewContext();
+            ViewContext viewContext = controller.getViewContext();
             if (Math.abs(e.x - mouseCoordinatesOnMouseDown.x) < viewContext.getDragThreshold()
                     && Math.abs(e.y - mouseCoordinatesOnMouseDown.y) < viewContext.getDragThreshold()) {
                 for (Trackable t : objectsOnMouseDown.keySet()) {

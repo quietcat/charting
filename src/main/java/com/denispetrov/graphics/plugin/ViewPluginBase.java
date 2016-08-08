@@ -4,10 +4,10 @@ import com.denispetrov.graphics.ViewController;
 
 public abstract class ViewPluginBase implements ViewPlugin {
 
-    protected ViewController<?> controller;
+    protected ViewController controller;
 
     @Override
-    public void setViewController(ViewController<?> controller) {
+    public void setViewController(ViewController controller) {
         this.controller = controller;
     }
 
@@ -19,11 +19,11 @@ public abstract class ViewPluginBase implements ViewPlugin {
     public void contextUpdated() {
     }
 
-    public ViewController<?> getController() {
+    public ViewController getController() {
         return controller;
     }
 
-    public void setController(ViewController<?> controller) {
+    public void setController(ViewController controller) {
         this.controller = controller;
     }
 

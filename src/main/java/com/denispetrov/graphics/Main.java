@@ -22,7 +22,7 @@ import com.denispetrov.graphics.plugin.ZoomViewPlugin;
 public class Main {
 
     protected Shell shell;
-    private ViewController<ExampleModel> viewController;
+    private ViewController viewController;
 
     private void run() {
         Display display = Display.getDefault();
@@ -49,7 +49,7 @@ public class Main {
     protected void createContents()
     {
         Canvas canvas = new Canvas(shell, SWT.DOUBLE_BUFFERED|SWT.NO_BACKGROUND);
-        viewController = new ViewController<>();
+        viewController = new ViewController();
         viewController.setCanvas(canvas);
 
         viewController.addViewPlugin(new TrackerViewPlugin());
@@ -58,16 +58,16 @@ public class Main {
         viewController.addViewPlugin(new ClickerViewPlugin());
         viewController.addViewPlugin(new DraggerViewPlugin());
 
-        viewController.addViewportDrawable(new ViewportBackgroundDrawable());
-        viewController.addViewportDrawable(new ViewportXAxisDrawable());
-        viewController.addViewportDrawable(new ViewportYAxisDrawable());
-        viewController.addViewportDrawable(new ViewportZeroMarkDrawable());
+        viewController.addDrawable(new ViewportBackgroundDrawable());
+        viewController.addDrawable(new ViewportXAxisDrawable());
+        viewController.addDrawable(new ViewportYAxisDrawable());
+        viewController.addDrawable(new ViewportZeroMarkDrawable());
 
-        viewController.addModelDrawable(new ExampleModelRectDrawable());
+        viewController.addDrawable(new ExampleModelRectDrawable());
 
         viewController.init();
 
-        ViewContext<ExampleModel> viewContext = new ViewContext<>();
+        ViewContext viewContext = new ViewContext();
         viewContext.setMargin(20);
         viewContext.setAllowNegativeBaseX(false);
         viewContext.setAllowNegativeBaseY(false);

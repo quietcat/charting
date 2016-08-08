@@ -7,7 +7,7 @@ import org.eclipse.swt.graphics.Cursor;
 
 import com.denispetrov.graphics.ViewController;
 import com.denispetrov.graphics.drawable.DrawParameters;
-import com.denispetrov.graphics.drawable.ModelDrawableBase;
+import com.denispetrov.graphics.drawable.DrawableBase;
 import com.denispetrov.graphics.example.model.ExampleModel;
 import com.denispetrov.graphics.model.FRectangle;
 import com.denispetrov.graphics.model.Reference;
@@ -18,7 +18,7 @@ import com.denispetrov.graphics.plugin.Trackable;
 import com.denispetrov.graphics.plugin.SimpleTrackableObject;
 import com.denispetrov.graphics.plugin.TrackableObject;
 
-public class ExampleModelRectDrawable extends ModelDrawableBase<ExampleModel> implements Trackable {
+public class ExampleModelRectDrawable extends DrawableBase implements Trackable {
 
     private TrackerViewPlugin trackerViewPlugin;
     private DrawParameters dp = new DrawParameters();
@@ -26,7 +26,8 @@ public class ExampleModelRectDrawable extends ModelDrawableBase<ExampleModel> im
 
     @Override
     public void draw() {
-        for (FRectangle rect : this.viewContext.getModel().getRectangles()) {
+        ExampleModel model = (ExampleModel) this.viewContext.getModel();
+        for (FRectangle rect : model.getRectangles()) {
             viewContext.drawRectangle(rect.x, rect.y, rect.w, rect.h);
             viewContext.drawLine(rect.x, rect.y + rect.h / 2, rect.x + rect.w, rect.y + rect.h / 2);
             dp.xAnchor = XAnchor.LEFT;
@@ -48,8 +49,9 @@ public class ExampleModelRectDrawable extends ModelDrawableBase<ExampleModel> im
 
     @Override
     public void modelUpdated() {
+        ExampleModel model = (ExampleModel) this.viewContext.getModel();
         trackerViewPlugin.clearTrackingObjects(this);
-        for (FRectangle rect : this.viewContext.getModel().getRectangles()) {
+        for (FRectangle rect : model.getRectangles()) {
             SimpleTrackableObject trackingObject = new SimpleTrackableObject();
             trackingObject.setTarget(rect);
             trackingObject.setFRect(new FRectangle(rect));
@@ -73,7 +75,7 @@ public class ExampleModelRectDrawable extends ModelDrawableBase<ExampleModel> im
     }
 
     @Override
-    public void setViewController(ViewController<?> viewController) {
+    public void setViewController(ViewController viewController) {
         super.setViewController(viewController);
         trackerViewPlugin = viewController.findPlugin(TrackerViewPlugin.class);
         this.cursor = viewController.getCanvas().getDisplay().getSystemCursor(SWT.CURSOR_HAND);

@@ -9,41 +9,24 @@ import org.eclipse.swt.events.PaintListener;
 import org.eclipse.swt.widgets.Canvas;
 
 import com.denispetrov.graphics.drawable.Drawable;
-import com.denispetrov.graphics.drawable.ModelDrawable;
-import com.denispetrov.graphics.drawable.ViewportDrawable;
 import com.denispetrov.graphics.plugin.ViewPlugin;
 
-public class ViewController<T> implements PaintListener {
+public class ViewController implements PaintListener {
 
     private Canvas canvas;
 
-    private ViewContext<T> viewContext;
-    private List<ModelDrawable<T>> modelDrawers = new LinkedList<>();
-
-    private List<ViewportDrawable> viewportDrawers = new LinkedList<>();
+    private ViewContext viewContext;
     private List<Drawable> rankedDrawables = new LinkedList<>();
     private List<ViewPlugin> viewPlugins = new LinkedList<>();
 
     Object mouseObject = null;
 
-    public List<ModelDrawable<T>> getModelDrawables() {
-        return modelDrawers;
-    }
-
-    public List<ViewportDrawable> getViewportDrawers() {
-        return viewportDrawers;
-    }
-
     public List<ViewPlugin> getViewPlugins() {
         return viewPlugins;
     }
 
-    public void addModelDrawable(ModelDrawable<T> handler) {
-        modelDrawers.add(handler);
-    }
-
-    public void addViewportDrawable(ViewportDrawable handler) {
-        viewportDrawers.add(handler);
+    public void addDrawable(Drawable drawable) {
+        rankedDrawables.add(drawable);
     }
 
     public void addViewPlugin(ViewPlugin viewPlugin) {
@@ -63,19 +46,15 @@ public class ViewController<T> implements PaintListener {
         return canvas;
     }
 
-    public ViewContext<T> getViewContext() {
+    public ViewContext getViewContext() {
         return viewContext;
     }
 
-    public void setViewContext(ViewContext<T> vc) {
-        this.viewContext = vc;
+    public void setViewContext(ViewContext viewContext) {
+        this.viewContext = viewContext;
         this.viewContext.setCanvas(canvas);
-        for (ModelDrawable<T> modelDrawer : modelDrawers) {
-            modelDrawer.setViewContext(viewContext);
-        }
-
-        for (ViewportDrawable viewportDrawer : viewportDrawers) {
-            viewportDrawer.setViewContext(viewContext);
+        for (Drawable drawable : rankedDrawables) {
+            drawable.setViewContext(viewContext);
         }
         contextUpdated();
     }
@@ -84,19 +63,13 @@ public class ViewController<T> implements PaintListener {
         for (ViewPlugin viewPlugin : viewPlugins) {
             viewPlugin.contextUpdated();
         }
-        for (ModelDrawable<T> modelDrawer : modelDrawers) {
-            modelDrawer.contextUpdated();
-        }
-
-        for (ViewportDrawable viewportDrawer : viewportDrawers) {
-            viewportDrawer.contextUpdated();
+        for (Drawable drawable : rankedDrawables) {
+            drawable.contextUpdated();
         }
         canvas.redraw();
     }
 
     public void init() {
-        rankedDrawables.addAll(modelDrawers);
-        rankedDrawables.addAll(viewportDrawers);
         rankedDrawables.sort(new Comparator<Drawable>() {
             @Override
             public int compare(Drawable o1, Drawable o2) {
@@ -116,7 +89,7 @@ public class ViewController<T> implements PaintListener {
         this.canvas.addPaintListener(this);
     }
 
-    public void setModel(T model) {
+    public void setModel(Object model) {
         this.viewContext.setModel(model);
         modelUpdated();
     }
@@ -125,8 +98,8 @@ public class ViewController<T> implements PaintListener {
         for (ViewPlugin viewPlugin : viewPlugins) {
             viewPlugin.modelUpdated();
         }
-        for (ModelDrawable<T> modelDrawer : modelDrawers) {
-            modelDrawer.modelUpdated();
+        for (Drawable drawable : rankedDrawables) {
+            drawable.modelUpdated();
         }
         canvas.redraw();
     }

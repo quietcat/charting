@@ -23,7 +23,7 @@ public class ZoomViewPlugin extends ViewPluginBase implements MouseMoveListener,
     private Cursor cursorTrackX, cursorTrackY;
 
     @Override
-    public void setViewController(ViewController<?> controller) {
+    public void setViewController(ViewController controller) {
         super.setViewController(controller);
         controller.getCanvas().addMouseListener(this);
         controller.getCanvas().addMouseWheelListener(this);
@@ -53,7 +53,7 @@ public class ZoomViewPlugin extends ViewPluginBase implements MouseMoveListener,
 
     @Override
     public void mouseMove(MouseEvent e) {
-        ViewContext<?> viewContext = controller.getViewContext();
+        ViewContext viewContext = controller.getViewContext();
         if (e.x >= viewContext.getMarginLeft() && e.x < viewContext.getCanvasWidth() - viewContext.getMarginRight() 
                 && e.y >= viewContext.getCanvasHeight() - viewContext.getMarginBottom() && e.y < viewContext.getCanvasHeight()) {
             if (mouseFn != MouseFn.X_SCALING) {
@@ -81,7 +81,7 @@ public class ZoomViewPlugin extends ViewPluginBase implements MouseMoveListener,
     @Override
     public void mouseScrolled(MouseEvent e) {
         if (mouseFn != MouseFn.NONE) {
-            ViewContext<?> viewContext = controller.getViewContext();
+            ViewContext viewContext = controller.getViewContext();
             double x = viewContext.x(e.x);
             double y = viewContext.y(e.y);
             double m = 1.1;
@@ -124,13 +124,13 @@ public class ZoomViewPlugin extends ViewPluginBase implements MouseMoveListener,
         }
     }
 
-    private void scaleX(ViewContext<?> viewContext, double m, double x) {
+    private void scaleX(ViewContext viewContext, double m, double x) {
         double newBaseX = (x * (m - 1) + viewContext.getBaseX()) / m;
         viewContext.setScaleX(viewContext.getScaleX() * m);
         viewContext.setBaseX(newBaseX);
     }
 
-    private void scaleY(ViewContext<?> viewContext, double m, double y) {
+    private void scaleY(ViewContext viewContext, double m, double y) {
         double newBaseY = (y * (m - 1) + viewContext.getBaseY()) / m;
         viewContext.setScaleY(viewContext.getScaleY() * m);
         viewContext.setBaseY(newBaseY);
