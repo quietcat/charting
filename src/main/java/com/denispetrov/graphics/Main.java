@@ -6,6 +6,7 @@ import org.eclipse.swt.widgets.Canvas;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 
+import com.denispetrov.graphics.drawable.ViewportBackgroundDrawable;
 import com.denispetrov.graphics.example.drawable.ExampleModelRectDrawable;
 import com.denispetrov.graphics.example.drawable.ViewportXAxisDrawable;
 import com.denispetrov.graphics.example.drawable.ViewportYAxisDrawable;
@@ -48,7 +49,7 @@ public class Main {
      */
     protected void createContents()
     {
-        Canvas canvas = new Canvas(shell, SWT.DOUBLE_BUFFERED);
+        Canvas canvas = new Canvas(shell, SWT.DOUBLE_BUFFERED|SWT.NO_BACKGROUND);
         viewController = new ViewController<>();
         viewController.setCanvas(canvas);
 
@@ -65,6 +66,7 @@ public class Main {
         dvp.setTrackerViewPlugin(tvp);
         viewController.addViewPlugin(dvp);
 
+        viewController.addViewportDrawable(new ViewportBackgroundDrawable());
         viewController.addViewportDrawable(new ViewportXAxisDrawable());
         viewController.addViewportDrawable(new ViewportYAxisDrawable());
         viewController.addViewportDrawable(new ViewportZeroMarkDrawable());

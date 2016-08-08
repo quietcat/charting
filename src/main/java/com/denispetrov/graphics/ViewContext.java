@@ -1,9 +1,7 @@
 package com.denispetrov.graphics;
 
-import org.eclipse.swt.graphics.GC;
-import org.eclipse.swt.graphics.Image;
-import org.eclipse.swt.graphics.Point;
-import org.eclipse.swt.graphics.Rectangle;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.graphics.*;
 import org.eclipse.swt.widgets.Canvas;
 
 import com.denispetrov.graphics.drawable.DrawParameters;
@@ -16,6 +14,8 @@ public class ViewContext<T> {
     public static final int DEFAULT_MARGIN = 10;
     public static final double DEFAULT_SCALE = 1.0;
     private static final int DEFAULT_DRAG_THRESHOLD = 4;
+    public static final int DEFAULT_BACKGROUND_COLOR = SWT.COLOR_BLACK;
+    public static final int DEFAULT_FOREGROUND_COLOR = SWT.COLOR_GRAY;
 
     private int topMargin = DEFAULT_MARGIN, leftMargin = DEFAULT_MARGIN, rightMargin = DEFAULT_MARGIN,
             bottomMargin = DEFAULT_MARGIN;
@@ -27,6 +27,9 @@ public class ViewContext<T> {
     private YAnchor yAnchor = YAnchor.MIDDLE;
     private int dragThreshold = DEFAULT_DRAG_THRESHOLD;
     private T model;
+    private Color backgroundColor;
+    private Color foregroundColor;
+    private Rectangle mainAreaRectangle = new Rectangle(0,0,0,0);
 
     public int getMarginTop() {
         return topMargin;
@@ -294,9 +297,14 @@ public class ViewContext<T> {
 
     public void setCanvas(Canvas canvas) {
         this.canvas = canvas;
+        if (backgroundColor == null) {
+            backgroundColor = canvas.getDisplay().getSystemColor(DEFAULT_BACKGROUND_COLOR);
+        }
+        if (foregroundColor == null) {
+            foregroundColor = canvas.getDisplay().getSystemColor(DEFAULT_FOREGROUND_COLOR);
+        }
     }
 
-    private Rectangle mainAreaRectangle = new Rectangle(0,0,0,0);
     public Rectangle getMainAreaRectangle() {
         Rectangle canvasBounds = canvas.getBounds();
         mainAreaRectangle.x = leftMargin;
@@ -312,6 +320,22 @@ public class ViewContext<T> {
 
     public void setDragThreshold(int dragThreshold) {
         this.dragThreshold = dragThreshold;
+    }
+
+    public Color getBackgroundColor() {
+        return backgroundColor;
+    }
+
+    public Color getForegroundColor() {
+        return foregroundColor;
+    }
+
+    public void setBackgroundColor(Color backgroundColor) {
+        this.backgroundColor = backgroundColor;
+    }
+
+    public void setForegroundColor(Color foregroundColor) {
+        this.foregroundColor = foregroundColor;
     }
 
 }

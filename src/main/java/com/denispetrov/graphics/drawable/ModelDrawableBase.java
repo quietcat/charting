@@ -6,8 +6,9 @@ import com.denispetrov.graphics.ViewContext;
 
 public abstract class ModelDrawableBase<T> implements ModelDrawable<T> {
 
+    public static final int DEFAULT_MODEL_DRAWABLE_RANK = 1000;
     protected ViewContext<T> viewContext;
-    protected int rank = 0;
+    protected int rank = DEFAULT_MODEL_DRAWABLE_RANK;
 
     @Override
     public void setViewContext(ViewContext<T> vc) {
