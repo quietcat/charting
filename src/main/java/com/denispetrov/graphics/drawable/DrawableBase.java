@@ -15,7 +15,6 @@ public abstract class DrawableBase implements Drawable {
         return rank;
     }
 
-    @Override
     public void setRank(int rank) {
         this.rank = rank;
     }

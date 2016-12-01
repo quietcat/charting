@@ -10,6 +10,12 @@ import com.denispetrov.graphics.model.FRectangle;
 import com.denispetrov.graphics.model.XAnchor;
 import com.denispetrov.graphics.model.YAnchor;
 
+/**
+ * A view context encapsulates all information needed by {@link Drawable}s and {@link Plugin}s to represent the given {@link Model}.
+ * A model is an opaque object that specific Drawables and Plugins are able to interpret.
+ * The bulk of ViewContext class is concerned with translation between display and model coordinates.
+ * The rest is convenience primitive drawing methods that use model coordinates.
+ */
 public class ViewContext {
     public static final int DEFAULT_MARGIN = 10;
     public static final double DEFAULT_SCALE = 1.0;

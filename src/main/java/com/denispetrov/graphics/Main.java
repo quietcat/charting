@@ -20,7 +20,6 @@ import com.denispetrov.graphics.plugin.ZoomViewPlugin;
 public class Main {
 
     protected Shell shell;
-    private View view;
 
     private void run() {
         Display display = Display.getDefault();
@@ -47,7 +46,7 @@ public class Main {
     protected void createContents()
     {
         Canvas canvas = new Canvas(shell, SWT.DOUBLE_BUFFERED|SWT.NO_BACKGROUND);
-        view = new View();
+        View view = new View();
         view.setCanvas(canvas);
 
         view.addViewPlugin(new TrackerViewPlugin());

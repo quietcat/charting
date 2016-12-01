@@ -107,7 +107,7 @@ public class DraggerViewPlugin extends ViewPluginBase implements MouseListener, 
 
     @Override
     public void mouseUp(MouseEvent e) {
-        if (e.button == 1) {
+        if (e.button == 1 && mouseFn != MouseFn.NONE) {
             view.getCanvas().setCursor(saveCursor);
             mouseFn = MouseFn.NONE;
         }

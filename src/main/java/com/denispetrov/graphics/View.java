@@ -11,6 +11,59 @@ import org.eclipse.swt.widgets.Canvas;
 import com.denispetrov.graphics.drawable.Drawable;
 import com.denispetrov.graphics.plugin.ViewPlugin;
 
+/**
+ * A view manages an instance of SWT Canvas and holds lists of plugins ({@link ViewPlugin}), 
+ * drawables ({@link Drawable}), and maintains a view context ({@link ViewContext})
+ * 
+ * Typical view initialization sequence is as follows:
+ * <pre>
+ * {@code 
+    Canvas canvas = new Canvas(shell, SWT.DOUBLE_BUFFERED|SWT.NO_BACKGROUND);
+    View view = new View();
+    view.setCanvas(canvas);
+    
+    // add plugins
+    view.addViewPlugin(new TrackerViewPlugin());
+    view.addViewPlugin(new PanViewPlugin());
+    view.addViewPlugin(new ZoomViewPlugin());
+    view.addViewPlugin(new ClickerViewPlugin());
+    view.addViewPlugin(new DraggerViewPlugin());
+    . . .
+    
+    // add drawables
+    view.addDrawable(new ViewportBackgroundDrawable());
+    view.addDrawable(new ViewportXAxisDrawable());
+    view.addDrawable(new ViewportYAxisDrawable());
+    view.addDrawable(new ViewportZeroMarkDrawable());
+    
+    view.addDrawable(new ExampleModelRectDrawable());
+    view.addDrawable(new ExampleModelDraggableRectDrawable());
+    . . .
+    
+    view.init();
+    
+    }
+ * </pre>
+ * Later, initialize view context and add it to the view
+ * <pre>
+ * {@code 
+    // initialize view context
+    ViewContext viewContext = new ViewContext();
+    viewContext.setMargin(20);
+    viewContext.setAllowNegativeBaseX(false);
+    viewContext.setAllowNegativeBaseY(false);
+    . . .
+
+    // and add it to the view
+    view.setViewContext(viewContext);
+    . . .
+
+    // set model
+    view.setModel(model);
+    }
+ * </pre>
+ * 
+ */
 public class View implements PaintListener {
 
     private Canvas canvas;
@@ -18,8 +71,6 @@ public class View implements PaintListener {
     private ViewContext viewContext;
     private List<Drawable> drawables = new LinkedList<>();
     private List<ViewPlugin> viewPlugins = new LinkedList<>();
-
-    Object mouseObject = null;
 
     public List<ViewPlugin> getViewPlugins() {
         return viewPlugins;
@@ -59,6 +110,10 @@ public class View implements PaintListener {
         contextUpdated();
     }
 
+    /**
+     * Plugins and other code manipulating view context should call this method in the end
+     * to cause the view to update its drawables and plugins and cause a redraw of the canvas
+     */
     public void contextUpdated() {
         for (ViewPlugin viewPlugin : viewPlugins) {
             viewPlugin.contextUpdated();
@@ -94,6 +149,10 @@ public class View implements PaintListener {
         modelUpdated();
     }
 
+    /**
+     * Plugins and other code making changes to the model should call this method in the end
+     * to cause the view to update its drawables and plugins and cause a redraw of the canvas
+     */
     public void modelUpdated() {
         for (ViewPlugin viewPlugin : viewPlugins) {
             viewPlugin.modelUpdated();
