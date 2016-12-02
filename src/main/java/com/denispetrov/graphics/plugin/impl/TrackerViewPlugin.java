@@ -1,4 +1,4 @@
-package com.denispetrov.graphics.plugin;
+package com.denispetrov.graphics.plugin.impl;
 
 import java.util.*;
 
@@ -7,6 +7,9 @@ import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.events.MouseMoveListener;
 import org.eclipse.swt.graphics.Cursor;
 
+import com.denispetrov.graphics.plugin.Clickable;
+import com.denispetrov.graphics.plugin.Trackable;
+import com.denispetrov.graphics.plugin.TrackableObject;
 import com.denispetrov.graphics.view.View;
 import com.denispetrov.graphics.view.ViewContext;
 
@@ -63,7 +66,7 @@ public class TrackerViewPlugin extends ViewPluginBase implements MouseMoveListen
             return false;
         }
         switch (to.getXReference()) {
-        case CHART:
+        case VIEW:
             if (viewContext.x(x + to.getxPadding()) < to.getFRect().x
                     || viewContext.x(x - to.getxPadding()) >= to.getFRect().x + to.getFRect().w) {
                 return false;
@@ -77,7 +80,7 @@ public class TrackerViewPlugin extends ViewPluginBase implements MouseMoveListen
         }
 
         switch (to.getYReference()) {
-        case CHART:
+        case VIEW:
             if (viewContext.y(y + to.getyPadding()) < to.getFRect().y
                     || viewContext.y(y - to.getyPadding()) >= to.getFRect().y + to.getFRect().h) {
                 return false;

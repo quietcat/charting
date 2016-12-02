@@ -1,4 +1,4 @@
-package com.denispetrov.graphics.plugin;
+package com.denispetrov.graphics.plugin.impl;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -8,6 +8,7 @@ import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.events.MouseListener;
 import org.eclipse.swt.graphics.Point;
 
+import com.denispetrov.graphics.plugin.*;
 import com.denispetrov.graphics.view.View;
 import com.denispetrov.graphics.view.ViewContext;
 

@@ -1,5 +1,6 @@
-package com.denispetrov.graphics.plugin;
+package com.denispetrov.graphics.plugin.impl;
 
+import com.denispetrov.graphics.plugin.ViewPlugin;
 import com.denispetrov.graphics.view.View;
 
 public abstract class ViewPluginBase implements ViewPlugin {

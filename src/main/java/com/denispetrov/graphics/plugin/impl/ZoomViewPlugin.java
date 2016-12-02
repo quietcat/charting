@@ -1,4 +1,4 @@
-package com.denispetrov.graphics.plugin;
+package com.denispetrov.graphics.plugin.impl;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.MouseEvent;

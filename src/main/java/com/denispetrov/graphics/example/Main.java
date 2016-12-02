@@ -6,11 +6,12 @@ import org.eclipse.swt.widgets.Canvas;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 
-import com.denispetrov.graphics.drawable.ViewportBackgroundDrawable;
+import com.denispetrov.graphics.drawable.impl.ViewportBackgroundDrawable;
 import com.denispetrov.graphics.example.drawable.*;
 import com.denispetrov.graphics.example.model.ExampleModel;
 import com.denispetrov.graphics.model.FRectangle;
 import com.denispetrov.graphics.plugin.*;
+import com.denispetrov.graphics.plugin.impl.*;
 import com.denispetrov.graphics.view.View;
 import com.denispetrov.graphics.view.ViewContext;
 

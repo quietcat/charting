@@ -6,7 +6,7 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Cursor;
 
 import com.denispetrov.graphics.drawable.DrawParameters;
-import com.denispetrov.graphics.drawable.DrawableBase;
+import com.denispetrov.graphics.drawable.impl.DrawableBase;
 import com.denispetrov.graphics.example.model.ExampleModel;
 import com.denispetrov.graphics.example.plugin.SimpleTrackableObject;
 import com.denispetrov.graphics.model.FRectangle;
@@ -14,6 +14,7 @@ import com.denispetrov.graphics.model.Reference;
 import com.denispetrov.graphics.model.XAnchor;
 import com.denispetrov.graphics.model.YAnchor;
 import com.denispetrov.graphics.plugin.*;
+import com.denispetrov.graphics.plugin.impl.TrackerViewPlugin;
 import com.denispetrov.graphics.view.View;
 
 public class ExampleModelRectDrawable extends DrawableBase implements Trackable, Clickable {
@@ -55,8 +56,8 @@ public class ExampleModelRectDrawable extends DrawableBase implements Trackable,
             trackingObject.setFRect(new FRectangle(rect));
             trackingObject.setXPadding(1);
             trackingObject.setYPadding(1);
-            trackingObject.setXReference(Reference.CHART);
-            trackingObject.setYReference(Reference.CHART);
+            trackingObject.setXReference(Reference.VIEW);
+            trackingObject.setYReference(Reference.VIEW);
             trackerViewPlugin.addTrackingObject(this,trackingObject);
         }
     }

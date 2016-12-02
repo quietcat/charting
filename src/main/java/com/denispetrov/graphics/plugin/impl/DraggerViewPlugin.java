@@ -1,4 +1,4 @@
-package com.denispetrov.graphics.plugin;
+package com.denispetrov.graphics.plugin.impl;
 
 import java.util.Map;
 import java.util.Set;
@@ -10,6 +10,7 @@ import org.eclipse.swt.events.MouseMoveListener;
 import org.eclipse.swt.graphics.*;
 
 import com.denispetrov.graphics.model.FPoint;
+import com.denispetrov.graphics.plugin.*;
 import com.denispetrov.graphics.view.View;
 import com.denispetrov.graphics.view.ViewContext;
 

@@ -3,7 +3,7 @@ package com.denispetrov.graphics.example.drawable;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Cursor;
 
-import com.denispetrov.graphics.drawable.DrawableBase;
+import com.denispetrov.graphics.drawable.impl.DrawableBase;
 import com.denispetrov.graphics.example.model.ExampleModel;
 import com.denispetrov.graphics.example.plugin.SimpleTrackableObject;
 import com.denispetrov.graphics.model.FPoint;
@@ -12,7 +12,7 @@ import com.denispetrov.graphics.model.Reference;
 import com.denispetrov.graphics.plugin.Draggable;
 import com.denispetrov.graphics.plugin.Trackable;
 import com.denispetrov.graphics.plugin.TrackableObject;
-import com.denispetrov.graphics.plugin.TrackerViewPlugin;
+import com.denispetrov.graphics.plugin.impl.TrackerViewPlugin;
 import com.denispetrov.graphics.view.View;
 
 public class ExampleModelDraggableRectDrawable extends DrawableBase implements Trackable, Draggable {
@@ -38,8 +38,8 @@ public class ExampleModelDraggableRectDrawable extends DrawableBase implements T
             draggableObject.setFRect(new FRectangle(rect));
             draggableObject.setXPadding(1);
             draggableObject.setYPadding(1);
-            draggableObject.setXReference(Reference.CHART);
-            draggableObject.setYReference(Reference.CHART);
+            draggableObject.setXReference(Reference.VIEW);
+            draggableObject.setYReference(Reference.VIEW);
             trackerViewPlugin.addTrackingObject(this,draggableObject);
         }
     }

@@ -1,6 +1,6 @@
 package com.denispetrov.graphics.example.drawable;
 
-import com.denispetrov.graphics.drawable.DrawableBase;
+import com.denispetrov.graphics.drawable.impl.DrawableBase;
 
 
 

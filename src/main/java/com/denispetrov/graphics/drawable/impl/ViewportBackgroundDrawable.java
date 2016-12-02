@@ -1,4 +1,4 @@
-package com.denispetrov.graphics.drawable;
+package com.denispetrov.graphics.drawable.impl;
 
 import org.eclipse.swt.graphics.GC;
 

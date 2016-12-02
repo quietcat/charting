@@ -1,5 +1,6 @@
-package com.denispetrov.graphics.drawable;
+package com.denispetrov.graphics.drawable.impl;
 
+import com.denispetrov.graphics.drawable.Drawable;
 import com.denispetrov.graphics.view.View;
 import com.denispetrov.graphics.view.ViewContext;
 
