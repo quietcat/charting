@@ -7,12 +7,19 @@ import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.events.MouseMoveListener;
 import org.eclipse.swt.graphics.Cursor;
 
-import com.denispetrov.graphics.plugin.Clickable;
 import com.denispetrov.graphics.plugin.Trackable;
 import com.denispetrov.graphics.plugin.TrackableObject;
 import com.denispetrov.graphics.view.View;
 import com.denispetrov.graphics.view.ViewContext;
 
+/**
+ * Provides a list of objects under mouse cursor, and changes mouse cursor to that provided
+ * by the corresponding implementation of {@link com.denispetrov.graphics.plugin.Trackable}
+ * Other plugins should avoid implementing their own tracking mechanisms to reduce the amount
+ * of work that must be done on mouse move events.
+ * 
+ * See {@link com.denispetrov.graphics.plugin.impl.ClickerViewPlugin} for a use example
+ */
 public class TrackerViewPlugin extends ViewPluginBase implements MouseMoveListener {
 
     enum MouseFn {
@@ -37,7 +44,7 @@ public class TrackerViewPlugin extends ViewPluginBase implements MouseMoveListen
         cursorDefault = view.getCanvas().getCursor();
     }
 
-    public Collection<TrackableObject> getTrackables(Clickable trackable) {
+    public Collection<TrackableObject> getTrackables(Trackable trackable) {
         return objectsBeingTracked.get(trackable);
     }
 

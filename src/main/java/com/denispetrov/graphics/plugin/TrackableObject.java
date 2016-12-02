@@ -5,6 +5,9 @@ import org.eclipse.swt.graphics.Rectangle;
 import com.denispetrov.graphics.model.FRectangle;
 import com.denispetrov.graphics.model.Reference;
 
+/**
+ * Provides a representation of model objects for {@link com.denispetrov.graphics.plugin.impl.TrackerViewPlugin}
+ */
 public interface TrackableObject {
 
     FRectangle getFRect();
