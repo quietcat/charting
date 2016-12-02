@@ -7,8 +7,8 @@ import org.eclipse.swt.events.MouseMoveListener;
 import org.eclipse.swt.events.MouseWheelListener;
 import org.eclipse.swt.graphics.Cursor;
 
-import com.denispetrov.graphics.ViewContext;
-import com.denispetrov.graphics.View;
+import com.denispetrov.graphics.view.View;
+import com.denispetrov.graphics.view.ViewContext;
 
 public class ZoomViewPlugin extends ViewPluginBase implements MouseMoveListener, MouseListener, MouseWheelListener {
 

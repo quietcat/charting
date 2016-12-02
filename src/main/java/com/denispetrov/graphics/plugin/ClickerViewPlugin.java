@@ -8,8 +8,8 @@ import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.events.MouseListener;
 import org.eclipse.swt.graphics.Point;
 
-import com.denispetrov.graphics.View;
-import com.denispetrov.graphics.ViewContext;
+import com.denispetrov.graphics.view.View;
+import com.denispetrov.graphics.view.ViewContext;
 
 public class ClickerViewPlugin extends ViewPluginBase implements MouseListener {
 

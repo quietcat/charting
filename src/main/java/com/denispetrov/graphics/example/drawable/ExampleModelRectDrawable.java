@@ -5,15 +5,16 @@ import java.util.Set;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Cursor;
 
-import com.denispetrov.graphics.View;
 import com.denispetrov.graphics.drawable.DrawParameters;
 import com.denispetrov.graphics.drawable.DrawableBase;
 import com.denispetrov.graphics.example.model.ExampleModel;
+import com.denispetrov.graphics.example.plugin.SimpleTrackableObject;
 import com.denispetrov.graphics.model.FRectangle;
 import com.denispetrov.graphics.model.Reference;
 import com.denispetrov.graphics.model.XAnchor;
 import com.denispetrov.graphics.model.YAnchor;
 import com.denispetrov.graphics.plugin.*;
+import com.denispetrov.graphics.view.View;
 
 public class ExampleModelRectDrawable extends DrawableBase implements Trackable, Clickable {
 
@@ -72,11 +73,6 @@ public class ExampleModelRectDrawable extends DrawableBase implements Trackable,
         super.setView(view);
         trackerViewPlugin = view.findPlugin(TrackerViewPlugin.class);
         this.cursor = view.getCanvas().getDisplay().getSystemCursor(SWT.CURSOR_HAND);
-    }
-
-    @Override
-    public void setCursor(Cursor cursor) {
-        this.cursor = cursor;
     }
 
     @Override

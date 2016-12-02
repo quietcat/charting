@@ -1,4 +1,4 @@
-package com.denispetrov.graphics.example.plugin;
+package com.denispetrov.graphics.plugin;
 
 import java.util.Map;
 import java.util.Set;
@@ -9,13 +9,9 @@ import org.eclipse.swt.events.MouseListener;
 import org.eclipse.swt.events.MouseMoveListener;
 import org.eclipse.swt.graphics.*;
 
-import com.denispetrov.graphics.View;
-import com.denispetrov.graphics.ViewContext;
 import com.denispetrov.graphics.model.FPoint;
-import com.denispetrov.graphics.plugin.Trackable;
-import com.denispetrov.graphics.plugin.TrackableObject;
-import com.denispetrov.graphics.plugin.TrackerViewPlugin;
-import com.denispetrov.graphics.plugin.ViewPluginBase;
+import com.denispetrov.graphics.view.View;
+import com.denispetrov.graphics.view.ViewContext;
 
 public class DraggerViewPlugin extends ViewPluginBase implements MouseListener, MouseMoveListener {
 
@@ -26,7 +22,8 @@ public class DraggerViewPlugin extends ViewPluginBase implements MouseListener, 
     private MouseFn mouseFn = MouseFn.NONE;
     private FPoint mouseOrigin = new FPoint(0,0);
     private FPoint objectOrigin = new FPoint(0,0);
-    private DraggableObject objectBeingDragged;
+    private TrackableObject trackableObject;
+    private Draggable draggable;
 
     private TrackerViewPlugin trackerViewPlugin;
 
@@ -65,14 +62,12 @@ public class DraggerViewPlugin extends ViewPluginBase implements MouseListener, 
             }
             break;
         case DRAGGING:
-            if (objectBeingDragged != null) {
-                viewContext = view.getViewContext();
-                FPoint origin = objectBeingDragged.getOrigin();
-                origin.x = objectOrigin.x + (viewContext.x(e.x) - mouseOrigin.x);
-                origin.y = objectOrigin.y + (viewContext.y(e.y) - mouseOrigin.y);
-                objectBeingDragged.setOrigin(origin);
-                view.modelUpdated();
-            }
+            viewContext = view.getViewContext();
+            FPoint origin = draggable.getOrigin(trackableObject.getTarget());
+            origin.x = objectOrigin.x + (viewContext.x(e.x) - mouseOrigin.x);
+            origin.y = objectOrigin.y + (viewContext.y(e.y) - mouseOrigin.y);
+            draggable.setOrigin(trackableObject.getTarget(),origin);
+            view.modelUpdated();
             break;
         case NONE:
             break;
@@ -87,16 +82,17 @@ public class DraggerViewPlugin extends ViewPluginBase implements MouseListener, 
     public void mouseDown(MouseEvent e) {
         if (e.button == 1 && mouseFn == MouseFn.NONE) {
             Map<Trackable, Set<TrackableObject>> clickedOn = trackerViewPlugin.getObjectsUnderMouse(e.x, e.y);
-            objectBeingDragged = null;
-            for (Set<TrackableObject> objects : clickedOn.values()) {
-                for (TrackableObject object : objects) {
-                    if (DraggableObject.class.isAssignableFrom(object.getClass())) {
+            trackableObject = null;
+            draggable = null;
+            for (Trackable trackable : clickedOn.keySet()) {
+                if (Draggable.class.isAssignableFrom(trackable.getClass())) {
+                    for (TrackableObject object : clickedOn.get(trackable)) {
                         ViewContext viewContext = view.getViewContext();
-                        objectBeingDragged = (DraggableObject)object;
                         mouseOrigin.x = viewContext.x(e.x);
                         mouseOrigin.y = viewContext.y(e.y);
-                        objectOrigin.x = objectBeingDragged.getOrigin().x;
-                        objectOrigin.y = objectBeingDragged.getOrigin().y;
+                        draggable = (Draggable) trackable;
+                        trackableObject = object;
+                        objectOrigin = draggable.getOrigin(trackableObject.getTarget());
                         mouseFn = MouseFn.MAYBE_DRAGGING;
                         break;
                     }

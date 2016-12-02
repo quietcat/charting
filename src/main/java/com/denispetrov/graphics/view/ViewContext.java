@@ -1,4 +1,4 @@
-package com.denispetrov.graphics;
+package com.denispetrov.graphics.view;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.*;

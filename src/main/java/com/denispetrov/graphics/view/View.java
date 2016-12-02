@@ -1,4 +1,4 @@
-package com.denispetrov.graphics;
+package com.denispetrov.graphics.view;
 
 import java.util.Comparator;
 import java.util.LinkedList;

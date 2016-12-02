@@ -1,9 +1,10 @@
-package com.denispetrov.graphics.plugin;
+package com.denispetrov.graphics.example.plugin;
 
 import org.eclipse.swt.graphics.Rectangle;
 
 import com.denispetrov.graphics.model.FRectangle;
 import com.denispetrov.graphics.model.Reference;
+import com.denispetrov.graphics.plugin.TrackableObject;
 
 public class SimpleTrackableObject implements TrackableObject {
 

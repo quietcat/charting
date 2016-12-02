@@ -1,4 +1,4 @@
-package com.denispetrov.graphics;
+package com.denispetrov.graphics.example;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.FillLayout;
@@ -8,14 +8,11 @@ import org.eclipse.swt.widgets.Shell;
 
 import com.denispetrov.graphics.drawable.ViewportBackgroundDrawable;
 import com.denispetrov.graphics.example.drawable.*;
-import com.denispetrov.graphics.example.model.DraggableRectangle;
 import com.denispetrov.graphics.example.model.ExampleModel;
-import com.denispetrov.graphics.example.plugin.DraggerViewPlugin;
 import com.denispetrov.graphics.model.FRectangle;
-import com.denispetrov.graphics.plugin.ClickerViewPlugin;
-import com.denispetrov.graphics.plugin.PanViewPlugin;
-import com.denispetrov.graphics.plugin.TrackerViewPlugin;
-import com.denispetrov.graphics.plugin.ZoomViewPlugin;
+import com.denispetrov.graphics.plugin.*;
+import com.denispetrov.graphics.view.View;
+import com.denispetrov.graphics.view.ViewContext;
 
 public class Main {
 
@@ -74,8 +71,8 @@ public class Main {
         ExampleModel model = new ExampleModel();
         model.getRectangles().add(new FRectangle(100,100,100,100));
         model.getRectangles().add(new FRectangle(300,300,100,100));
-        model.getDraggableRectangles().add(new DraggableRectangle(300, 100, 100, 100));
-        model.getDraggableRectangles().add(new DraggableRectangle(100, 300, 100, 100));
+        model.getDraggableRectangles().add(new FRectangle(300, 100, 100, 100));
+        model.getDraggableRectangles().add(new FRectangle(100, 300, 100, 100));
         view.setModel(model);
     }
 }

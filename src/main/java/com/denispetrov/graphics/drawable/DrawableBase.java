@@ -1,7 +1,7 @@
 package com.denispetrov.graphics.drawable;
 
-import com.denispetrov.graphics.ViewContext;
-import com.denispetrov.graphics.View;
+import com.denispetrov.graphics.view.View;
+import com.denispetrov.graphics.view.ViewContext;
 
 public abstract class DrawableBase implements Drawable {
 

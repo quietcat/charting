@@ -8,13 +8,13 @@ import com.denispetrov.graphics.model.FRectangle;
 public class ExampleModel {
 
     private List<FRectangle> rectangles = new LinkedList<>();
-    private List<DraggableRectangle> draggableRectangles = new LinkedList<>();
+    private List<FRectangle> draggableRectangles = new LinkedList<>();
 
     public List<FRectangle> getRectangles() {
         return rectangles;
     }
 
-    public List<DraggableRectangle> getDraggableRectangles() {
+    public List<FRectangle> getDraggableRectangles() {
         return draggableRectangles;
     }
 }
