@@ -199,11 +199,11 @@ public class ViewContext {
     }
 
     public FRectangle rectangle(Rectangle r) {
-        return new FRectangle(x(r.x), x(r.y), w(r.width), h(r.height));
+        return new FRectangle(x(r.x), x(r.y+r.height), w(r.width), h(r.height));
     }
 
     public Rectangle rectangle(FRectangle fr) {
-        return new Rectangle(x(fr.x), y(fr.y), w(fr.w), h(fr.h));
+        return new Rectangle(x(fr.x), y(fr.y+fr.h), w(fr.w), h(fr.h));
     }
 
     public void drawRectangle(double x, double y, double width, double height) {

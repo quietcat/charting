@@ -3,16 +3,17 @@ package com.denispetrov.graphics.example.plugin;
 import org.eclipse.swt.graphics.Rectangle;
 
 import com.denispetrov.graphics.model.FRectangle;
-import com.denispetrov.graphics.model.Reference;
 import com.denispetrov.graphics.plugin.TrackableObject;
+import com.denispetrov.graphics.view.ViewContext;
 
 public class SimpleTrackableObject implements TrackableObject {
 
-    private FRectangle fRect;
-    private Rectangle iRect;
-    private Object target;
-    private int xPadding, yPadding;
-    private Reference xReference, yReference;
+    private final FRectangle fRect = new FRectangle(0,0,0,0);
+    private final Rectangle iRect = new Rectangle(0,0,0,0);
+    private final Rectangle paddedIRect = new Rectangle(0,0,0,0);
+    private Object target = null;
+    private int xPadding = 0, yPadding = 0;
+    private boolean isPixelSized = false;
 
     /* (non-Javadoc)
      * @see com.denispetrov.graphics.plugin.TrackingObject#getfRect()
@@ -27,7 +28,7 @@ public class SimpleTrackableObject implements TrackableObject {
      */
     @Override
     public void setFRect(FRectangle fRect) {
-        this.fRect = fRect;
+        copyRect(fRect, this.fRect);
     }
 
     /* (non-Javadoc)
@@ -38,12 +39,26 @@ public class SimpleTrackableObject implements TrackableObject {
         return iRect;
     }
 
+    private static void copyRect(Rectangle src, Rectangle dst) {
+        dst.x = src.x;
+        dst.y = src.y;
+        dst.width = src.width;
+        dst.height = src.height;
+    }
+
+    private static void copyRect(FRectangle src, FRectangle dst) {
+        dst.x = src.x;
+        dst.y = src.y;
+        dst.w = src.w;
+        dst.h = src.h;
+    }
     /* (non-Javadoc)
      * @see com.denispetrov.graphics.plugin.TrackingObject#setiRect(org.eclipse.swt.graphics.Rectangle)
      */
     @Override
     public void setIRect(Rectangle iRect) {
-        this.iRect = iRect;
+        copyRect(iRect, this.iRect);
+        updatePaddedIRect();
     }
 
     /* (non-Javadoc)
@@ -76,6 +91,7 @@ public class SimpleTrackableObject implements TrackableObject {
     @Override
     public void setXPadding(int xPadding) {
         this.xPadding = xPadding;
+        updatePaddedIRect();
     }
 
     /* (non-Javadoc)
@@ -92,38 +108,41 @@ public class SimpleTrackableObject implements TrackableObject {
     @Override
     public void setYPadding(int yPadding) {
         this.yPadding = yPadding;
+        updatePaddedIRect();
     }
 
-    /* (non-Javadoc)
-     * @see com.denispetrov.graphics.plugin.TrackingObject#getxReference()
-     */
     @Override
-    public Reference getXReference() {
-        return xReference;
+    public void contextUpdated(ViewContext viewContext) {
+        if (isPixelSized) {
+            // only update pixel x and y but keep pixel width and height intact
+            this.iRect.x = viewContext.x(this.fRect.x);
+            this.iRect.y = viewContext.y(this.fRect.y);
+            updatePaddedIRect();
+        } else {
+            copyRect(viewContext.rectangle(this.fRect),this.iRect);
+            updatePaddedIRect();
+        }
     }
 
-    /* (non-Javadoc)
-     * @see com.denispetrov.graphics.plugin.TrackingObject#setxReference(com.denispetrov.graphics.model.Reference)
-     */
     @Override
-    public void setXReference(Reference xReference) {
-        this.xReference = xReference;
+    public boolean isPixelSized() {
+        return this.isPixelSized;
     }
 
-    /* (non-Javadoc)
-     * @see com.denispetrov.graphics.plugin.TrackingObject#getyReference()
-     */
     @Override
-    public Reference getYReference() {
-        return yReference;
+    public void setPixelSized(boolean isPixelSized) {
+        this.isPixelSized = isPixelSized;
     }
 
-    /* (non-Javadoc)
-     * @see com.denispetrov.graphics.plugin.TrackingObject#setyReference(com.denispetrov.graphics.model.Reference)
-     */
     @Override
-    public void setYReference(Reference yReference) {
-        this.yReference = yReference;
+    public Rectangle getPaddedIRect() {
+        return this.paddedIRect;
     }
 
+    private void updatePaddedIRect() {
+        this.paddedIRect.x = this.iRect.x - this.xPadding;
+        this.paddedIRect.y = this.iRect.y - this.yPadding;
+        this.paddedIRect.width = this.iRect.width + this.xPadding + this.xPadding;
+        this.paddedIRect.height = this.iRect.height  + this.yPadding + this.yPadding;
+    }
 }

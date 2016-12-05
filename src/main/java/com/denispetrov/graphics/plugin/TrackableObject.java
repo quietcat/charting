@@ -3,7 +3,7 @@ package com.denispetrov.graphics.plugin;
 import org.eclipse.swt.graphics.Rectangle;
 
 import com.denispetrov.graphics.model.FRectangle;
-import com.denispetrov.graphics.model.Reference;
+import com.denispetrov.graphics.view.ViewContext;
 
 /**
  * Provides a representation of model objects for {@link com.denispetrov.graphics.plugin.impl.TrackerViewPlugin}
@@ -30,11 +30,11 @@ public interface TrackableObject {
 
     void setYPadding(int yPadding);
 
-    Reference getXReference();
+    void contextUpdated(ViewContext viewContext);
 
-    void setXReference(Reference xReference);
+    boolean isPixelSized();
 
-    Reference getYReference();
+    void setPixelSized(boolean isPixelSized);
 
-    void setYReference(Reference yReference);
+    Rectangle getPaddedIRect();
 }

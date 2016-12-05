@@ -4,6 +4,8 @@ import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
 
+import org.eclipse.swt.events.ControlEvent;
+import org.eclipse.swt.events.ControlListener;
 import org.eclipse.swt.events.PaintEvent;
 import org.eclipse.swt.events.PaintListener;
 import org.eclipse.swt.widgets.Canvas;
@@ -64,7 +66,7 @@ import com.denispetrov.graphics.plugin.ViewPlugin;
  * </pre>
  * 
  */
-public class View implements PaintListener {
+public class View implements PaintListener, ControlListener {
 
     private Canvas canvas;
 
@@ -142,6 +144,7 @@ public class View implements PaintListener {
     public void setCanvas(Canvas canvas) {
         this.canvas = canvas;
         this.canvas.addPaintListener(this);
+        this.canvas.addControlListener(this);
     }
 
     public void setModel(Object model) {
@@ -169,5 +172,14 @@ public class View implements PaintListener {
         for (Drawable h : drawables) {
             h.draw();
         }
+    }
+
+    @Override
+    public void controlMoved(ControlEvent e) {
+    }
+
+    @Override
+    public void controlResized(ControlEvent e) {
+        contextUpdated();
     }
 }

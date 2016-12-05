@@ -8,7 +8,6 @@ import com.denispetrov.graphics.example.model.ExampleModel;
 import com.denispetrov.graphics.example.plugin.SimpleTrackableObject;
 import com.denispetrov.graphics.model.FPoint;
 import com.denispetrov.graphics.model.FRectangle;
-import com.denispetrov.graphics.model.Reference;
 import com.denispetrov.graphics.plugin.Draggable;
 import com.denispetrov.graphics.plugin.Trackable;
 import com.denispetrov.graphics.plugin.TrackableObject;
@@ -38,8 +37,6 @@ public class ExampleModelDraggableRectDrawable extends DrawableBase implements T
             draggableObject.setFRect(new FRectangle(rect));
             draggableObject.setXPadding(1);
             draggableObject.setYPadding(1);
-            draggableObject.setXReference(Reference.VIEW);
-            draggableObject.setYReference(Reference.VIEW);
             trackerViewPlugin.addTrackingObject(this,draggableObject);
         }
     }
