@@ -299,6 +299,38 @@ public class ViewContext {
         gc.drawText(text, ix, iy, dp.isTransparent);
     }
 
+    public Rectangle textRectangle(String text, double x, double y, DrawParameters drawParameters) {
+        DrawParameters dp = drawParameters;
+        int ix = 0, iy = 0;
+        if (dp == null) {
+            dp = new DrawParameters();
+        }
+        Point ib = gc.textExtent(text, dp.textExtentFlags);
+        switch (dp.xAnchor) {
+        case LEFT:
+            ix = x(x) + dp.xMargin;
+            break;
+        case MIDDLE:
+            ix = x(x) - (int) Math.round(ib.x / 2.0);
+            break;
+        case RIGHT:
+            ix = x(x) - ib.x - dp.xMargin;
+            break;
+        }
+        switch (dp.yAnchor) {
+        case TOP:
+            iy = y(y) + dp.yMargin;
+            break;
+        case MIDDLE:
+            iy = y(y) - (int) Math.round(ib.y / 2.0);
+            break;
+        case BOTTOM:
+            iy = y(y) - ib.y - dp.yMargin;
+            break;
+        }
+        return new Rectangle(ix,iy,ib.x,ib.y);
+    }
+
     public Object getModel() {
         return this.model;
     }
