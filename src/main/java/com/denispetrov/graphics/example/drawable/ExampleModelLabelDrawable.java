@@ -23,12 +23,15 @@ import com.denispetrov.graphics.view.View;
 
 public class ExampleModelLabelDrawable extends DrawableBase implements Trackable, Draggable, Clickable {
     private static final Logger LOG = LoggerFactory.getLogger(ExampleModelLabelDrawable.class);
+
     private TrackerViewPlugin trackerViewPlugin;
     private Cursor cursor;
     DrawParameters drawParameters = new DrawParameters();
 
     @Override
     public void draw() {
+        // loop through trackable objects instead of the actual labels in the model
+        // to update clickable areas, for which we need a GC that's only available during drawing
         Collection<TrackableObject> trackables = trackerViewPlugin.getTrackables(this);
         for (TrackableObject to : trackables) {
             Label label = (Label) to.getTarget();
@@ -39,6 +42,7 @@ public class ExampleModelLabelDrawable extends DrawableBase implements Trackable
 
     @Override
     public void modelUpdated() {
+        LOG.debug("model updated");
         ExampleModel model = (ExampleModel) this.viewContext.getModel();
         trackerViewPlugin.clearTrackingObjects(this);
         for (Label label : model.getLabels()) {

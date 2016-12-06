@@ -4,6 +4,8 @@ import java.util.Set;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Cursor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.denispetrov.graphics.drawable.DrawParameters;
 import com.denispetrov.graphics.drawable.impl.DrawableBase;
@@ -19,6 +21,7 @@ import com.denispetrov.graphics.plugin.impl.TrackerViewPlugin;
 import com.denispetrov.graphics.view.View;
 
 public class ExampleModelRectDrawable extends DrawableBase implements Trackable, Clickable {
+    private static final Logger LOG = LoggerFactory.getLogger(ExampleModelRectDrawable.class);
 
     private TrackerViewPlugin trackerViewPlugin;
     private DrawParameters dp = new DrawParameters();
@@ -64,7 +67,8 @@ public class ExampleModelRectDrawable extends DrawableBase implements Trackable,
     @Override
     public void objectClicked(Set<TrackableObject> objects, int button) {
         for (TrackableObject o : objects) {
-            System.out.println(o);
+            FRectangle rect = (FRectangle) o.getTarget();
+            LOG.debug("Rectangle {} {} {} {} clicked", rect.x, rect.y, rect.w, rect.h);
         }
     }
 

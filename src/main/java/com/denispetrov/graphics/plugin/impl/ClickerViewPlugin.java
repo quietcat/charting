@@ -7,12 +7,15 @@ import java.util.Set;
 import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.events.MouseListener;
 import org.eclipse.swt.graphics.Point;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.denispetrov.graphics.plugin.*;
 import com.denispetrov.graphics.view.View;
 import com.denispetrov.graphics.view.ViewContext;
 
 public class ClickerViewPlugin extends ViewPluginBase implements MouseListener {
+    private static final Logger LOG = LoggerFactory.getLogger(ClickerViewPlugin.class);
 
     enum MouseFn {
         NONE, BUTTON_DOWN
@@ -39,7 +42,7 @@ public class ClickerViewPlugin extends ViewPluginBase implements MouseListener {
 
     @Override
     public void mouseDown(MouseEvent e) {
-        System.out.println("mouseDown, button =" + e.button);
+        LOG.debug("Mouse down, button = {}", e.button);
         if (trackerViewPlugin.isTracking(e.x, e.y) && mouseFn == MouseFn.NONE) {
             clickables.clear();
             Map<Trackable,Set<TrackableObject>> objectsOnMouseDown = trackerViewPlugin.getObjectsUnderMouse(e.x, e.y);
@@ -56,7 +59,7 @@ public class ClickerViewPlugin extends ViewPluginBase implements MouseListener {
 
     @Override
     public void mouseUp(MouseEvent e) {
-        System.out.println("mouseUp, button =" + e.button);
+        LOG.debug("Mouse up, button = {}", e.button);
         if (e.button == button && mouseFn == MouseFn.BUTTON_DOWN) {
             ViewContext viewContext = view.getViewContext();
             if (Math.abs(e.x - mouseCoordinatesOnMouseDown.x) < viewContext.getDragThreshold()
