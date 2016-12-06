@@ -52,6 +52,7 @@ public class ExampleModelRectDrawable extends DrawableBase implements Trackable,
 
     @Override
     public void modelUpdated() {
+        LOG.debug("model updated");
         ExampleModel model = (ExampleModel) this.viewContext.getModel();
         trackerViewPlugin.clearTrackingObjects(this);
         for (FRectangle rect : model.getRectangles()) {

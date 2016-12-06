@@ -35,6 +35,10 @@ public abstract class DrawableBase implements Drawable {
     }
 
     @Override
+    public void modelUpdated(Object component, Object item) {
+    }
+
+    @Override
     public void contextUpdated() {
     }
 

@@ -2,6 +2,8 @@ package com.denispetrov.graphics.example.drawable;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Cursor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.denispetrov.graphics.drawable.impl.DrawableBase;
 import com.denispetrov.graphics.example.model.ExampleModel;
@@ -15,6 +17,7 @@ import com.denispetrov.graphics.plugin.impl.TrackerViewPlugin;
 import com.denispetrov.graphics.view.View;
 
 public class ExampleModelDraggableRectDrawable extends DrawableBase implements Trackable, Draggable {
+    private static final Logger LOG = LoggerFactory.getLogger(ExampleModelDraggableRectDrawable.class);
 
     private TrackerViewPlugin trackerViewPlugin;
     private Cursor cursor;
@@ -29,15 +32,26 @@ public class ExampleModelDraggableRectDrawable extends DrawableBase implements T
 
     @Override
     public void modelUpdated() {
+        LOG.debug("model updated");
         ExampleModel model = (ExampleModel) this.viewContext.getModel();
         trackerViewPlugin.clearTrackingObjects(this);
         for (FRectangle rect : model.getDraggableRectangles()) {
-            TrackableObject draggableObject = new SimpleTrackableObject();
-            draggableObject.setTarget(rect);
-            draggableObject.setFRect(new FRectangle(rect));
-            draggableObject.setXPadding(1);
-            draggableObject.setYPadding(1);
-            trackerViewPlugin.addTrackingObject(this,draggableObject);
+            TrackableObject to = new SimpleTrackableObject();
+            to.setTarget(rect);
+            to.setFRect(new FRectangle(rect));
+            to.setXPadding(1);
+            to.setYPadding(1);
+            trackerViewPlugin.addTrackingObject(this,to);
+        }
+    }
+
+    @Override
+    public void modelUpdated(Object component, Object item) {
+        if (component == this && item != null) {
+            TrackableObject to = (TrackableObject) item;
+            FRectangle rect = (FRectangle) to.getTarget();
+            to.setFRect(new FRectangle(rect));
+            LOG.debug("Rectangle updated ({} {} {} {})", rect.x, rect.y, rect.w, rect.h);
         }
     }
 

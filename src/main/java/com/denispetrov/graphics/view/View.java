@@ -153,8 +153,7 @@ public class View implements PaintListener, ControlListener {
     }
 
     /**
-     * Plugins and other code making changes to the model should call this method in the end
-     * to cause the view to update its drawables and plugins and cause a redraw of the canvas
+     * Trigger complete update of internal structures of all plugins and drawables
      */
     public void modelUpdated() {
         for (ViewPlugin viewPlugin : viewPlugins) {
@@ -162,6 +161,24 @@ public class View implements PaintListener, ControlListener {
         }
         for (Drawable drawable : drawables) {
             drawable.modelUpdated();
+        }
+        canvas.redraw();
+    }
+
+    /**
+     * Trigger a narrow update of one item managed by a specific component. This method
+     * helps reduce the amount of code that needs to run when only one component is updated
+     * as a result of some interactive action, for example. The exact semantics of
+     * component and item is left to the implementation.
+     * @param component The component reference that helps narrow down the scope of the update
+     * @param item The item that has changed
+     */
+    public void modelUpdated(Object component, Object item) {
+        for (ViewPlugin viewPlugin : viewPlugins) {
+            viewPlugin.modelUpdated(component, item);
+        }
+        for (Drawable drawable : drawables) {
+            drawable.modelUpdated(component, item);
         }
         canvas.redraw();
     }

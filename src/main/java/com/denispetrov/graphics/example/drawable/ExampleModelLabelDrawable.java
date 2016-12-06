@@ -26,16 +26,40 @@ public class ExampleModelLabelDrawable extends DrawableBase implements Trackable
 
     private TrackerViewPlugin trackerViewPlugin;
     private Cursor cursor;
-    DrawParameters drawParameters = new DrawParameters();
+    private DrawParameters drawParameters = new DrawParameters();
+
+    private TrackableObject lastUpdatedTO = null;
+    private boolean needToUpdateIRects = false;
 
     @Override
     public void draw() {
-        // loop through trackable objects instead of the actual labels in the model
-        // to update clickable areas, for which we need a GC that's only available during drawing
-        Collection<TrackableObject> trackables = trackerViewPlugin.getTrackables(this);
-        for (TrackableObject to : trackables) {
-            Label label = (Label) to.getTarget();
-            to.setIRect(viewContext.textRectangle(label.getText(), label.getOrigin().x, label.getOrigin().y, drawParameters));
+        if (needToUpdateIRects) {
+            if (lastUpdatedTO == null) {
+                // loop through trackable objects instead of the actual labels in the model
+                // to update clickable areas, for which we need a GC that's only available during drawing
+                Collection<TrackableObject> trackables = trackerViewPlugin.getTrackables(this);
+                for (TrackableObject to : trackables) {
+                    Label label = (Label) to.getTarget();
+                    to.setIRect(viewContext.textRectangle(label.getText(), label.getOrigin().x, label.getOrigin().y, drawParameters));
+                    to.setFRect(viewContext.rectangle(to.getIRect()));
+                    viewContext.drawText(label.getText(), label.getOrigin().x, label.getOrigin().y, drawParameters);
+                }
+            } else {
+                // only need to update trackable object for one label
+                Label label = (Label) lastUpdatedTO.getTarget();
+                lastUpdatedTO.setIRect(viewContext.textRectangle(label.getText(), label.getOrigin().x, label.getOrigin().y, drawParameters));
+                lastUpdatedTO.setFRect(viewContext.rectangle(lastUpdatedTO.getIRect()));
+                drawLabels();
+            }
+            needToUpdateIRects = false;
+        } else {
+            drawLabels();
+        }
+    }
+
+    private void drawLabels() {
+        ExampleModel model = (ExampleModel) this.viewContext.getModel();
+        for (Label label : model.getLabels()) {
             viewContext.drawText(label.getText(), label.getOrigin().x, label.getOrigin().y, drawParameters);
         }
     }
@@ -44,15 +68,26 @@ public class ExampleModelLabelDrawable extends DrawableBase implements Trackable
     public void modelUpdated() {
         LOG.debug("model updated");
         ExampleModel model = (ExampleModel) this.viewContext.getModel();
+        lastUpdatedTO = null;
         trackerViewPlugin.clearTrackingObjects(this);
         for (Label label : model.getLabels()) {
             TrackableObject to = new SimpleTrackableObject();
             to.setTarget(label);
             to.setPixelSized(true);
-            to.setFRect(viewContext.rectangle(to.getIRect()));
             to.setXPadding(1);
             to.setYPadding(1);
             trackerViewPlugin.addTrackingObject(this,to);
+        }
+        needToUpdateIRects = true;
+    }
+
+    @Override
+    public void modelUpdated(Object component, Object item) {
+        if (component == this && item != null) {
+            lastUpdatedTO = (TrackableObject) item;
+            Label lastUpdatedLabel = (Label) lastUpdatedTO.getTarget();
+            LOG.debug("Label updated ({})", lastUpdatedLabel.getText());
+            needToUpdateIRects = true;
         }
     }
 

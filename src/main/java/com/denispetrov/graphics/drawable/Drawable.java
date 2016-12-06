@@ -30,12 +30,21 @@ public interface Drawable {
     void draw();
 
     /**
-     * Called when the model has been notified of changes in the model. A drawable
+     * Called when the model has been notified of global changes in the model. A drawable
+     * may use this call to instantiate its caches or other internal structures that
+     * correspond to the model objects.
+     */
+    void modelUpdated();
+
+    /**
+     * Called when the model has been notified of changes in a particular object in the model. A drawable
      * may use this call to update its caches or to interact with plugins. For example,
      * a drawable responsible for an interactive object may update its coordinates
      * registered with a plugin that handles mouse events.
+     * @param component The component reference that helps narrow down the scope of the update
+     * @param item The item that has changed
      */
-    void modelUpdated();
+    void modelUpdated(Object component, Object item);
 
     /**
      * Called when a context has been updated (e.g. scale or origin) or an entirely new context has been set.

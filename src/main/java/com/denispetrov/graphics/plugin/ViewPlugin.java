@@ -6,7 +6,10 @@ public interface ViewPlugin {
 
     public void setView(View view);
 
-    void modelUpdated();
+    public void modelUpdated();
+
+    void modelUpdated(Object component, Object item);
 
     void contextUpdated();
+
 }

@@ -17,6 +17,10 @@ public abstract class ViewPluginBase implements ViewPlugin {
     }
 
     @Override
+    public void modelUpdated(Object component, Object item) {
+    }
+
+    @Override
     public void contextUpdated() {
     }
 }
