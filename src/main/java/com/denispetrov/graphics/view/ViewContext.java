@@ -11,10 +11,10 @@ import com.denispetrov.graphics.model.XAnchor;
 import com.denispetrov.graphics.model.YAnchor;
 
 /**
- * A view context encapsulates all information needed by {@link Drawable}s and {@link Plugin}s to represent the given {@link Model}.
- * A model is an opaque object that specific Drawables and Plugins are able to interpret.
- * The bulk of ViewContext class is concerned with translation between display and model coordinates.
- * The rest is convenience primitive drawing methods that use model coordinates.
+ * A view context encapsulates all information needed by {@link Drawable}s and {@link Plugin}s to represent the given
+ * {@link Model}. A model is an opaque object that specific Drawables and Plugins are able to interpret. The bulk of
+ * ViewContext class is concerned with translation between display and model coordinates. The rest is convenience
+ * primitive drawing methods that use model coordinates.
  */
 public class ViewContext {
     public static final int DEFAULT_MARGIN = 10;
@@ -35,7 +35,7 @@ public class ViewContext {
     private Object model;
     private Color backgroundColor;
     private Color foregroundColor;
-    private Rectangle mainAreaRectangle = new Rectangle(0,0,0,0);
+    private Rectangle mainAreaRectangle = new Rectangle(0, 0, 0, 0);
     private boolean allowNegativeBaseX = true;
     private boolean allowNegativeBaseY = true;
 
@@ -199,11 +199,11 @@ public class ViewContext {
     }
 
     public FRectangle rectangle(Rectangle r) {
-        return new FRectangle(x(r.x), x(r.y+r.height), w(r.width), h(r.height));
+        return new FRectangle(x(r.x), x(r.y + r.height), w(r.width), h(r.height));
     }
 
     public Rectangle rectangle(FRectangle fr) {
-        return new Rectangle(x(fr.x), y(fr.y+fr.h), w(fr.w), h(fr.h));
+        return new Rectangle(x(fr.x), y(fr.y + fr.h), w(fr.w), h(fr.h));
     }
 
     public void drawRectangle(double x, double y, double width, double height) {
@@ -237,98 +237,91 @@ public class ViewContext {
 
     public void drawImage(Image image, double x, double y, DrawParameters drawParameters) {
         DrawParameters dp = drawParameters;
-        int ix = 0, iy = 0;
         if (dp == null) {
             dp = new DrawParameters();
         }
         Rectangle ib = image.getBounds();
-        switch (dp.xAnchor) {
-        case LEFT:
-            ix = x(x) + dp.xMargin;
-            break;
-        case MIDDLE:
-            ix = x(x) - (int) Math.round(ib.width / 2.0);
-            break;
-        case RIGHT:
-            ix = x(x) - ib.width - dp.xMargin;
-            break;
-        }
-        switch (dp.yAnchor) {
-        case TOP:
-            iy = y(y) + dp.yMargin;
-            break;
-        case MIDDLE:
-            iy = y(y) - (int) Math.round(ib.height / 2.0);
-            break;
-        case BOTTOM:
-            iy = y(y) - ib.height - dp.yMargin;
-            break;
-        }
-        gc.drawImage(image, ix, iy);
+        Rectangle extent = extent(new FPoint(x,y), new Point(ib.width, ib.height), dp);
+        gc.drawImage(image, extent.x, extent.y);
     }
 
     public void drawText(String text, double x, double y, DrawParameters drawParameters) {
         DrawParameters dp = drawParameters;
-        int ix = 0, iy = 0;
         if (dp == null) {
             dp = new DrawParameters();
         }
-        Point ib = gc.textExtent(text, dp.textExtentFlags);
-        switch (dp.xAnchor) {
-        case LEFT:
-            ix = x(x) + dp.xMargin;
-            break;
-        case MIDDLE:
-            ix = x(x) - (int) Math.round(ib.x / 2.0);
-            break;
-        case RIGHT:
-            ix = x(x) - ib.x - dp.xMargin;
-            break;
-        }
-        switch (dp.yAnchor) {
-        case TOP:
-            iy = y(y) + dp.yMargin;
-            break;
-        case MIDDLE:
-            iy = y(y) - (int) Math.round(ib.y / 2.0);
-            break;
-        case BOTTOM:
-            iy = y(y) - ib.y - dp.yMargin;
-            break;
-        }
-        gc.drawText(text, ix, iy, dp.isTransparent);
+        Rectangle extent = extent(new FPoint(x,y), gc.textExtent(text, dp.textExtentFlags), dp);
+        gc.drawText(text, extent.x, extent.y, dp.isTransparent);
     }
 
     public Rectangle textRectangle(String text, double x, double y, DrawParameters drawParameters) {
         DrawParameters dp = drawParameters;
-        int ix = 0, iy = 0;
         if (dp == null) {
             dp = new DrawParameters();
         }
-        Point ib = gc.textExtent(text, dp.textExtentFlags);
+        return extent(new FPoint(x,y), gc.textExtent(text, dp.textExtentFlags), dp);
+    }
+
+    public Rectangle extent(FRectangle r, DrawParameters dp) {
+        int ix, iy;
         switch (dp.xAnchor) {
         case LEFT:
-            ix = x(x) + dp.xMargin;
+            ix = x(r.x) + dp.xMargin;
             break;
         case MIDDLE:
-            ix = x(x) - (int) Math.round(ib.x / 2.0);
+            ix = x(r.x - r.w / 2);
             break;
         case RIGHT:
-            ix = x(x) - ib.x - dp.xMargin;
+            ix = x(r.x - r.w) - dp.xMargin;
             break;
+        default:
+            return null;
         }
         switch (dp.yAnchor) {
         case TOP:
-            iy = y(y) + dp.yMargin;
+            iy = y(r.y + r.h) + dp.yMargin;
             break;
         case MIDDLE:
-            iy = y(y) - (int) Math.round(ib.y / 2.0);
+            iy = y(r.y + r.h / 2.0);
             break;
         case BOTTOM:
-            iy = y(y) - ib.y - dp.yMargin;
+            iy = y(r.y) - dp.yMargin;
             break;
+        default:
+            return null;
         }
-        return new Rectangle(ix,iy,ib.x,ib.y);
+        return new Rectangle(ix, iy, w(r.w), h(r.h));
+    }
+
+    public Rectangle extent(FPoint org, Point size, DrawParameters dp) {
+        int ix, iy;
+        switch (dp.xAnchor) {
+        case LEFT:
+            ix = x(org.x) + dp.xMargin;
+            break;
+        case MIDDLE:
+            ix = x(org.x) - (int) Math.round(size.x / 2.0);
+            break;
+        case RIGHT:
+            ix = x(org.x) - size.x - dp.xMargin;
+            break;
+        default:
+            return null;
+        }
+        switch (dp.yAnchor) {
+        case TOP:
+            iy = y(org.y) + dp.yMargin;
+            break;
+        case MIDDLE:
+            iy = y(org.y) - (int) Math.round(size.y / 2.0);
+            break;
+        case BOTTOM:
+            iy = y(org.y) - size.y - dp.yMargin;
+            break;
+        default:
+            return null;
+        }
+        return new Rectangle(ix, iy, size.x, size.y);
     }
 
     public Object getModel() {

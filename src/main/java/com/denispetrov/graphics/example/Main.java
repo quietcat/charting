@@ -31,6 +31,8 @@ public class Main implements ShellListener {
         shell.layout();
         shell.addShellListener(this);
 
+        createView();
+
         while (!shell.isDisposed()) {
             if (!display.readAndDispatch()) {
                 display.sleep();
@@ -89,7 +91,6 @@ public class Main implements ShellListener {
 
     @Override
     public void shellActivated(ShellEvent e) {
-        createView();
     }
 
     @Override

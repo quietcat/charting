@@ -1,9 +1,12 @@
 package com.denispetrov.graphics.example.drawable;
 
+import java.util.Collection;
 import java.util.Set;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Cursor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.denispetrov.graphics.drawable.DrawParameters;
 import com.denispetrov.graphics.drawable.impl.DrawableBase;
@@ -19,15 +22,17 @@ import com.denispetrov.graphics.plugin.impl.TrackerViewPlugin;
 import com.denispetrov.graphics.view.View;
 
 public class ExampleModelLabelDrawable extends DrawableBase implements Trackable, Draggable, Clickable {
-
+    private static final Logger LOG = LoggerFactory.getLogger(ExampleModelLabelDrawable.class);
     private TrackerViewPlugin trackerViewPlugin;
     private Cursor cursor;
     DrawParameters drawParameters = new DrawParameters();
 
     @Override
     public void draw() {
-        ExampleModel model = (ExampleModel) this.viewContext.getModel();
-        for (Label label : model.getLabels()) {
+        Collection<TrackableObject> trackables = trackerViewPlugin.getTrackables(this);
+        for (TrackableObject to : trackables) {
+            Label label = (Label) to.getTarget();
+            to.setIRect(viewContext.textRectangle(label.getText(), label.getOrigin().x, label.getOrigin().y, drawParameters));
             viewContext.drawText(label.getText(), label.getOrigin().x, label.getOrigin().y, drawParameters);
         }
     }
@@ -40,7 +45,6 @@ public class ExampleModelLabelDrawable extends DrawableBase implements Trackable
             TrackableObject to = new SimpleTrackableObject();
             to.setTarget(label);
             to.setPixelSized(true);
-            to.setIRect(viewContext.textRectangle(label.getText(), label.getOrigin().x, label.getOrigin().y, drawParameters));
             to.setFRect(viewContext.rectangle(to.getIRect()));
             to.setXPadding(1);
             to.setYPadding(1);
@@ -75,7 +79,9 @@ public class ExampleModelLabelDrawable extends DrawableBase implements Trackable
 
     @Override
     public void objectClicked(Set<TrackableObject> objects, int button) {
-        // TODO Auto-generated method stub
-        
+        for (TrackableObject to : objects) {
+            Label label = (Label) to.getTarget();
+            LOG.debug("Label {} clicked", label.getText());
+        }
     }
 }
