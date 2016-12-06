@@ -1,8 +1,6 @@
 package com.denispetrov.graphics.example;
 
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.ShellEvent;
-import org.eclipse.swt.events.ShellListener;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Canvas;
 import org.eclipse.swt.widgets.Display;
@@ -17,7 +15,7 @@ import com.denispetrov.graphics.plugin.impl.*;
 import com.denispetrov.graphics.view.View;
 import com.denispetrov.graphics.view.ViewContext;
 
-public class Main implements ShellListener {
+public class Main {
 
     protected Shell shell;
     private Canvas canvas;
@@ -29,7 +27,6 @@ public class Main implements ShellListener {
         createContents();
         shell.open();
         shell.layout();
-        shell.addShellListener(this);
 
         createView();
 
@@ -84,36 +81,8 @@ public class Main implements ShellListener {
         model.getRectangles().add(new FRectangle(300,300,100,100));
         model.getDraggableRectangles().add(new FRectangle(300, 100, 100, 100));
         model.getDraggableRectangles().add(new FRectangle(100, 300, 100, 100));
-        model.getLabels().add(new Label("Label 1", 100.0, 500.0));
-        model.getLabels().add(new Label("Label 2", 200.0, 500.0));
+        model.getLabels().add(new Label("Label 1", 500.0, 100.0));
+        model.getLabels().add(new Label("Label 2", 500.0, 200.0));
         view.setModel(model);
-    }
-
-    @Override
-    public void shellActivated(ShellEvent e) {
-    }
-
-    @Override
-    public void shellClosed(ShellEvent e) {
-        // TODO Auto-generated method stub
-        
-    }
-
-    @Override
-    public void shellDeactivated(ShellEvent e) {
-        // TODO Auto-generated method stub
-        
-    }
-
-    @Override
-    public void shellDeiconified(ShellEvent e) {
-        // TODO Auto-generated method stub
-        
-    }
-
-    @Override
-    public void shellIconified(ShellEvent e) {
-        // TODO Auto-generated method stub
-        
     }
 }
