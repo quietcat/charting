@@ -38,7 +38,8 @@ public class ExampleModelDraggableRectDrawable extends DrawableBase implements T
         for (FRectangle rect : model.getDraggableRectangles()) {
             TrackableObject to = new SimpleTrackableObject();
             to.setTarget(rect);
-            to.setFRect(new FRectangle(rect));
+            to.setFRect(rect);
+            to.setIRect(view.getViewContext().rectangle(rect));
             to.setXPadding(1);
             to.setYPadding(1);
             trackerViewPlugin.addTrackingObject(this,to);
@@ -50,7 +51,8 @@ public class ExampleModelDraggableRectDrawable extends DrawableBase implements T
         if (component == this && item != null) {
             TrackableObject to = (TrackableObject) item;
             FRectangle rect = (FRectangle) to.getTarget();
-            to.setFRect(new FRectangle(rect));
+            to.setFRect(rect);
+            to.setIRect(view.getViewContext().rectangle(rect));
             LOG.debug("Rectangle updated ({} {} {} {})", rect.x, rect.y, rect.w, rect.h);
         }
     }
