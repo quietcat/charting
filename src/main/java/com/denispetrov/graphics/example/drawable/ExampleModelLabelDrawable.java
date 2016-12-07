@@ -123,4 +123,11 @@ public class ExampleModelLabelDrawable extends DrawableBase implements Trackable
             LOG.debug("Label {} clicked", label.getText());
         }
     }
+
+    @Override
+    public void contextUpdated() {
+        // force recalc of irects
+        needToUpdateIRects = true;
+        lastUpdatedTO = null;
+    }
 }

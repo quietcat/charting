@@ -1,8 +1,12 @@
 package com.denispetrov.graphics.view;
 
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.ControlEvent;
+import org.eclipse.swt.events.ControlListener;
 import org.eclipse.swt.graphics.*;
 import org.eclipse.swt.widgets.Canvas;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.denispetrov.graphics.drawable.DrawParameters;
 import com.denispetrov.graphics.model.FPoint;
@@ -16,10 +20,18 @@ import com.denispetrov.graphics.model.YAnchor;
  * ViewContext class is concerned with translation between display and model coordinates. The rest is convenience
  * primitive drawing methods that use model coordinates.
  */
-public class ViewContext {
+public class ViewContext implements ControlListener {
+    private static final Logger LOG = LoggerFactory.getLogger(ViewContext.class);
+
+    public static enum AxisRange {
+        FULL,
+        POSITIVE_ONLY,
+        NEGATIVE_ONLY
+    }
+
     public static final int DEFAULT_MARGIN = 10;
     public static final double DEFAULT_SCALE = 1.0;
-    private static final int DEFAULT_DRAG_THRESHOLD = 4;
+    public static final int DEFAULT_DRAG_THRESHOLD = 4;
     public static final int DEFAULT_BACKGROUND_COLOR = SWT.COLOR_BLACK;
     public static final int DEFAULT_FOREGROUND_COLOR = SWT.COLOR_GRAY;
 
@@ -30,14 +42,14 @@ public class ViewContext {
     private double scaleX = DEFAULT_SCALE, scaleY = DEFAULT_SCALE;
     private double baseX = 0.0, baseY = 0.0;
     private XAnchor xAnchor = XAnchor.LEFT;
-    private YAnchor yAnchor = YAnchor.MIDDLE;
+    private YAnchor yAnchor = YAnchor.BOTTOM;
     private int dragThreshold = DEFAULT_DRAG_THRESHOLD;
     private Object model;
     private Color backgroundColor;
     private Color foregroundColor;
     private Rectangle mainAreaRectangle = new Rectangle(0, 0, 0, 0);
-    private boolean allowNegativeBaseX = true;
-    private boolean allowNegativeBaseY = true;
+    private AxisRange xAxisRange = AxisRange.FULL;
+    private AxisRange yAxisRange = AxisRange.FULL;
 
     public int getMarginTop() {
         return topMargin;
@@ -123,10 +135,19 @@ public class ViewContext {
     }
 
     public void setBaseX(double baseX) {
-        if (!allowNegativeBaseX && baseX < 0) {
-            this.baseX = 0.0;
-        } else {
+        switch (xAxisRange) {
+        default:
             this.baseX = baseX;
+            break;
+        case POSITIVE_ONLY:
+            this.baseX = Math.max(0.0, baseX);
+            break;
+        case NEGATIVE_ONLY:
+            Rectangle mainAreaRectangle = getMainAreaRectangle();
+            double maxBaseX = -w(mainAreaRectangle.width);
+            this.baseX = Math.min(baseX, maxBaseX);
+            LOG.debug("maxBaseX = {}, baseX = {}", maxBaseX, baseX);
+            break;
         }
     }
 
@@ -135,10 +156,18 @@ public class ViewContext {
     }
 
     public void setBaseY(double baseY) {
-        if (!allowNegativeBaseY && baseY < 0) {
-            this.baseY = 0.0;
-        } else {
+        switch(yAxisRange) {
+        default:
             this.baseY = baseY;
+            break;
+        case POSITIVE_ONLY:
+            this.baseY = Math.max(0.0, baseY);
+            break;
+        case NEGATIVE_ONLY:
+            Rectangle mainAreaRectangle = getMainAreaRectangle();
+            double maxBaseY = -h(mainAreaRectangle.height);
+            this.baseY = Math.min(baseY, maxBaseY);
+            break;
         }
     }
 
@@ -337,7 +366,12 @@ public class ViewContext {
     }
 
     public void setCanvas(Canvas canvas) {
+        if (this.canvas != null) {
+            this.canvas.removeControlListener(this);
+        }
         this.canvas = canvas;
+        this.canvas.addControlListener(this);
+        onCanvasResized();
         if (backgroundColor == null) {
             backgroundColor = canvas.getDisplay().getSystemColor(DEFAULT_BACKGROUND_COLOR);
         }
@@ -347,11 +381,6 @@ public class ViewContext {
     }
 
     public Rectangle getMainAreaRectangle() {
-        Rectangle canvasBounds = canvas.getBounds();
-        mainAreaRectangle.x = leftMargin;
-        mainAreaRectangle.y = topMargin;
-        mainAreaRectangle.width = canvasBounds.width - rightMargin - mainAreaRectangle.x;
-        mainAreaRectangle.height = canvasBounds.height - bottomMargin - mainAreaRectangle.y;
         return mainAreaRectangle;
     }
 
@@ -379,20 +408,38 @@ public class ViewContext {
         this.foregroundColor = foregroundColor;
     }
 
-    public boolean isAllowNegativeBaseX() {
-        return allowNegativeBaseX;
+    @Override
+    public void controlMoved(ControlEvent e) {
     }
 
-    public void setAllowNegativeBaseX(boolean allowNegativeBaseX) {
-        this.allowNegativeBaseX = allowNegativeBaseX;
+    @Override
+    public void controlResized(ControlEvent e) {
+        onCanvasResized();
     }
 
-    public boolean isAllowNegativeBaseY() {
-        return allowNegativeBaseY;
+    private void onCanvasResized() {
+        Rectangle canvasBounds = canvas.getBounds();
+        mainAreaRectangle.x = leftMargin;
+        mainAreaRectangle.y = topMargin;
+        mainAreaRectangle.width = canvasBounds.width - rightMargin - mainAreaRectangle.x;
+        mainAreaRectangle.height = canvasBounds.height - bottomMargin - mainAreaRectangle.y;
+        LOG.debug("Canvas resized, {} {} {} {}", canvasBounds.width, canvasBounds.height, mainAreaRectangle.width, mainAreaRectangle.height);
     }
 
-    public void setAllowNegativeBaseY(boolean allowNegativeBaseY) {
-        this.allowNegativeBaseY = allowNegativeBaseY;
+    public AxisRange getXAxisRange() {
+        return xAxisRange;
+    }
+
+    public void setXAxisRange(AxisRange xAxisRange) {
+        this.xAxisRange = xAxisRange;
+    }
+
+    public AxisRange getYAxisRange() {
+        return yAxisRange;
+    }
+
+    public void setYAxisRange(AxisRange yAxisRange) {
+        this.yAxisRange = yAxisRange;
     }
 
 }

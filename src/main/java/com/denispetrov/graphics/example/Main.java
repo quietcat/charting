@@ -55,7 +55,9 @@ public class Main {
 
         view.addViewPlugin(new TrackerViewPlugin());
         view.addViewPlugin(new PanViewPlugin());
-        view.addViewPlugin(new ZoomViewPlugin());
+        ZoomViewPlugin zoomViewPlugin = new ZoomViewPlugin();
+        zoomViewPlugin.setStickyX(true);
+        view.addViewPlugin(zoomViewPlugin);
         view.addViewPlugin(new ClickerViewPlugin());
         view.addViewPlugin(new DraggerViewPlugin());
 
@@ -72,17 +74,17 @@ public class Main {
 
         ViewContext viewContext = new ViewContext();
         viewContext.setMargin(20);
-        viewContext.setAllowNegativeBaseX(false);
-        viewContext.setAllowNegativeBaseY(false);
+        viewContext.setXAxisRange(ViewContext.AxisRange.NEGATIVE_ONLY);
+        viewContext.setYAxisRange(ViewContext.AxisRange.FULL);
         view.setViewContext(viewContext);
 
         ExampleModel model = new ExampleModel();
-        model.getRectangles().add(new FRectangle(100,100,100,100));
-        model.getRectangles().add(new FRectangle(300,300,100,100));
-        model.getDraggableRectangles().add(new FRectangle(300, 100, 100, 100));
-        model.getDraggableRectangles().add(new FRectangle(100, 300, 100, 100));
-        model.getLabels().add(new Label("Label 1", 500.0, 100.0));
-        model.getLabels().add(new Label("Label 2", 500.0, 200.0));
+        model.getRectangles().add(new FRectangle(-100,100,100,100));
+        model.getRectangles().add(new FRectangle(-300,300,100,100));
+        model.getDraggableRectangles().add(new FRectangle(-300, 100, 100, 100));
+        model.getDraggableRectangles().add(new FRectangle(-100, 300, 100, 100));
+        model.getLabels().add(new Label("Label 1", -500.0, 100.0));
+        model.getLabels().add(new Label("Label 2", -500.0, 200.0));
         view.setModel(model);
     }
 }
