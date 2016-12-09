@@ -9,6 +9,8 @@ import org.eclipse.swt.events.ControlListener;
 import org.eclipse.swt.events.PaintEvent;
 import org.eclipse.swt.events.PaintListener;
 import org.eclipse.swt.widgets.Canvas;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.denispetrov.graphics.drawable.Drawable;
 import com.denispetrov.graphics.plugin.ViewPlugin;
@@ -66,7 +68,9 @@ import com.denispetrov.graphics.plugin.ViewPlugin;
  * </pre>
  * 
  */
-public class View implements PaintListener, ControlListener {
+public class View implements PaintListener {
+
+    private static final Logger LOG = LoggerFactory.getLogger(View.class);
 
     private Canvas canvas;
 
@@ -105,7 +109,7 @@ public class View implements PaintListener, ControlListener {
 
     public void setViewContext(ViewContext viewContext) {
         this.viewContext = viewContext;
-        this.viewContext.setCanvas(canvas);
+        this.viewContext.setView(this);
         for (Drawable drawable : drawables) {
             drawable.setViewContext(viewContext);
         }
@@ -144,7 +148,6 @@ public class View implements PaintListener, ControlListener {
     public void setCanvas(Canvas canvas) {
         this.canvas = canvas;
         this.canvas.addPaintListener(this);
-        this.canvas.addControlListener(this);
     }
 
     public void setModel(Object model) {
@@ -185,18 +188,10 @@ public class View implements PaintListener, ControlListener {
 
     @Override
     public void paintControl(PaintEvent e) {
+        LOG.debug("View paint");
         viewContext.setGC(e.gc);
         for (Drawable h : drawables) {
             h.draw();
         }
-    }
-
-    @Override
-    public void controlMoved(ControlEvent e) {
-    }
-
-    @Override
-    public void controlResized(ControlEvent e) {
-        contextUpdated();
     }
 }

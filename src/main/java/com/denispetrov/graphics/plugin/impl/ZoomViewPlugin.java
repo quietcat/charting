@@ -114,6 +114,15 @@ public class ZoomViewPlugin extends ViewPluginBase implements MouseMoveListener,
         }
     }
 
+    /**
+     * Wrapper around {@link #scaleY(ViewContext, double, double)} that takes into account context Y axis range and stickyX flag.
+     * When stickyX is set to true, horizontal scaling will use 0.0 as center of scaling 
+     * when xAxisRange is either POSITIVE_ONLY or NEGATIVE_ONLY and the view zero is aligned 
+     * correspondingly with the left or the right edge of the view at the start of scaling action.
+     * @param viewContext View context
+     * @param m Scale factor
+     * @param x Center of scaling
+     */
     private void stickyScaleX(ViewContext viewContext, double m, double x) {
         if (stickyX) {
             switch(viewContext.getXAxisRange()) {
@@ -141,6 +150,12 @@ public class ZoomViewPlugin extends ViewPluginBase implements MouseMoveListener,
         }
     }
 
+    /**
+     * Wrapper around {@link #scaleY(ViewContext, double, double)} that takes into account context Y axis range and stickyY flag.
+     * @param viewContext View context
+     * @param m Scale factor
+     * @param y Center of scaling
+     */
     private void stickyScaleY(ViewContext viewContext, double m, double y) {
         if (stickyY) {
             switch (viewContext.getYAxisRange()) {
@@ -168,12 +183,26 @@ public class ZoomViewPlugin extends ViewPluginBase implements MouseMoveListener,
         }
     }
 
+    /**
+     * Adjust x scale in the context. baseX will also be adjusted so that center of scaling does not move
+     * relative to view
+     * @param viewContext View context
+     * @param m Scale factor
+     * @param x Center of scaling
+     */
     private void scaleX(ViewContext viewContext, double m, double x) {
         double newBaseX = (x * (m - 1) + viewContext.getBaseX()) / m;
         viewContext.setScaleX(viewContext.getScaleX() * m);
         viewContext.setBaseX(newBaseX);
     }
 
+    /**
+     * Adjust y scale in the context. baseY will also be adjusted so that center of scaling does not move
+     * relative to view
+     * @param viewContext View context
+     * @param m Scale factor
+     * @param y Center of scaling
+     */
     private void scaleY(ViewContext viewContext, double m, double y) {
         double newBaseY = (y * (m - 1) + viewContext.getBaseY()) / m;
         viewContext.setScaleY(viewContext.getScaleY() * m);

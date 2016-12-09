@@ -39,6 +39,7 @@ public class ViewContext implements ControlListener {
             bottomMargin = DEFAULT_MARGIN;
     private GC gc;
     private Canvas canvas;
+    private View view;
     private double scaleX = DEFAULT_SCALE, scaleY = DEFAULT_SCALE;
     private double baseX = 0.0, baseY = 0.0;
     private XAnchor xAnchor = XAnchor.LEFT;
@@ -365,11 +366,11 @@ public class ViewContext implements ControlListener {
         return canvas;
     }
 
-    public void setCanvas(Canvas canvas) {
+    public void setView(View view) {
         if (this.canvas != null) {
             this.canvas.removeControlListener(this);
         }
-        this.canvas = canvas;
+        this.canvas = view.getCanvas();
         this.canvas.addControlListener(this);
         onCanvasResized();
         if (backgroundColor == null) {
@@ -415,6 +416,7 @@ public class ViewContext implements ControlListener {
     @Override
     public void controlResized(ControlEvent e) {
         onCanvasResized();
+        view.contextUpdated();
     }
 
     private void onCanvasResized() {
