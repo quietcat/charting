@@ -6,6 +6,33 @@ public class ViewportYAxisDrawable extends DrawableBase {
 
     @Override
     public void draw() {
-        viewContext.drawLine(viewContext.getBaseX(), viewContext.getBaseY(), viewContext.getBaseX(), viewContext.getBaseY() + viewContext.getHeight());
+        switch (viewContext.getXAxisRange()) {
+        case FULL:
+            viewContext.drawLine(
+                    viewContext.getBaseX(),
+                    viewContext.getBaseY(),
+                    viewContext.getBaseX(),
+                    viewContext.getBaseY() + viewContext.getHeight());
+            viewContext.drawLine(
+                    viewContext.getBaseX() + viewContext.getWidth(),
+                    viewContext.getBaseY(),
+                    viewContext.getBaseX() + viewContext.getWidth(),
+                    viewContext.getBaseY() + viewContext.getHeight());
+            break;
+        case POSITIVE_ONLY:
+            viewContext.drawLine(
+                    viewContext.getBaseX(),
+                    viewContext.getBaseY(),
+                    viewContext.getBaseX(),
+                    viewContext.getBaseY() + viewContext.getHeight());
+            break;
+        case NEGATIVE_ONLY:
+            viewContext.drawLine(
+                    viewContext.getBaseX() + viewContext.getWidth(),
+                    viewContext.getBaseY(),
+                    viewContext.getBaseX() + viewContext.getWidth(),
+                    viewContext.getBaseY() + viewContext.getHeight());
+            break;
+        }
     }
 }

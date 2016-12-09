@@ -30,13 +30,12 @@ import org.eclipse.swt.widgets.Scale;
 public class Main {
 
     protected Shell shell;
-    private Canvas canvas;
+    private Canvas zoomingPageCanvas;
     private View view;
 
     private void run() {
         Display display = Display.getDefault();
         shell = new Shell();
-        shell.setSize(612, 427);
         shell.setLayout(new FillLayout(SWT.HORIZONTAL));
         createContents();
         shell.open();
@@ -62,37 +61,38 @@ public class Main {
 
         TabFolder tabFolder = new TabFolder(shell, SWT.NONE);
 
-        TabItem tbtmFull = new TabItem(tabFolder, SWT.NONE);
-        tbtmFull.setText("Zooming");
+        TabItem tbtmZooming = new TabItem(tabFolder, SWT.NONE);
+        tbtmZooming.setText("Zooming");
 
-        Composite composite_1 = new Composite(tabFolder, SWT.NONE);
-        tbtmFull.setControl(composite_1);
-        composite_1.setLayout(new GridLayout(1, false));
-        canvas = new Canvas(composite_1, SWT.DOUBLE_BUFFERED | SWT.NO_BACKGROUND);
-        canvas.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
+        Composite zoomingPage = new Composite(tabFolder, SWT.NONE);
+        tbtmZooming.setControl(zoomingPage);
+        zoomingPage.setLayout(new GridLayout(1, false));
+        zoomingPageCanvas = new Canvas(zoomingPage, SWT.DOUBLE_BUFFERED | SWT.NO_BACKGROUND);
+        zoomingPageCanvas.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
 
-        Composite composite_2 = new Composite(composite_1, SWT.NONE);
-        composite_2.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false, 1, 1));
-        composite_2.setLayout(new GridLayout(2, false));
+        Composite zoomingPageControls = new Composite(zoomingPage, SWT.NONE);
+        zoomingPageControls.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false, 1, 1));
+        zoomingPageControls.setLayout(new GridLayout(2, false));
 
-        Group grpXAxisRange = new Group(composite_2, SWT.NONE);
+        Group grpXAxisRange = new Group(zoomingPageControls, SWT.NONE);
         grpXAxisRange.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
         grpXAxisRange.setText("X Axis Range");
         grpXAxisRange.setBounds(0, 0, 78, 78);
         grpXAxisRange.setLayout(new FillLayout(SWT.VERTICAL));
 
-        Button btnFull = new Button(grpXAxisRange, SWT.RADIO);
-        btnFull.addSelectionListener(new SelectionAdapter() {
+        Button btnXFullRange = new Button(grpXAxisRange, SWT.RADIO);
+        btnXFullRange.addSelectionListener(new SelectionAdapter() {
             @Override
             public void widgetSelected(SelectionEvent e) {
                 view.getViewContext().setXAxisRange(AxisRange.FULL);
+                view.contextUpdated();
             }
         });
-        btnFull.setSelection(true);
-        btnFull.setText("Full");
+        btnXFullRange.setSelection(true);
+        btnXFullRange.setText("Full");
 
-        Button btnPositive = new Button(grpXAxisRange, SWT.RADIO);
-        btnPositive.addSelectionListener(new SelectionAdapter() {
+        Button btnXPositiveRange = new Button(grpXAxisRange, SWT.RADIO);
+        btnXPositiveRange.addSelectionListener(new SelectionAdapter() {
             @Override
             public void widgetSelected(SelectionEvent e) {
                 view.getViewContext().setXAxisRange(AxisRange.POSITIVE_ONLY);
@@ -100,10 +100,10 @@ public class Main {
                 view.contextUpdated();
             }
         });
-        btnPositive.setText("Positive");
+        btnXPositiveRange.setText("Positive");
 
-        Button btnNegative = new Button(grpXAxisRange, SWT.RADIO);
-        btnNegative.addSelectionListener(new SelectionAdapter() {
+        Button btnXNegativeRange = new Button(grpXAxisRange, SWT.RADIO);
+        btnXNegativeRange.addSelectionListener(new SelectionAdapter() {
             @Override
             public void widgetSelected(SelectionEvent e) {
                 view.getViewContext().setXAxisRange(AxisRange.NEGATIVE_ONLY);
@@ -111,61 +111,103 @@ public class Main {
                 view.contextUpdated();
             }
         });
-        btnNegative.setText("Negative");
+        btnXNegativeRange.setText("Negative");
 
-        Button btnStickyZero = new Button(grpXAxisRange, SWT.CHECK);
-        btnStickyZero.addSelectionListener(new SelectionAdapter() {
-            @Override
-            public void widgetSelected(SelectionEvent e) {
-                ZoomViewPlugin zvp = view.findPlugin(ZoomViewPlugin.class);
-                zvp.setStickyX(btnStickyZero.getSelection());
-            }
-        });
-        btnStickyZero.setText("Sticky Zero");
-        
-        Scale scale = new Scale(grpXAxisRange, SWT.NONE);
-        scale.addSelectionListener(new SelectionAdapter() {
-            @Override
-            public void widgetSelected(SelectionEvent e) {
-                double resizeCenterX = (double)scale.getSelection() / 100.0;
-                view.getViewContext().setResizeCenterX(resizeCenterX);
-                view.contextUpdated();
-            }
-        });
-        scale.setIncrement(1);
-        scale.setMaximum(0);
-        scale.setMinimum(100);
-        scale.setSelection(0);
-
-        Group grpYAxisRange = new Group(composite_2, SWT.NONE);
+        Group grpYAxisRange = new Group(zoomingPageControls, SWT.NONE);
         grpYAxisRange.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
         grpYAxisRange.setText("Y Axis Range");
         grpYAxisRange.setLayout(new FillLayout(SWT.VERTICAL));
 
-        Button btnFull_1 = new Button(grpYAxisRange, SWT.RADIO);
-        btnFull_1.setSelection(true);
-        btnFull_1.setText("Full");
+        Button btnYFullRange = new Button(grpYAxisRange, SWT.RADIO);
+        btnYFullRange.addSelectionListener(new SelectionAdapter() {
+            @Override
+            public void widgetSelected(SelectionEvent e) {
+                view.getViewContext().setYAxisRange(AxisRange.FULL);
+                view.contextUpdated();
+            }
+        });
+        btnYFullRange.setSelection(true);
+        btnYFullRange.setText("Full");
 
-        Button btnPositive_1 = new Button(grpYAxisRange, SWT.RADIO);
-        btnPositive_1.setText("Positive");
+        Button btnYPositiveRange = new Button(grpYAxisRange, SWT.RADIO);
+        btnYPositiveRange.addSelectionListener(new SelectionAdapter() {
+            @Override
+            public void widgetSelected(SelectionEvent e) {
+                view.getViewContext().setYAxisRange(AxisRange.POSITIVE_ONLY);
+                view.getViewContext().setBaseY(view.getViewContext().getBaseY());
+                view.contextUpdated();
+            }
+        });
+        btnYPositiveRange.setText("Positive");
 
-        Button btnNegative_1 = new Button(grpYAxisRange, SWT.RADIO);
-        btnNegative_1.setText("Negative");
+        Button btnYNegativeRange = new Button(grpYAxisRange, SWT.RADIO);
+        btnYNegativeRange.addSelectionListener(new SelectionAdapter() {
+            @Override
+            public void widgetSelected(SelectionEvent e) {
+                view.getViewContext().setYAxisRange(AxisRange.NEGATIVE_ONLY);
+                view.getViewContext().setBaseY(view.getViewContext().getBaseY());
+                view.contextUpdated();
+            }
+        });
+        btnYNegativeRange.setText("Negative");
 
-        Button btnStickyZero_1 = new Button(grpYAxisRange, SWT.CHECK);
-        btnStickyZero_1.setText("Sticky Zero");
-        
-        Scale scale_1 = new Scale(grpYAxisRange, SWT.NONE);
-        scale_1.setMaximum(0);
-        scale_1.setMinimum(100);
-        scale_1.setSelection(0);
-        scale_1.setIncrement(1);
+        Button btnXStickyZero = new Button(zoomingPageControls, SWT.CHECK);
+        btnXStickyZero.addSelectionListener(new SelectionAdapter() {
+            @Override
+            public void widgetSelected(SelectionEvent e) {
+                ZoomViewPlugin zvp = view.findPlugin(ZoomViewPlugin.class);
+                zvp.setStickyX(btnXStickyZero.getSelection());
+            }
+        });
+        btnXStickyZero.setText("Sticky Zero");
+
+        Button btnYStickyZero = new Button(zoomingPageControls, SWT.CHECK);
+        btnYStickyZero.addSelectionListener(new SelectionAdapter() {
+            @Override
+            public void widgetSelected(SelectionEvent e) {
+                ZoomViewPlugin zvp = view.findPlugin(ZoomViewPlugin.class);
+                zvp.setStickyY(btnYStickyZero.getSelection());
+            }
+        });
+        btnYStickyZero.setText("Sticky Zero");
+
+        org.eclipse.swt.widgets.Label lblXResizeCenter = new org.eclipse.swt.widgets.Label(zoomingPageControls, SWT.NONE);
+        lblXResizeCenter.setText("Resize Center:");
+
+        org.eclipse.swt.widgets.Label lblYResizeCenter = new org.eclipse.swt.widgets.Label(zoomingPageControls, SWT.NONE);
+        lblYResizeCenter.setText("Resize Center:");
+
+        Scale scaleXResizeCenter = new Scale(zoomingPageControls, SWT.NONE);
+        scaleXResizeCenter.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false, 1, 1));
+        scaleXResizeCenter.addSelectionListener(new SelectionAdapter() {
+            @Override
+            public void widgetSelected(SelectionEvent e) {
+                double resizeCenterX = (double) scaleXResizeCenter.getSelection() / 100.0;
+                view.getViewContext().setResizeCenterX(resizeCenterX);
+                view.contextUpdated();
+            }
+        });
+        scaleXResizeCenter.setIncrement(1);
+        scaleXResizeCenter.setSelection(0);
+
+        Scale scaleYResizeCenter = new Scale(zoomingPageControls, SWT.NONE);
+        scaleYResizeCenter.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false, 1, 1));
+        scaleYResizeCenter.addSelectionListener(new SelectionAdapter() {
+            @Override
+            public void widgetSelected(SelectionEvent e) {
+                double resizeCenterY = (double) scaleYResizeCenter.getSelection() / 100.0;
+                view.getViewContext().setResizeCenterY(resizeCenterY);
+                view.contextUpdated();
+            }
+        });
+        scaleYResizeCenter.setSelection(0);
+        scaleYResizeCenter.setIncrement(1);
 
     }
 
     protected void createView() {
         view = new View();
-        view.setCanvas(canvas);
+        view.setCanvas(zoomingPageCanvas);
 
         view.addViewPlugin(new TrackerViewPlugin());
         view.addViewPlugin(new PanViewPlugin());
@@ -189,10 +231,10 @@ public class Main {
         view.setViewContext(viewContext);
 
         ExampleModel model = new ExampleModel();
-        model.getRectangles().add(new FRectangle(-100, 100, 100, 100));
-        model.getRectangles().add(new FRectangle(-300, 300, 100, 100));
-        model.getDraggableRectangles().add(new FRectangle(-300, 100, 100, 100));
-        model.getDraggableRectangles().add(new FRectangle(-100, 300, 100, 100));
+        model.getRectangles().add(new FRectangle(-200, 100, 100, 100));
+        model.getRectangles().add(new FRectangle(-400, 300, 100, 100));
+        model.getDraggableRectangles().add(new FRectangle(-400, 100, 100, 100));
+        model.getDraggableRectangles().add(new FRectangle(-200, 300, 100, 100));
         model.getLabels().add(new Label("Label 1", -500.0, 100.0));
         model.getLabels().add(new Label("Label 2", -500.0, 200.0));
         view.setModel(model);
