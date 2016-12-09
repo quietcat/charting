@@ -203,6 +203,9 @@ public class Main {
         scaleYResizeCenter.setSelection(0);
         scaleYResizeCenter.setIncrement(1);
 
+        TabItem tbtmSwitchingModel = new TabItem(tabFolder, SWT.NONE);
+        tbtmSwitchingModel.setText("Switching Model");
+
     }
 
     protected void createView() {
@@ -231,12 +234,12 @@ public class Main {
         view.setViewContext(viewContext);
 
         ExampleModel model = new ExampleModel();
-        model.getRectangles().add(new FRectangle(-200, 100, 100, 100));
-        model.getRectangles().add(new FRectangle(-400, 300, 100, 100));
-        model.getDraggableRectangles().add(new FRectangle(-400, 100, 100, 100));
-        model.getDraggableRectangles().add(new FRectangle(-200, 300, 100, 100));
-        model.getLabels().add(new Label("Label 1", -500.0, 100.0));
-        model.getLabels().add(new Label("Label 2", -500.0, 200.0));
+        model.getRectangles().add(new FRectangle(100, 50, 100, 50));
+        model.getRectangles().add(new FRectangle(300, 200, 100, 50));
+        model.getDraggableRectangles().add(new FRectangle(300, 50, 100, 50));
+        model.getDraggableRectangles().add(new FRectangle(100, 200, 100, 50));
+        model.getLabels().add(new Label("Label 1", 500.0, 100.0));
+        model.getLabels().add(new Label("Label 2", 500.0, 200.0));
         view.setModel(model);
     }
 }

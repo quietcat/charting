@@ -35,18 +35,18 @@ public class ExampleModelRectDrawable extends DrawableBase implements Trackable,
             viewContext.drawLine(rect.x, rect.y + rect.h / 2, rect.x + rect.w, rect.y + rect.h / 2);
             dp.xAnchor = XAnchor.LEFT;
             dp.yAnchor = YAnchor.BOTTOM;
-            viewContext.drawText("Default", rect.x + rect.w, rect.y + rect.h, dp);
+            viewContext.drawText("LB", rect.x + rect.w, rect.y + rect.h, dp);
             dp.yAnchor = YAnchor.MIDDLE;
-            viewContext.drawText("YAnchor MIDDLE", rect.x + rect.w, rect.y + rect.h / 2, dp);
+            viewContext.drawText("LM", rect.x + rect.w, rect.y + rect.h / 2, dp);
             dp.yAnchor = YAnchor.TOP;
-            viewContext.drawText("YAnchor TOP", rect.x + rect.w, rect.y, dp);
+            viewContext.drawText("LT", rect.x + rect.w, rect.y, dp);
             dp.xAnchor = XAnchor.RIGHT;
             dp.yAnchor = YAnchor.BOTTOM;
-            viewContext.drawText("YAnchor BOTTOM", rect.x, rect.y + rect.h, dp);
+            viewContext.drawText("RB", rect.x, rect.y + rect.h, dp);
             dp.yAnchor = YAnchor.MIDDLE;
-            viewContext.drawText("YAnchor MIDDLE", rect.x, rect.y + rect.h / 2, dp);
+            viewContext.drawText("RM", rect.x, rect.y + rect.h / 2, dp);
             dp.yAnchor = YAnchor.TOP;
-            viewContext.drawText("YAnchor TOP", rect.x, rect.y, dp);
+            viewContext.drawText("RT", rect.x, rect.y, dp);
         }
     }
 

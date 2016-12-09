@@ -407,7 +407,7 @@ public class ViewContext implements ControlListener {
         Rectangle oldMainAreaRectangle = mainAreaRectangle;
         calculateMainAreaRectangle();
         setBaseX(getBaseX() + w(oldMainAreaRectangle.width) * resizeCenterX - w(mainAreaRectangle.width) * resizeCenterX);
-        setBaseY(getBaseY() + h(oldMainAreaRectangle.width) * resizeCenterY - h(mainAreaRectangle.height) * resizeCenterY);
+        setBaseY(getBaseY() + h(oldMainAreaRectangle.height) * resizeCenterY - h(mainAreaRectangle.height) * resizeCenterY);
         LOG.trace("Canvas resized, main area w={} h={}", mainAreaRectangle.width, mainAreaRectangle.height);
     }
 
