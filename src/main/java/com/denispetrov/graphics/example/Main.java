@@ -25,6 +25,7 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.widgets.Scale;
 
 public class Main {
 
@@ -121,6 +122,20 @@ public class Main {
             }
         });
         btnStickyZero.setText("Sticky Zero");
+        
+        Scale scale = new Scale(grpXAxisRange, SWT.NONE);
+        scale.addSelectionListener(new SelectionAdapter() {
+            @Override
+            public void widgetSelected(SelectionEvent e) {
+                double resizeCenterX = (double)scale.getSelection() / 100.0;
+                view.getViewContext().setResizeCenterX(resizeCenterX);
+                view.contextUpdated();
+            }
+        });
+        scale.setIncrement(1);
+        scale.setMaximum(0);
+        scale.setMinimum(100);
+        scale.setSelection(0);
 
         Group grpYAxisRange = new Group(composite_2, SWT.NONE);
         grpYAxisRange.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
@@ -139,6 +154,12 @@ public class Main {
 
         Button btnStickyZero_1 = new Button(grpYAxisRange, SWT.CHECK);
         btnStickyZero_1.setText("Sticky Zero");
+        
+        Scale scale_1 = new Scale(grpYAxisRange, SWT.NONE);
+        scale_1.setMaximum(0);
+        scale_1.setMinimum(100);
+        scale_1.setSelection(0);
+        scale_1.setIncrement(1);
 
     }
 

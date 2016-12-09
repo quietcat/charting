@@ -154,7 +154,7 @@ public class ViewContext implements ControlListener {
     }
 
     public void setBaseY(double baseY) {
-        switch(yAxisRange) {
+        switch (yAxisRange) {
         default:
             this.baseY = baseY;
             break;
@@ -252,7 +252,7 @@ public class ViewContext implements ControlListener {
             dp = new DrawParameters();
         }
         Rectangle ib = image.getBounds();
-        Rectangle extent = extent(new FPoint(x,y), new Point(ib.width, ib.height), dp);
+        Rectangle extent = extent(new FPoint(x, y), new Point(ib.width, ib.height), dp);
         gc.drawImage(image, extent.x, extent.y);
     }
 
@@ -261,7 +261,7 @@ public class ViewContext implements ControlListener {
         if (dp == null) {
             dp = new DrawParameters();
         }
-        Rectangle extent = extent(new FPoint(x,y), gc.textExtent(text, dp.textExtentFlags), dp);
+        Rectangle extent = extent(new FPoint(x, y), gc.textExtent(text, dp.textExtentFlags), dp);
         gc.drawText(text, extent.x, extent.y, dp.isTransparent);
     }
 
@@ -270,7 +270,7 @@ public class ViewContext implements ControlListener {
         if (dp == null) {
             dp = new DrawParameters();
         }
-        return extent(new FPoint(x,y), gc.textExtent(text, dp.textExtentFlags), dp);
+        return extent(new FPoint(x, y), gc.textExtent(text, dp.textExtentFlags), dp);
     }
 
     public Rectangle extent(FRectangle r, DrawParameters dp) {
@@ -354,7 +354,9 @@ public class ViewContext implements ControlListener {
         this.view = view;
         this.canvas = view.getCanvas();
         this.canvas.addControlListener(this);
-        onCanvasResized();
+        calculateMainAreaRectangle();
+        setBaseX(getBaseX());
+        setBaseY(getBaseY());
         if (backgroundColor == null) {
             backgroundColor = canvas.getDisplay().getSystemColor(DEFAULT_BACKGROUND_COLOR);
         }
@@ -402,16 +404,20 @@ public class ViewContext implements ControlListener {
     }
 
     private void onCanvasResized() {
+        Rectangle oldMainAreaRectangle = mainAreaRectangle;
+        calculateMainAreaRectangle();
+        setBaseX(getBaseX() + w(oldMainAreaRectangle.width) * resizeCenterX - w(mainAreaRectangle.width) * resizeCenterX);
+        setBaseY(getBaseY() + h(oldMainAreaRectangle.width) * resizeCenterY - h(mainAreaRectangle.height) * resizeCenterY);
+        LOG.trace("Canvas resized, main area w={} h={}", mainAreaRectangle.width, mainAreaRectangle.height);
+    }
+
+    private void calculateMainAreaRectangle() {
         Rectangle canvasBounds = canvas.getBounds();
-        mainAreaRectangle.x = leftMargin;
-        mainAreaRectangle.y = topMargin;
-        int oldWidth = mainAreaRectangle.width;
-        mainAreaRectangle.width = canvasBounds.width - rightMargin - mainAreaRectangle.x;
-        setBaseX(getBaseX() + w(oldWidth) * resizeCenterX - w(mainAreaRectangle.width) * resizeCenterX);
-        int oldHeight = mainAreaRectangle.height;
-        mainAreaRectangle.height = canvasBounds.height - bottomMargin - mainAreaRectangle.y;
-        setBaseY(getBaseY() + h(oldHeight) * resizeCenterY - h(mainAreaRectangle.height) * resizeCenterY);
-        LOG.trace("Canvas resized, {} {} {} {}", canvasBounds.width, canvasBounds.height, mainAreaRectangle.width, mainAreaRectangle.height);
+        mainAreaRectangle = new Rectangle(
+                leftMargin,
+                topMargin,
+                canvasBounds.width - leftMargin - rightMargin,
+                canvasBounds.height - topMargin - bottomMargin);
     }
 
     public AxisRange getXAxisRange() {
