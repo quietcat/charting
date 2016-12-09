@@ -11,8 +11,6 @@ import org.slf4j.LoggerFactory;
 import com.denispetrov.graphics.drawable.DrawParameters;
 import com.denispetrov.graphics.model.FPoint;
 import com.denispetrov.graphics.model.FRectangle;
-import com.denispetrov.graphics.model.XAnchor;
-import com.denispetrov.graphics.model.YAnchor;
 
 /**
  * A view context encapsulates all information needed by {@link Drawable}s and {@link Plugin}s to represent the given
@@ -42,8 +40,7 @@ public class ViewContext implements ControlListener {
     private View view;
     private double scaleX = DEFAULT_SCALE, scaleY = DEFAULT_SCALE;
     private double baseX = 0.0, baseY = 0.0;
-    private XAnchor xAnchor = XAnchor.LEFT;
-    private YAnchor yAnchor = YAnchor.BOTTOM;
+    private double resizeCenterX = 0.0, resizeCenterY = 0.0;
     private int dragThreshold = DEFAULT_DRAG_THRESHOLD;
     private Object model;
     private Color backgroundColor;
@@ -170,22 +167,6 @@ public class ViewContext implements ControlListener {
             this.baseY = Math.min(baseY, maxBaseY);
             break;
         }
-    }
-
-    public XAnchor getxAnchor() {
-        return xAnchor;
-    }
-
-    public void setxAnchor(XAnchor xAnchor) {
-        this.xAnchor = xAnchor;
-    }
-
-    public YAnchor getyAnchor() {
-        return yAnchor;
-    }
-
-    public void setyAnchor(YAnchor yAnchor) {
-        this.yAnchor = yAnchor;
     }
 
     public int w(double w) {
@@ -370,6 +351,7 @@ public class ViewContext implements ControlListener {
         if (this.canvas != null) {
             this.canvas.removeControlListener(this);
         }
+        this.view = view;
         this.canvas = view.getCanvas();
         this.canvas.addControlListener(this);
         onCanvasResized();
@@ -423,9 +405,13 @@ public class ViewContext implements ControlListener {
         Rectangle canvasBounds = canvas.getBounds();
         mainAreaRectangle.x = leftMargin;
         mainAreaRectangle.y = topMargin;
+        int oldWidth = mainAreaRectangle.width;
         mainAreaRectangle.width = canvasBounds.width - rightMargin - mainAreaRectangle.x;
+        setBaseX(getBaseX() + w(oldWidth) * resizeCenterX - w(mainAreaRectangle.width) * resizeCenterX);
+        int oldHeight = mainAreaRectangle.height;
         mainAreaRectangle.height = canvasBounds.height - bottomMargin - mainAreaRectangle.y;
-        LOG.debug("Canvas resized, {} {} {} {}", canvasBounds.width, canvasBounds.height, mainAreaRectangle.width, mainAreaRectangle.height);
+        setBaseY(getBaseY() + h(oldHeight) * resizeCenterY - h(mainAreaRectangle.height) * resizeCenterY);
+        LOG.trace("Canvas resized, {} {} {} {}", canvasBounds.width, canvasBounds.height, mainAreaRectangle.width, mainAreaRectangle.height);
     }
 
     public AxisRange getXAxisRange() {
@@ -442,6 +428,22 @@ public class ViewContext implements ControlListener {
 
     public void setYAxisRange(AxisRange yAxisRange) {
         this.yAxisRange = yAxisRange;
+    }
+
+    public double getResizeCenterX() {
+        return resizeCenterX;
+    }
+
+    public void setResizeCenterX(double resizeCenterX) {
+        this.resizeCenterX = resizeCenterX;
+    }
+
+    public double getResizeCenterY() {
+        return resizeCenterY;
+    }
+
+    public void setResizeCenterY(double resizeCenterY) {
+        this.resizeCenterY = resizeCenterY;
     }
 
 }

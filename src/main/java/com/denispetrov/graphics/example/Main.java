@@ -140,7 +140,6 @@ public class Main {
         Button btnStickyZero_1 = new Button(grpYAxisRange, SWT.CHECK);
         btnStickyZero_1.setText("Sticky Zero");
 
-        Composite composite = new Composite(tabFolder, SWT.NONE);
     }
 
     protected void createView() {
@@ -166,8 +165,6 @@ public class Main {
 
         ViewContext viewContext = new ViewContext();
         viewContext.setMargin(20);
-        viewContext.setXAxisRange(ViewContext.AxisRange.NEGATIVE_ONLY);
-        viewContext.setYAxisRange(ViewContext.AxisRange.FULL);
         view.setViewContext(viewContext);
 
         ExampleModel model = new ExampleModel();

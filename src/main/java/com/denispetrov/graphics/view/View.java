@@ -121,12 +121,15 @@ public class View implements PaintListener {
      * to cause the view to update its drawables and plugins and cause a redraw of the canvas
      */
     public void contextUpdated() {
+        LOG.trace("Calling contextUpdated on plugins");
         for (ViewPlugin viewPlugin : viewPlugins) {
             viewPlugin.contextUpdated();
         }
+        LOG.trace("Calling contextUpdated on drawables");
         for (Drawable drawable : drawables) {
             drawable.contextUpdated();
         }
+        LOG.trace("Calling redraw on canvas");
         canvas.redraw();
     }
 
@@ -188,7 +191,7 @@ public class View implements PaintListener {
 
     @Override
     public void paintControl(PaintEvent e) {
-        LOG.debug("View paint");
+        LOG.trace("View paint");
         viewContext.setGC(e.gc);
         for (Drawable h : drawables) {
             h.draw();
