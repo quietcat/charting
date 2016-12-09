@@ -96,7 +96,7 @@ public class Main {
             @Override
             public void widgetSelected(SelectionEvent e) {
                 view.getViewContext().setXAxisRange(AxisRange.POSITIVE_ONLY);
-                view.getViewContext().setBaseX(view.getViewContext().getBaseX());
+                view.getViewContext().validateBaseX();
                 view.contextUpdated();
             }
         });
@@ -107,7 +107,7 @@ public class Main {
             @Override
             public void widgetSelected(SelectionEvent e) {
                 view.getViewContext().setXAxisRange(AxisRange.NEGATIVE_ONLY);
-                view.getViewContext().setBaseX(view.getViewContext().getBaseX());
+                view.getViewContext().validateBaseX();
                 view.contextUpdated();
             }
         });
@@ -134,7 +134,7 @@ public class Main {
             @Override
             public void widgetSelected(SelectionEvent e) {
                 view.getViewContext().setYAxisRange(AxisRange.POSITIVE_ONLY);
-                view.getViewContext().setBaseY(view.getViewContext().getBaseY());
+                view.getViewContext().validateBaseY();
                 view.contextUpdated();
             }
         });
@@ -145,7 +145,7 @@ public class Main {
             @Override
             public void widgetSelected(SelectionEvent e) {
                 view.getViewContext().setYAxisRange(AxisRange.NEGATIVE_ONLY);
-                view.getViewContext().setBaseY(view.getViewContext().getBaseY());
+                view.getViewContext().validateBaseY();
                 view.contextUpdated();
             }
         });
@@ -155,8 +155,7 @@ public class Main {
         btnXStickyZero.addSelectionListener(new SelectionAdapter() {
             @Override
             public void widgetSelected(SelectionEvent e) {
-                ZoomViewPlugin zvp = view.findPlugin(ZoomViewPlugin.class);
-                zvp.setStickyX(btnXStickyZero.getSelection());
+                view.findPlugin(ZoomViewPlugin.class).setStickyX(btnXStickyZero.getSelection());
             }
         });
         btnXStickyZero.setText("Sticky Zero");
@@ -165,8 +164,7 @@ public class Main {
         btnYStickyZero.addSelectionListener(new SelectionAdapter() {
             @Override
             public void widgetSelected(SelectionEvent e) {
-                ZoomViewPlugin zvp = view.findPlugin(ZoomViewPlugin.class);
-                zvp.setStickyY(btnYStickyZero.getSelection());
+                view.findPlugin(ZoomViewPlugin.class).setStickyY(btnYStickyZero.getSelection());
             }
         });
         btnYStickyZero.setText("Sticky Zero");

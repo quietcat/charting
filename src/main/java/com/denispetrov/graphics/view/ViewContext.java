@@ -355,8 +355,7 @@ public class ViewContext implements ControlListener {
         this.canvas = view.getCanvas();
         this.canvas.addControlListener(this);
         calculateMainAreaRectangle();
-        setBaseX(getBaseX());
-        setBaseY(getBaseY());
+        validateBase();
         if (backgroundColor == null) {
             backgroundColor = canvas.getDisplay().getSystemColor(DEFAULT_BACKGROUND_COLOR);
         }
@@ -452,4 +451,16 @@ public class ViewContext implements ControlListener {
         this.resizeCenterY = resizeCenterY;
     }
 
+    public void validateBase() {
+        validateBaseX();
+        validateBaseY();
+    }
+
+    public void validateBaseX() {
+        setBaseX(getBaseX());
+    }
+
+    public void validateBaseY() {
+        setBaseY(getBaseY());
+    }
 }
