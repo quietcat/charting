@@ -77,7 +77,6 @@ public class Main {
         Group grpXAxisRange = new Group(zoomingPageControls, SWT.NONE);
         grpXAxisRange.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
         grpXAxisRange.setText("X Axis Range");
-        grpXAxisRange.setBounds(0, 0, 78, 78);
         grpXAxisRange.setLayout(new FillLayout(SWT.VERTICAL));
 
         Button btnXFullRange = new Button(grpXAxisRange, SWT.RADIO);
