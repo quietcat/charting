@@ -58,7 +58,6 @@ public class DraggerViewPlugin extends ViewPluginBase implements MouseListener, 
             if (Math.abs(e.x - mouseOrigin.x) >= viewContext.getDragThreshold()
                     || Math.abs(e.y - mouseOrigin.y) >= viewContext.getDragThreshold()) {
                 mouseFn = MouseFn.DRAGGING;
-                saveCursor = viewContext.getCanvas().getCursor();
                 viewContext.getCanvas().setCursor(cursorHidden);
             }
             break;
@@ -94,6 +93,7 @@ public class DraggerViewPlugin extends ViewPluginBase implements MouseListener, 
                         draggable = (Draggable) trackable;
                         trackableObject = object;
                         objectOrigin = draggable.getOrigin(trackableObject.getTarget());
+                        saveCursor = viewContext.getCanvas().getCursor();
                         mouseFn = MouseFn.MAYBE_DRAGGING;
                         break;
                     }
