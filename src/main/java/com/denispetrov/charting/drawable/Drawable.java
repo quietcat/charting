@@ -13,15 +13,22 @@ import com.denispetrov.charting.view.ViewContext;
 public interface Drawable {
 
     /**
+     * @return rank of the drawable for sorting
+     */
+    int getRank();
+
+    /**
      * @param rank
      * 
      * Rank determines the order in which drawables' draw() methods are invoked
      * in a given view. The lower the rank, the earlier the drawing will occur.
      * For drawables with equal rank, the order is not determined.
      * Drawables are sorted once during view initialization, so the rank should
-     * be set before {@link View#init()} is called during initialization
+     * be set before {@link View#init()} is called during initialization.
+     * {@link View#addDrawable(Drawable)} assigns a default rank to ensure
+     * drawables are called in the order they're initialized.
      */
-    int getRank();
+    void setRank(int rank);
 
     /**
      * Called to perform the actual drawing in a {@link org.eclipse.swt.graphics.GC}

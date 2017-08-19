@@ -4,8 +4,6 @@ import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
 
-import org.eclipse.swt.events.ControlEvent;
-import org.eclipse.swt.events.ControlListener;
 import org.eclipse.swt.events.PaintEvent;
 import org.eclipse.swt.events.PaintListener;
 import org.eclipse.swt.widgets.Canvas;
@@ -13,6 +11,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.denispetrov.charting.drawable.Drawable;
+import com.denispetrov.charting.drawable.impl.DrawableBase;
 import com.denispetrov.charting.plugin.ViewPlugin;
 
 /**
@@ -78,11 +77,24 @@ public class View implements PaintListener {
     private List<Drawable> drawables = new LinkedList<>();
     private List<ViewPlugin> viewPlugins = new LinkedList<>();
 
+    private int drawableRankAssign = DrawableBase.DEFAULT_MODEL_DRAWABLE_RANK;
+
     public List<ViewPlugin> getViewPlugins() {
         return viewPlugins;
     }
 
+    /**
+     * @param drawable Drawable to be added
+     * 
+     * Adds the drawable to its list and if the drawable has a rank equal to
+     * {@link DrawableBase#DEFAULT_MODEL_DRAWABLE_RANK} it reassigns is so that
+     * drawables are called in the order they're initialized.
+     */
     public void addDrawable(Drawable drawable) {
+        if (drawable.getRank() == DrawableBase.DEFAULT_MODEL_DRAWABLE_RANK) {
+            drawableRankAssign += 100;
+            drawable.setRank(drawableRankAssign);
+        }
         drawables.add(drawable);
     }
 
