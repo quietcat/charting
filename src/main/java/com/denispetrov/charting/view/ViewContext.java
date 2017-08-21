@@ -3,7 +3,12 @@ package com.denispetrov.charting.view;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ControlEvent;
 import org.eclipse.swt.events.ControlListener;
-import org.eclipse.swt.graphics.*;
+import org.eclipse.swt.graphics.Color;
+import org.eclipse.swt.graphics.Drawable;
+import org.eclipse.swt.graphics.GC;
+import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.graphics.Point;
+import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.widgets.Canvas;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -11,6 +16,7 @@ import org.slf4j.LoggerFactory;
 import com.denispetrov.charting.drawable.DrawParameters;
 import com.denispetrov.charting.model.FPoint;
 import com.denispetrov.charting.model.FRectangle;
+import com.denispetrov.charting.model.HRectangle;
 
 /**
  * A view context encapsulates all information needed by {@link Drawable}s and {@link Plugin}s to represent the given
@@ -217,6 +223,14 @@ public class ViewContext implements ControlListener {
         return new Rectangle(x(fr.x), y(fr.y + fr.h), w(fr.w), h(fr.h));
     }
 
+    public HRectangle rectangleH(Rectangle r) {
+        return new HRectangle(x(r.x), x(r.y + r.height), r.width, r.height);
+    }
+
+    public Rectangle rectangle(HRectangle fr) {
+        return new Rectangle(x(fr.x), y(fr.y) + fr.h, fr.w, fr.h);
+    }
+
     public void drawRectangle(double x, double y, double width, double height) {
         gc.drawRectangle(x(x), y(y + height), w(width), h(height));
     }
@@ -225,12 +239,20 @@ public class ViewContext implements ControlListener {
         gc.drawRectangle(rectangle(rectangle));
     }
 
+    public void drawRectangle(HRectangle rectangle) {
+        gc.drawRectangle(x(rectangle.x), y(rectangle.y) + rectangle.h, rectangle.w, rectangle.h);
+    }
+
     public void fillRectangle(double x, double y, double width, double height) {
         gc.fillRectangle(x(x), y(y + height), w(width), h(height));
     }
 
     public void fillRectangle(FRectangle rectangle) {
         gc.fillRectangle(rectangle(rectangle));
+    }
+
+    public void fillRectangle(HRectangle rectangle) {
+        gc.fillRectangle(x(rectangle.x), y(rectangle.y) + rectangle.h, rectangle.w, rectangle.h);
     }
 
     public void drawLine(double x1, double y1, double x2, double y2) {
@@ -253,7 +275,7 @@ public class ViewContext implements ControlListener {
         }
         Rectangle ib = image.getBounds();
         Rectangle extent = extent(new FPoint(x, y), new Point(ib.width, ib.height), dp);
-        gc.drawImage(image, extent.x, extent.y);
+        gc.drawImage(image, extent.x + dp.xMargin, extent.y + dp.yMargin);
     }
 
     public void drawText(String text, double x, double y, DrawParameters drawParameters) {
@@ -273,30 +295,38 @@ public class ViewContext implements ControlListener {
         return extent(new FPoint(x, y), gc.textExtent(text, dp.textExtentFlags), dp);
     }
 
+    public HRectangle textRectangleH(String text, double x, double y, DrawParameters drawParameters) {
+        DrawParameters dp = drawParameters;
+        if (dp == null) {
+            dp = new DrawParameters();
+        }
+        return rectangleH(extent(new FPoint(x, y), gc.textExtent(text, dp.textExtentFlags), dp));
+    }
+
     public Rectangle extent(FRectangle r, DrawParameters dp) {
         int ix, iy;
         switch (dp.xAnchor) {
         case LEFT:
-            ix = x(r.x) + dp.xMargin;
+            ix = x(r.x);
             break;
         case MIDDLE:
             ix = x(r.x - r.w / 2);
             break;
         case RIGHT:
-            ix = x(r.x - r.w) - dp.xMargin;
+            ix = x(r.x - r.w);
             break;
         default:
             return null;
         }
         switch (dp.yAnchor) {
         case TOP:
-            iy = y(r.y + r.h) + dp.yMargin;
+            iy = y(r.y + r.h);
             break;
         case MIDDLE:
             iy = y(r.y + r.h / 2.0);
             break;
         case BOTTOM:
-            iy = y(r.y) - dp.yMargin;
+            iy = y(r.y);
             break;
         default:
             return null;
@@ -306,15 +336,17 @@ public class ViewContext implements ControlListener {
 
     public Rectangle extent(FPoint org, Point size, DrawParameters dp) {
         int ix, iy;
+        int width = size.x + 2 * dp.xMargin;
+        int height = size.y + 2 * dp.yMargin;
         switch (dp.xAnchor) {
         case LEFT:
             ix = x(org.x) + dp.xMargin;
             break;
         case MIDDLE:
-            ix = x(org.x) - (int) Math.round(size.x / 2.0);
+            ix = x(org.x) - (int) Math.round(width / 2.0);
             break;
         case RIGHT:
-            ix = x(org.x) - size.x - dp.xMargin;
+            ix = x(org.x) - width - dp.xMargin;
             break;
         default:
             return null;
@@ -324,15 +356,15 @@ public class ViewContext implements ControlListener {
             iy = y(org.y) + dp.yMargin;
             break;
         case MIDDLE:
-            iy = y(org.y) - (int) Math.round(size.y / 2.0);
+            iy = y(org.y) - (int) Math.round(height / 2.0);
             break;
         case BOTTOM:
-            iy = y(org.y) - size.y - dp.yMargin;
+            iy = y(org.y) - height - dp.yMargin;
             break;
         default:
             return null;
         }
-        return new Rectangle(ix, iy, size.x, size.y);
+        return new Rectangle(ix, iy, width, height);
     }
 
     public Object getModel() {
