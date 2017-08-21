@@ -216,7 +216,7 @@ public class ViewContext implements ControlListener {
     }
 
     public FRectangle rectangle(Rectangle r) {
-        return new FRectangle(x(r.x), x(r.y + r.height), w(r.width), h(r.height));
+        return new FRectangle(x(r.x), y(r.y + r.height), w(r.width), h(r.height));
     }
 
     public Rectangle rectangle(FRectangle fr) {
@@ -224,7 +224,7 @@ public class ViewContext implements ControlListener {
     }
 
     public HRectangle rectangleH(Rectangle r) {
-        return new HRectangle(x(r.x), x(r.y + r.height), r.width, r.height);
+        return new HRectangle(x(r.x), y(r.y + r.height), r.width, r.height);
     }
 
     public Rectangle rectangle(HRectangle fr) {

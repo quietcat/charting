@@ -4,7 +4,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
 
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.graphics.Point;
+import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Canvas;
 import org.eclipse.swt.widgets.Display;
@@ -16,6 +16,8 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.denispetrov.charting.model.FRectangle;
 
 public class ViewContextTest {
     private static final Logger LOG = LoggerFactory.getLogger(ViewContextTest.class);
@@ -266,7 +268,24 @@ public class ViewContextTest {
     }
 
     @Test
-    public void testScaledCalculations() {
+    public void testRectangle() {
+        FRectangle fRect = new FRectangle(
+                180.0,
+                100.0,
+                20.0,
+                20.0
+                );
+        Rectangle rect = viewContext.rectangle(fRect);
+        LOG.info("{}", rect);
+//        assertEquals(190,rect.x);
+//        assertEquals(190,rect.y);
+//        assertEquals(20,rect.width);
+//        assertEquals(20,rect.height);
+        FRectangle fRectOut = viewContext.rectangle(rect);
+        assertEquals(fRect.x, fRectOut.x, 0.000001);
+        assertEquals(fRect.y, fRectOut.y, 0.000001);
+        assertEquals(fRect.w, fRectOut.w, 0.000001);
+        assertEquals(fRect.h, fRectOut.h, 0.000001);
     }
 
     @Test
