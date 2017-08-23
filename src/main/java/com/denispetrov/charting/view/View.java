@@ -83,6 +83,10 @@ public class View implements PaintListener {
         return viewPlugins;
     }
 
+    public List<Drawable> getDrawables() {
+        return drawables;
+    }
+
     /**
      * @param drawable Drawable to be added
      * 

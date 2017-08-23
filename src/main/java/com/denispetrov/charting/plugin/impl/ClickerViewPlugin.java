@@ -10,7 +10,10 @@ import org.eclipse.swt.graphics.Point;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.denispetrov.charting.plugin.*;
+import com.denispetrov.charting.drawable.Drawable;
+import com.denispetrov.charting.plugin.Clickable;
+import com.denispetrov.charting.plugin.Trackable;
+import com.denispetrov.charting.plugin.TrackableObject;
 import com.denispetrov.charting.view.View;
 import com.denispetrov.charting.view.ViewContext;
 
@@ -21,7 +24,7 @@ public class ClickerViewPlugin extends ViewPluginBase implements MouseListener {
         NONE, BUTTON_DOWN
     }
 
-    private MouseFn mouseFn;
+    private MouseFn mouseFn = MouseFn.NONE;
     private int button = 0;
 
     private Map<Clickable,Set<TrackableObject>> clickables = new HashMap<>();
@@ -55,6 +58,11 @@ public class ClickerViewPlugin extends ViewPluginBase implements MouseListener {
             mouseFn = MouseFn.BUTTON_DOWN;
             button = e.button;
         }
+        for (Drawable drawable : view.getDrawables()) {
+            if (Clickable.class.isAssignableFrom(drawable.getClass())) {
+                ((Clickable)drawable).mouseDown(clickables.get(drawable), button, e.x, e.y);
+            }
+        }
     }
 
     @Override
@@ -67,6 +75,11 @@ public class ClickerViewPlugin extends ViewPluginBase implements MouseListener {
                 for (Clickable t : clickables.keySet()) {
                     t.objectClicked(clickables.get(t), e.button);
                 }
+            }
+        }
+        for (Drawable drawable : view.getDrawables()) {
+            if (Clickable.class.isAssignableFrom(drawable.getClass())) {
+                ((Clickable)drawable).mouseUp(button, e.x, e.y);
             }
         }
         mouseFn = MouseFn.NONE;

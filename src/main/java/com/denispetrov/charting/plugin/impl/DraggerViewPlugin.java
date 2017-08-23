@@ -1,11 +1,7 @@
 package com.denispetrov.charting.plugin.impl;
 
-import java.util.Map;
-import java.util.Set;
-
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.MouseEvent;
-import org.eclipse.swt.events.MouseListener;
 import org.eclipse.swt.events.MouseMoveListener;
 import org.eclipse.swt.graphics.*;
 
@@ -14,19 +10,18 @@ import com.denispetrov.charting.plugin.*;
 import com.denispetrov.charting.view.View;
 import com.denispetrov.charting.view.ViewContext;
 
-public class DraggerViewPlugin extends ViewPluginBase implements MouseListener, MouseMoveListener {
+public class DraggerViewPlugin extends ViewPluginBase implements MouseMoveListener {
 
     private enum MouseFn {
         NONE, MAYBE_DRAGGING, DRAGGING
     }
 
     private MouseFn mouseFn = MouseFn.NONE;
-    private FPoint mouseOrigin = new FPoint(0,0);
-    private FPoint objectOrigin = new FPoint(0,0);
+    private Point mouseXY = new Point(0,0);
+    private FPoint mouseOrigin = new FPoint(0, 0);
+    private FPoint objectOrigin = new FPoint(0, 0);
     private TrackableObject trackableObject;
     private Draggable draggable;
-
-    private TrackerViewPlugin trackerViewPlugin;
 
     private Cursor cursorHidden;
     private Cursor saveCursor;
@@ -34,10 +29,8 @@ public class DraggerViewPlugin extends ViewPluginBase implements MouseListener, 
     @Override
     public void setView(View view) {
         super.setView(view);
-        view.getCanvas().addMouseListener(this);
         view.getCanvas().addMouseMoveListener(this);
-        trackerViewPlugin = view.findPlugin(TrackerViewPlugin.class);
-        
+
         // create a cursor with a transparent image
         Color colorWhite = view.getCanvas().getDisplay().getSystemColor(SWT.COLOR_WHITE);
         Color colorBlack = view.getCanvas().getDisplay().getSystemColor(SWT.COLOR_BLACK);
@@ -66,48 +59,36 @@ public class DraggerViewPlugin extends ViewPluginBase implements MouseListener, 
             FPoint origin = draggable.getOrigin(trackableObject.getTarget());
             origin.x = objectOrigin.x + (viewContext.x(e.x) - mouseOrigin.x);
             origin.y = objectOrigin.y + (viewContext.y(e.y) - mouseOrigin.y);
-            draggable.setOrigin(trackableObject.getTarget(),origin);
+            draggable.setOrigin(trackableObject.getTarget(), origin);
             view.modelUpdated(draggable, trackableObject);
             break;
         case NONE:
+            mouseXY.x = e.x;
+            mouseXY.y = e.y;
             break;
         }
     }
 
-    @Override
-    public void mouseDoubleClick(MouseEvent e) {
+    public void beginDrag(Draggable draggable, TrackableObject trackableObject) {
+        this.draggable = draggable;
+        this.trackableObject = trackableObject;
+        ViewContext viewContext = view.getViewContext();
+        mouseOrigin.x = viewContext.x(mouseXY.x);
+        mouseOrigin.y = viewContext.y(mouseXY.y);
+        objectOrigin = this.draggable.getOrigin(this.trackableObject.getTarget());
+        saveCursor = viewContext.getCanvas().getCursor();
+        mouseFn = MouseFn.MAYBE_DRAGGING;
+    }
+
+    public void endDrag() {
+        view.getCanvas().setCursor(saveCursor);
+        mouseFn = MouseFn.NONE;
     }
 
     @Override
-    public void mouseDown(MouseEvent e) {
-        if (e.button == 1 && mouseFn == MouseFn.NONE) {
-            Map<Trackable, Set<TrackableObject>> clickedOn = trackerViewPlugin.getObjectsUnderMouse(e.x, e.y);
-            trackableObject = null;
-            draggable = null;
-            for (Trackable trackable : clickedOn.keySet()) {
-                if (Draggable.class.isAssignableFrom(trackable.getClass())) {
-                    for (TrackableObject object : clickedOn.get(trackable)) {
-                        ViewContext viewContext = view.getViewContext();
-                        mouseOrigin.x = viewContext.x(e.x);
-                        mouseOrigin.y = viewContext.y(e.y);
-                        draggable = (Draggable) trackable;
-                        trackableObject = object;
-                        objectOrigin = draggable.getOrigin(trackableObject.getTarget());
-                        saveCursor = viewContext.getCanvas().getCursor();
-                        mouseFn = MouseFn.MAYBE_DRAGGING;
-                        break;
-                    }
-                }
-            }
-        }
-    }
-
-    @Override
-    public void mouseUp(MouseEvent e) {
-        if (e.button == 1 && mouseFn != MouseFn.NONE) {
-            view.getCanvas().setCursor(saveCursor);
-            mouseFn = MouseFn.NONE;
-        }
+    protected void finalize() throws Throwable {
+        cursorHidden.dispose();
+        super.finalize();
     }
 
 }
