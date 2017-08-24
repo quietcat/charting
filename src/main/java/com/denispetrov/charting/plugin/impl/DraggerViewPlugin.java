@@ -23,24 +23,13 @@ public class DraggerViewPlugin extends ViewPluginBase implements MouseMoveListen
     private FPoint trackableObjectOrigin = new FPoint(0, 0);
     private TrackableObject trackableObject;
     private Draggable draggable;
-
-    private Cursor cursorHidden;
-    private Cursor saveCursor;
+    private TrackerViewPlugin trackerViewPlugin;
 
     @Override
     public void setView(View view) {
         super.setView(view);
         view.getCanvas().addMouseMoveListener(this);
-
-        // create a cursor with a transparent image
-        Color colorWhite = view.getCanvas().getDisplay().getSystemColor(SWT.COLOR_WHITE);
-        Color colorBlack = view.getCanvas().getDisplay().getSystemColor(SWT.COLOR_BLACK);
-        PaletteData palette = new PaletteData(new RGB[] { colorWhite.getRGB(),
-                colorBlack.getRGB() });
-        ImageData sourceData = new ImageData(16, 16, 1, palette);
-        sourceData.transparentPixel = 0;
-        cursorHidden = new Cursor(view.getCanvas().getDisplay(), sourceData, 0, 0);
-
+        trackerViewPlugin = view.findPlugin(TrackerViewPlugin.class);
     }
 
     @Override
@@ -52,7 +41,7 @@ public class DraggerViewPlugin extends ViewPluginBase implements MouseMoveListen
             if (Math.abs(e.x - mouseOrigin.x) >= viewContext.getDragThreshold()
                     || Math.abs(e.y - mouseOrigin.y) >= viewContext.getDragThreshold()) {
                 mouseFn = MouseFn.DRAGGING;
-                viewContext.getCanvas().setCursor(cursorHidden);
+                trackerViewPlugin.hideCursor();
             }
             break;
         case DRAGGING:
@@ -79,7 +68,6 @@ public class DraggerViewPlugin extends ViewPluginBase implements MouseMoveListen
         objectOrigin = this.draggable.getOrigin(this.trackableObject.getTarget());
         trackableObjectOrigin.x = trackableObject.getFRect().x;
         trackableObjectOrigin.y = trackableObject.getFRect().y;
-        saveCursor = viewContext.getCanvas().getCursor();
         mouseFn = MouseFn.MAYBE_DRAGGING;
     }
 
@@ -88,16 +76,10 @@ public class DraggerViewPlugin extends ViewPluginBase implements MouseMoveListen
         trackableObject.getFRect().x = trackableObjectOrigin.x + (origin.x - objectOrigin.x);
         trackableObject.getFRect().y = trackableObjectOrigin.y + (origin.y - objectOrigin.y);
         trackableObject.setIRect(view.getViewContext().rectangle(trackableObject.getFRect()));
-        view.getCanvas().setCursor(saveCursor);
+        trackerViewPlugin.showCursor();
         mouseFn = MouseFn.NONE;
         this.draggable = null;
         this.trackableObject = null;
-    }
-
-    @Override
-    protected void finalize() throws Throwable {
-        cursorHidden.dispose();
-        super.finalize();
     }
 
 }
