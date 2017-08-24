@@ -60,16 +60,14 @@ public class DraggerViewPlugin extends ViewPluginBase implements MouseMoveListen
             FPoint origin = draggable.getOrigin(trackableObject.getTarget());
             origin.x = objectOrigin.x + (viewContext.x(e.x) - mouseOrigin.x);
             origin.y = objectOrigin.y + (viewContext.y(e.y) - mouseOrigin.y);
-            trackableObject.getFRect().x = trackableObjectOrigin.x + (viewContext.x(e.x) - mouseOrigin.x);
-            trackableObject.getFRect().y = trackableObjectOrigin.y + (viewContext.y(e.y) - mouseOrigin.y);
             draggable.setOrigin(trackableObject.getTarget(), origin);
             view.modelUpdated(draggable, trackableObject);
             break;
         case NONE:
-            mouseXY.x = e.x;
-            mouseXY.y = e.y;
             break;
         }
+        mouseXY.x = e.x;
+        mouseXY.y = e.y;
     }
 
     public void beginDrag(Draggable draggable, TrackableObject trackableObject) {
@@ -86,6 +84,9 @@ public class DraggerViewPlugin extends ViewPluginBase implements MouseMoveListen
     }
 
     public void endDrag() {
+        FPoint origin = draggable.getOrigin(trackableObject.getTarget());
+        trackableObject.getFRect().x = trackableObjectOrigin.x + (origin.x - objectOrigin.x);
+        trackableObject.getFRect().y = trackableObjectOrigin.y + (origin.y - objectOrigin.y);
         trackableObject.setIRect(view.getViewContext().rectangle(trackableObject.getFRect()));
         view.getCanvas().setCursor(saveCursor);
         mouseFn = MouseFn.NONE;
