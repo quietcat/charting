@@ -20,6 +20,7 @@ public class DraggerViewPlugin extends ViewPluginBase implements MouseMoveListen
     private Point mouseXY = new Point(0,0);
     private FPoint mouseOrigin = new FPoint(0, 0);
     private FPoint objectOrigin = new FPoint(0, 0);
+    private FPoint trackableObjectOrigin = new FPoint(0, 0);
     private TrackableObject trackableObject;
     private Draggable draggable;
 
@@ -59,6 +60,8 @@ public class DraggerViewPlugin extends ViewPluginBase implements MouseMoveListen
             FPoint origin = draggable.getOrigin(trackableObject.getTarget());
             origin.x = objectOrigin.x + (viewContext.x(e.x) - mouseOrigin.x);
             origin.y = objectOrigin.y + (viewContext.y(e.y) - mouseOrigin.y);
+            trackableObject.getFRect().x = trackableObjectOrigin.x + (viewContext.x(e.x) - mouseOrigin.x);
+            trackableObject.getFRect().y = trackableObjectOrigin.y + (viewContext.y(e.y) - mouseOrigin.y);
             draggable.setOrigin(trackableObject.getTarget(), origin);
             view.modelUpdated(draggable, trackableObject);
             break;
@@ -76,13 +79,18 @@ public class DraggerViewPlugin extends ViewPluginBase implements MouseMoveListen
         mouseOrigin.x = viewContext.x(mouseXY.x);
         mouseOrigin.y = viewContext.y(mouseXY.y);
         objectOrigin = this.draggable.getOrigin(this.trackableObject.getTarget());
+        trackableObjectOrigin.x = trackableObject.getFRect().x;
+        trackableObjectOrigin.y = trackableObject.getFRect().y;
         saveCursor = viewContext.getCanvas().getCursor();
         mouseFn = MouseFn.MAYBE_DRAGGING;
     }
 
     public void endDrag() {
+        trackableObject.setIRect(view.getViewContext().rectangle(trackableObject.getFRect()));
         view.getCanvas().setCursor(saveCursor);
         mouseFn = MouseFn.NONE;
+        this.draggable = null;
+        this.trackableObject = null;
     }
 
     @Override

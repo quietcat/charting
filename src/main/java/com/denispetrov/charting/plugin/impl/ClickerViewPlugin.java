@@ -46,8 +46,8 @@ public class ClickerViewPlugin extends ViewPluginBase implements MouseListener {
     @Override
     public void mouseDown(MouseEvent e) {
         LOG.trace("Mouse down, button = {}", e.button);
+        clickables.clear();
         if (trackerViewPlugin.isTracking(e.x, e.y) && mouseFn == MouseFn.NONE) {
-            clickables.clear();
             Map<Trackable,Set<TrackableObject>> objectsOnMouseDown = trackerViewPlugin.getObjectsUnderMouse(e.x, e.y);
             for (Trackable t : objectsOnMouseDown.keySet()) {
                 if (Clickable.class.isAssignableFrom(t.getClass())) {
@@ -60,7 +60,7 @@ public class ClickerViewPlugin extends ViewPluginBase implements MouseListener {
         }
         for (Drawable drawable : view.getDrawables()) {
             if (Clickable.class.isAssignableFrom(drawable.getClass())) {
-                ((Clickable)drawable).mouseDown(clickables.get(drawable), button, e.x, e.y);
+                ((Clickable)drawable).mouseDown(clickables, button, e.x, e.y);
             }
         }
     }
