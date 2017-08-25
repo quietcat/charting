@@ -109,6 +109,7 @@ public class TrackerViewPlugin extends ViewPluginBase implements MouseMoveListen
             Set<TrackableObject> trackable = objectsBeingTracked.get(t);
             for (TrackableObject to : trackable) {
                 if (isIn(viewContext, x, y, to)) {
+                    LOG.trace("Tracking: x={} y={} tip={}", x, y, to.getIRect());
                     firstTrackableUnderMouse = t;
                     return true;
                 }

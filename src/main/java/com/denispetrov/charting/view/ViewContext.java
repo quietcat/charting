@@ -268,7 +268,7 @@ public class ViewContext implements ControlListener {
         gc.drawPolyline(pointArray);
     }
 
-    public void drawImage(Image image, double x, double y, DrawParameters drawParameters) {
+    public Rectangle drawImage(Image image, double x, double y, DrawParameters drawParameters) {
         DrawParameters dp = drawParameters;
         if (dp == null) {
             dp = new DrawParameters();
@@ -276,15 +276,17 @@ public class ViewContext implements ControlListener {
         Rectangle ib = image.getBounds();
         Rectangle extent = extent(new FPoint(x, y), new Point(ib.width, ib.height), dp);
         gc.drawImage(image, extent.x + dp.xMargin, extent.y + dp.yMargin);
+        return extent;
     }
 
-    public void drawText(String text, double x, double y, DrawParameters drawParameters) {
+    public Rectangle drawText(String text, double x, double y, DrawParameters drawParameters) {
         DrawParameters dp = drawParameters;
         if (dp == null) {
             dp = new DrawParameters();
         }
         Rectangle extent = extent(new FPoint(x, y), gc.textExtent(text, dp.textExtentFlags), dp);
-        gc.drawText(text, extent.x, extent.y, dp.isTransparent);
+        gc.drawText(text, extent.x + dp.xMargin, extent.y + dp.yMargin, dp.isTransparent);
+        return extent;
     }
 
     public Rectangle textRectangle(String text, double x, double y, DrawParameters drawParameters) {
