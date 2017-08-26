@@ -342,26 +342,26 @@ public class ViewContext implements ControlListener {
         int height = size.y + 2 * dp.yMargin;
         switch (dp.xAnchor) {
         case LEFT:
-            ix = x(org.x) + dp.xMargin;
+            ix = x(org.x);
             break;
         case MIDDLE:
             ix = x(org.x) - (int) Math.round(width / 2.0);
             break;
         case RIGHT:
-            ix = x(org.x) - width - dp.xMargin;
+            ix = x(org.x) - width;
             break;
         default:
             return null;
         }
         switch (dp.yAnchor) {
         case TOP:
-            iy = y(org.y) + dp.yMargin;
+            iy = y(org.y);
             break;
         case MIDDLE:
             iy = y(org.y) - (int) Math.round(height / 2.0);
             break;
         case BOTTOM:
-            iy = y(org.y) - height - dp.yMargin;
+            iy = y(org.y) - height;
             break;
         default:
             return null;

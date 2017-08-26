@@ -60,7 +60,7 @@ public class ClickerViewPlugin extends ViewPluginBase implements MouseListener {
         }
         for (Drawable drawable : view.getDrawables()) {
             if (Clickable.class.isAssignableFrom(drawable.getClass())) {
-                ((Clickable)drawable).mouseDown(clickables, button, e.x, e.y);
+                ((Clickable)drawable).mouseDown(clickables, e.button, e.x, e.y);
             }
         }
     }
@@ -79,7 +79,7 @@ public class ClickerViewPlugin extends ViewPluginBase implements MouseListener {
         }
         for (Drawable drawable : view.getDrawables()) {
             if (Clickable.class.isAssignableFrom(drawable.getClass())) {
-                ((Clickable)drawable).mouseUp(button, e.x, e.y);
+                ((Clickable)drawable).mouseUp(e.button, e.x, e.y);
             }
         }
         mouseFn = MouseFn.NONE;
