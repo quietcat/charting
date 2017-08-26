@@ -209,8 +209,10 @@ public class View implements PaintListener {
     public void paintControl(PaintEvent e) {
         LOG.trace("View paint");
         viewContext.setGC(e.gc);
+        long time0 = System.nanoTime();
         for (Drawable h : drawables) {
             h.draw();
         }
+        LOG.trace("Paint time {} ns", System.nanoTime() - time0);
     }
 }
