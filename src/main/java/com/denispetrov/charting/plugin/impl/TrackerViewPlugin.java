@@ -47,6 +47,7 @@ public class TrackerViewPlugin extends ViewPluginBase implements MouseMoveListen
     private boolean cursorIsHidden = false;
     private Point mouseXY = new Point(0, 0);
     private Trackable firstTrackableUnderMouse = null;
+    private TrackableObject firstTrackableObjectUnderMouse = null;
 
     @Override
     public void setView(View view) {
@@ -111,11 +112,13 @@ public class TrackerViewPlugin extends ViewPluginBase implements MouseMoveListen
                 if (isIn(viewContext, x, y, to)) {
                     LOG.trace("Tracking: x={} y={} tip={}", x, y, to.getIRect());
                     firstTrackableUnderMouse = t;
+                    firstTrackableObjectUnderMouse = to;
                     return true;
                 }
             }
         }
         firstTrackableUnderMouse = null;
+        firstTrackableObjectUnderMouse = null;
         return false;
     }
 
@@ -199,6 +202,14 @@ public class TrackerViewPlugin extends ViewPluginBase implements MouseMoveListen
             view.getCanvas().setCursor(cursorDefault);
         }
         cursorIsHidden = false;
+    }
+
+    public Trackable getFirstTrackableUnderMouse() {
+        return firstTrackableUnderMouse;
+    }
+
+    public TrackableObject getFirstTrackableObjectUnderMouse() {
+        return firstTrackableObjectUnderMouse;
     }
 
 }
