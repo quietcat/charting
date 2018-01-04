@@ -102,6 +102,15 @@ public class View implements PaintListener {
         drawables.add(drawable);
     }
 
+    public <S extends Drawable> S findDrawable(Class<S> drawableClass) {
+        for (Drawable drawable : drawables) {
+            if (drawableClass.isAssignableFrom(drawable.getClass())) {
+                return drawableClass.cast(drawable);
+            }
+        }
+        return null;
+    }
+
     public void addViewPlugin(ViewPlugin viewPlugin) {
         viewPlugins.add(viewPlugin);
     }

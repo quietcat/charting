@@ -1,6 +1,5 @@
 package com.denispetrov.charting.plugin.impl;
 
-import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.events.MouseMoveListener;
 import org.eclipse.swt.graphics.*;
@@ -82,4 +81,7 @@ public class DraggerViewPlugin extends ViewPluginBase implements MouseMoveListen
         this.trackableObject = null;
     }
 
+    public boolean isDragging() {
+        return mouseFn == MouseFn.DRAGGING;
+    }
 }
