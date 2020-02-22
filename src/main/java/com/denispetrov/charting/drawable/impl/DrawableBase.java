@@ -12,6 +12,11 @@ public abstract class DrawableBase implements Drawable {
     protected int rank = DEFAULT_MODEL_DRAWABLE_RANK;
 
     @Override
+    public void preDraw() {
+    	
+    }
+    
+    @Override
     public int getRank() {
         return rank;
     }
@@ -32,10 +37,6 @@ public abstract class DrawableBase implements Drawable {
 
     @Override
     public void modelUpdated() {
-    }
-
-    @Override
-    public void modelUpdated(Object component, Object item) {
     }
 
     @Override

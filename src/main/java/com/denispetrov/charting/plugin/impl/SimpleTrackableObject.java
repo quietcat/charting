@@ -3,6 +3,7 @@ package com.denispetrov.charting.plugin.impl;
 import org.eclipse.swt.graphics.Rectangle;
 
 import com.denispetrov.charting.model.FRectangle;
+import com.denispetrov.charting.plugin.Trackable;
 import com.denispetrov.charting.plugin.TrackableObject;
 import com.denispetrov.charting.view.ViewContext;
 
@@ -14,7 +15,13 @@ public class SimpleTrackableObject implements TrackableObject {
     private Object target = null;
     private int xPadding = 0, yPadding = 0;
     private boolean isPixelSized = false;
+    private int rank = 0;
+    private Trackable trackable;
 
+    public SimpleTrackableObject(Trackable trackable, Object target) {
+    	this.trackable = trackable;
+    	this.target = target;
+    }
     /* (non-Javadoc)
      * @see com.denispetrov.graphics.plugin.TrackingObject#getfRect()
      */
@@ -27,8 +34,9 @@ public class SimpleTrackableObject implements TrackableObject {
      * @see com.denispetrov.graphics.plugin.TrackingObject#setfRect(com.denispetrov.graphics.model.FRectangle)
      */
     @Override
-    public void setFRect(FRectangle fRect) {
+    public TrackableObject setFRect(FRectangle fRect) {
         copyRect(fRect, this.fRect);
+        return this;
     }
 
     /* (non-Javadoc)
@@ -56,9 +64,10 @@ public class SimpleTrackableObject implements TrackableObject {
      * @see com.denispetrov.graphics.plugin.TrackingObject#setiRect(org.eclipse.swt.graphics.Rectangle)
      */
     @Override
-    public void setIRect(Rectangle iRect) {
+    public TrackableObject setIRect(Rectangle iRect) {
         copyRect(iRect, this.iRect);
         updatePaddedIRect();
+        return this;
     }
 
     /* (non-Javadoc)
@@ -73,8 +82,9 @@ public class SimpleTrackableObject implements TrackableObject {
      * @see com.denispetrov.graphics.plugin.TrackingObject#setTarget(java.lang.Object)
      */
     @Override
-    public void setTarget(Object target) {
+    public TrackableObject setTarget(Object target) {
         this.target = target;
+        return this;
     }
 
     /* (non-Javadoc)
@@ -89,9 +99,10 @@ public class SimpleTrackableObject implements TrackableObject {
      * @see com.denispetrov.graphics.plugin.TrackingObject#setxPadding(int)
      */
     @Override
-    public void setXPadding(int xPadding) {
+    public TrackableObject setXPadding(int xPadding) {
         this.xPadding = xPadding;
         updatePaddedIRect();
+        return this;
     }
 
     /* (non-Javadoc)
@@ -106,9 +117,10 @@ public class SimpleTrackableObject implements TrackableObject {
      * @see com.denispetrov.graphics.plugin.TrackingObject#setyPadding(int)
      */
     @Override
-    public void setYPadding(int yPadding) {
+    public TrackableObject setYPadding(int yPadding) {
         this.yPadding = yPadding;
         updatePaddedIRect();
+        return this;
     }
 
     @Override
@@ -130,8 +142,9 @@ public class SimpleTrackableObject implements TrackableObject {
     }
 
     @Override
-    public void setPixelSized(boolean isPixelSized) {
+    public TrackableObject setPixelSized(boolean isPixelSized) {
         this.isPixelSized = isPixelSized;
+        return this;
     }
 
     @Override
@@ -145,4 +158,26 @@ public class SimpleTrackableObject implements TrackableObject {
         this.paddedIRect.width = this.iRect.width + this.xPadding + this.xPadding;
         this.paddedIRect.height = this.iRect.height  + this.yPadding + this.yPadding;
     }
+
+	@Override
+	public int getRank() {
+		return rank;
+	}
+
+	@Override
+	public TrackableObject setRank(int rank) {
+		this.rank = rank;
+		return this;
+	}
+
+	@Override
+	public Trackable getTrackable() {
+		return trackable;
+	}
+
+	@Override
+	public TrackableObject setTrackable(Trackable trackable) {
+		this.trackable = trackable;
+		return this;
+	}
 }

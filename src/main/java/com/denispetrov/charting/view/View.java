@@ -1,7 +1,7 @@
 package com.denispetrov.charting.view;
 
+import java.util.ArrayList;
 import java.util.Comparator;
-import java.util.LinkedList;
 import java.util.List;
 
 import org.eclipse.swt.events.PaintEvent;
@@ -74,8 +74,8 @@ public class View implements PaintListener {
     private Canvas canvas;
 
     private ViewContext viewContext;
-    private List<Drawable> drawables = new LinkedList<>();
-    private List<ViewPlugin> viewPlugins = new LinkedList<>();
+    private List<Drawable> drawables = new ArrayList<>();
+    private List<ViewPlugin> viewPlugins = new ArrayList<>();
 
     private int drawableRankAssign = DrawableBase.DEFAULT_MODEL_DRAWABLE_RANK;
 
@@ -196,29 +196,16 @@ public class View implements PaintListener {
         canvas.redraw();
     }
 
-    /**
-     * Trigger a narrow update of one item managed by a specific component. This method
-     * helps reduce the amount of code that needs to run when only one component is updated
-     * as a result of some interactive action, for example. The exact semantics of
-     * component and item is left to the implementation.
-     * @param component The component reference that helps narrow down the scope of the update
-     * @param item The item that has changed
-     */
-    public void modelUpdated(Object component, Object item) {
-        for (ViewPlugin viewPlugin : viewPlugins) {
-            viewPlugin.modelUpdated(component, item);
-        }
-        for (Drawable drawable : drawables) {
-            drawable.modelUpdated(component, item);
-        }
-        canvas.redraw();
-    }
-
     @Override
     public void paintControl(PaintEvent e) {
         LOG.trace("View paint");
         viewContext.setGC(e.gc);
         long time0 = System.nanoTime();
+        for (Drawable h : drawables) {
+            h.preDraw();
+        }
+        LOG.trace("Paint prep time {} ns", System.nanoTime() - time0);
+        time0 = System.nanoTime();
         for (Drawable h : drawables) {
             h.draw();
         }

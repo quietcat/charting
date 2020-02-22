@@ -49,7 +49,8 @@ public class DraggerViewPlugin extends ViewPluginBase implements MouseMoveListen
             origin.x = objectOrigin.x + (viewContext.x(e.x) - mouseOrigin.x);
             origin.y = objectOrigin.y + (viewContext.y(e.y) - mouseOrigin.y);
             draggable.setOrigin(trackableObject.getTarget(), origin);
-            view.modelUpdated(draggable, trackableObject);
+            draggable.modelUpdated(trackableObject);
+            view.getCanvas().redraw();
             break;
         case NONE:
             break;

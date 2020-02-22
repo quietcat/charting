@@ -8,8 +8,6 @@ public interface ViewPlugin {
 
     public void modelUpdated();
 
-    void modelUpdated(Object component, Object item);
-
     void contextUpdated();
 
 }

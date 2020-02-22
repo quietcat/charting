@@ -12,29 +12,37 @@ public interface TrackableObject {
 
     FRectangle getFRect();
 
-    void setFRect(FRectangle fRect);
+    TrackableObject setFRect(FRectangle fRect);
 
     Rectangle getIRect();
 
-    void setIRect(Rectangle iRect);
+    TrackableObject setIRect(Rectangle iRect);
 
     Object getTarget();
 
-    void setTarget(Object target);
+    TrackableObject setTarget(Object target);
 
     int getxPadding();
 
-    void setXPadding(int xPadding);
+    TrackableObject setXPadding(int xPadding);
 
     int getyPadding();
 
-    void setYPadding(int yPadding);
+    TrackableObject setYPadding(int yPadding);
 
     void contextUpdated(ViewContext viewContext);
 
     boolean isPixelSized();
 
-    void setPixelSized(boolean isPixelSized);
+    TrackableObject setPixelSized(boolean isPixelSized);
 
     Rectangle getPaddedIRect();
+
+    int getRank();
+    
+    TrackableObject setRank(int rank);
+
+    Trackable getTrackable();
+    
+    TrackableObject setTrackable(Trackable trackable);
 }

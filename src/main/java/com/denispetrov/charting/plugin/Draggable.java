@@ -24,4 +24,6 @@ public interface Draggable {
      * @return FPoint Object origin
      */
     FPoint getOrigin(Object object);
+
+    void modelUpdated(TrackableObject object);
 }
