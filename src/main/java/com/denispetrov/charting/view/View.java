@@ -1,21 +1,28 @@
 package com.denispetrov.charting.view;
 
-import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
 
+import org.eclipse.swt.events.ControlEvent;
+import org.eclipse.swt.events.ControlListener;
 import org.eclipse.swt.events.PaintEvent;
 import org.eclipse.swt.events.PaintListener;
+import org.eclipse.swt.graphics.GC;
+import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.graphics.Point;
+import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.widgets.Canvas;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.denispetrov.charting.drawable.Drawable;
-import com.denispetrov.charting.drawable.impl.DrawableBase;
-import com.denispetrov.charting.plugin.ViewPlugin;
+import com.denispetrov.charting.drawable.DrawParameters;
+import com.denispetrov.charting.model.FPoint;
+import com.denispetrov.charting.model.FRectangle;
+import com.denispetrov.charting.model.HRectangle;
+import com.denispetrov.charting.plugin.Plugin;
 
 /**
- * A view manages an instance of SWT Canvas and holds lists of plugins ({@link ViewPlugin}), 
+ * A view manages an instance of SWT Canvas and holds lists of plugins ({@link Plugin}), 
  * drawables ({@link Drawable}), and maintains a view context ({@link ViewContext})
  * 
  * Typical view initialization sequence is as follows:
@@ -67,61 +74,30 @@ import com.denispetrov.charting.plugin.ViewPlugin;
  * </pre>
  * 
  */
-public class View implements PaintListener {
+public class View<M> implements PaintListener, ControlListener {
 
     private static final Logger LOG = LoggerFactory.getLogger(View.class);
 
+    private GC gc;
     private Canvas canvas;
 
     private ViewContext viewContext;
-    private List<Drawable> drawables = new LinkedList<>();
-    private List<ViewPlugin> viewPlugins = new LinkedList<>();
+    private List<Plugin<M>> plugins = new LinkedList<>();
 
-    private int drawableRankAssign = DrawableBase.DEFAULT_MODEL_DRAWABLE_RANK;
+    private Rectangle mainAreaRectangle = new Rectangle(0, 0, 0, 0);
 
-    public List<ViewPlugin> getViewPlugins() {
-        return viewPlugins;
+    private M model;
+
+    public Rectangle getMainAreaRectangle() {
+        return mainAreaRectangle;
     }
 
-    public List<Drawable> getDrawables() {
-        return drawables;
+    public List<Plugin<M>> getPlugins() {
+        return plugins;
     }
 
-    /**
-     * @param drawable Drawable to be added
-     * 
-     * Adds the drawable to its list and if the drawable has a rank equal to
-     * {@link DrawableBase#DEFAULT_MODEL_DRAWABLE_RANK} it reassigns is so that
-     * drawables are called in the order they're initialized.
-     */
-    public void addDrawable(Drawable drawable) {
-        if (drawable.getRank() == DrawableBase.DEFAULT_MODEL_DRAWABLE_RANK) {
-            drawableRankAssign += 100;
-            drawable.setRank(drawableRankAssign);
-        }
-        drawables.add(drawable);
-    }
-
-    public <S extends Drawable> S findDrawable(Class<S> drawableClass) {
-        for (Drawable drawable : drawables) {
-            if (drawableClass.isAssignableFrom(drawable.getClass())) {
-                return drawableClass.cast(drawable);
-            }
-        }
-        return null;
-    }
-
-    public void addViewPlugin(ViewPlugin viewPlugin) {
-        viewPlugins.add(viewPlugin);
-    }
-
-    public <S extends ViewPlugin> S findPlugin(Class<S> pluginClass) {
-        for (ViewPlugin viewPlugin : viewPlugins) {
-            if (pluginClass.isAssignableFrom(viewPlugin.getClass())) {
-                return pluginClass.cast(viewPlugin);
-            }
-        }
-        return null;
+    public void addPlugin(Plugin<M> plugin) {
+        plugins.add(plugin);
     }
 
     public Canvas getCanvas() {
@@ -134,10 +110,8 @@ public class View implements PaintListener {
 
     public void setViewContext(ViewContext viewContext) {
         this.viewContext = viewContext;
+        calculateMainAreaRectangle();
         this.viewContext.setView(this);
-        for (Drawable drawable : drawables) {
-            drawable.setViewContext(viewContext);
-        }
         contextUpdated();
     }
 
@@ -147,51 +121,31 @@ public class View implements PaintListener {
      */
     public void contextUpdated() {
         LOG.trace("Calling contextUpdated on plugins");
-        for (ViewPlugin viewPlugin : viewPlugins) {
-            viewPlugin.contextUpdated();
-        }
-        LOG.trace("Calling contextUpdated on drawables");
-        for (Drawable drawable : drawables) {
-            drawable.contextUpdated();
+        for (Plugin<M> plugin : plugins) {
+            plugin.contextUpdated();
         }
         LOG.trace("Calling redraw on canvas");
         canvas.redraw();
     }
 
     public void init() {
-        drawables.sort(new Comparator<Drawable>() {
-            @Override
-            public int compare(Drawable o1, Drawable o2) {
-                return Integer.compare(o1.getRank(), o2.getRank());
-            }
-        });
-        for (ViewPlugin viewPlugin : viewPlugins) {
-            viewPlugin.setView(this);
-        }
-        for (Drawable drawable : drawables) {
-            drawable.setView(this);
+        for (Plugin<M> plugin : plugins) {
+            plugin.setView(this);
         }
     }
 
     public void setCanvas(Canvas canvas) {
         this.canvas = canvas;
         this.canvas.addPaintListener(this);
-    }
-
-    public void setModel(Object model) {
-        this.viewContext.setModel(model);
-        modelUpdated();
+        this.canvas.addControlListener(this);
     }
 
     /**
      * Trigger complete update of internal structures of all plugins and drawables
      */
     public void modelUpdated() {
-        for (ViewPlugin viewPlugin : viewPlugins) {
+        for (Plugin<M> viewPlugin : plugins) {
             viewPlugin.modelUpdated();
-        }
-        for (Drawable drawable : drawables) {
-            drawable.modelUpdated();
         }
         canvas.redraw();
     }
@@ -205,23 +159,161 @@ public class View implements PaintListener {
      * @param item The item that has changed
      */
     public void modelUpdated(Object component, Object item) {
-        for (ViewPlugin viewPlugin : viewPlugins) {
+        for (Plugin<M> viewPlugin : plugins) {
             viewPlugin.modelUpdated(component, item);
-        }
-        for (Drawable drawable : drawables) {
-            drawable.modelUpdated(component, item);
         }
         canvas.redraw();
     }
 
     @Override
     public void paintControl(PaintEvent e) {
+        gc = e.gc;
         LOG.trace("View paint");
-        viewContext.setGC(e.gc);
         long time0 = System.nanoTime();
-        for (Drawable h : drawables) {
-            h.draw();
+        for (Plugin<M> plugin : plugins) {
+            plugin.draw(this, model);
         }
         LOG.trace("Paint time {} ns", System.nanoTime() - time0);
+    }
+
+    @Override
+    public void controlMoved(ControlEvent e) {
+    }
+
+    @Override
+    public void controlResized(ControlEvent e) {
+        onCanvasResized();
+        contextUpdated();
+    }
+
+    private void onCanvasResized() {
+        Rectangle oldMainAreaRectangle = mainAreaRectangle;
+        mainAreaRectangle = calculateMainAreaRectangle();
+        viewContext.setBaseX(
+                viewContext.getBaseX()
+                + viewContext.w(oldMainAreaRectangle.width) * viewContext.getResizeCenterX()
+                - viewContext.w(mainAreaRectangle.width) * viewContext.getResizeCenterX());
+        viewContext.setBaseY(
+                viewContext.getBaseY()
+                + viewContext.h(oldMainAreaRectangle.height) * viewContext.getResizeCenterY()
+                - viewContext.h(mainAreaRectangle.height) * viewContext.getResizeCenterY());
+        LOG.trace("Canvas resized, main area w={} h={}", mainAreaRectangle.width, mainAreaRectangle.height);
+    }
+
+    private Rectangle calculateMainAreaRectangle() {
+        Rectangle canvasBounds = canvas.getBounds();
+        return new Rectangle(
+                viewContext.getMarginLeft(),
+                viewContext.getMarginTop(),
+                canvasBounds.width - viewContext.getMarginLeft() - viewContext.getMarginRight(),
+                canvasBounds.height - viewContext.getMarginTop() - viewContext.getMarginBottom());
+    }
+
+
+    public void drawRectangle(double x, double y, double width, double height) {
+        gc.drawRectangle(viewContext.x(x), viewContext.y(y + height), viewContext.w(width), viewContext.h(height));
+    }
+
+    public void drawRectangle(FRectangle rectangle) {
+        gc.drawRectangle(viewContext.rectangle(rectangle));
+    }
+
+    public void drawRectangle(HRectangle rectangle) {
+        gc.drawRectangle(viewContext.x(rectangle.x), viewContext.y(rectangle.y) + rectangle.h, rectangle.w, rectangle.h);
+    }
+
+    public void fillRectangle(double x, double y, double width, double height) {
+        gc.fillRectangle(viewContext.x(x), viewContext.y(y + height), viewContext.w(width), viewContext.h(height));
+    }
+
+    public void fillRectangle(FRectangle rectangle) {
+        gc.fillRectangle(viewContext.rectangle(rectangle));
+    }
+
+    public void fillRectangle(HRectangle rectangle) {
+        gc.fillRectangle(viewContext.x(rectangle.x), viewContext.y(rectangle.y) + rectangle.h, rectangle.w, rectangle.h);
+    }
+
+    public void drawLine(double x1, double y1, double x2, double y2) {
+        gc.drawLine(viewContext.x(x1), viewContext.y(y1), viewContext.x(x2), viewContext.y(y2));
+    }
+
+    public void drawPolyLine(double[] polyLine) {
+        int[] pointArray = new int[polyLine.length];
+        for (int i = 0; i < polyLine.length; i += 2) {
+            pointArray[i] = viewContext.x(polyLine[i]);
+            pointArray[i + 1] = viewContext.y(polyLine[i + 1]);
+        }
+        gc.drawPolyline(pointArray);
+    }
+
+    public Rectangle drawImage(Image image, double x, double y, DrawParameters drawParameters) {
+        DrawParameters dp = drawParameters;
+        if (dp == null) {
+            dp = new DrawParameters();
+        }
+        Rectangle ib = image.getBounds();
+        Rectangle extent = viewContext.extent(new FPoint(x, y), new Point(ib.width, ib.height), dp);
+        gc.drawImage(image, extent.x + dp.xMargin, extent.y + dp.yMargin);
+        return extent;
+    }
+
+    public Rectangle drawText(String text, double x, double y, DrawParameters drawParameters) {
+        DrawParameters dp = drawParameters;
+        if (dp == null) {
+            dp = new DrawParameters();
+        }
+        Rectangle extent = viewContext.extent(new FPoint(x, y), gc.textExtent(text, dp.textExtentFlags), dp);
+        gc.drawText(text, extent.x + dp.xMargin, extent.y + dp.yMargin, dp.isTransparent);
+        return extent;
+    }
+
+    public Rectangle textRectangle(String text, double x, double y, DrawParameters drawParameters) {
+        DrawParameters dp = drawParameters;
+        if (dp == null) {
+            dp = new DrawParameters();
+        }
+        return viewContext.extent(new FPoint(x, y), gc.textExtent(text, dp.textExtentFlags), dp);
+    }
+
+    public HRectangle textRectangleH(String text, double x, double y, DrawParameters drawParameters) {
+        DrawParameters dp = drawParameters;
+        if (dp == null) {
+            dp = new DrawParameters();
+        }
+        return viewContext.rectangleH(viewContext.extent(new FPoint(x, y), gc.textExtent(text, dp.textExtentFlags), dp));
+    }
+
+    public int getCanvasWidth() {
+        return canvas.getBounds().width;
+    }
+
+    public double getWidth() {
+        return viewContext.w(getCanvasWidth() - viewContext.getMarginLeft() - viewContext.getMarginRight());
+    }
+
+    public int getCanvasHeight() {
+        return canvas.getBounds().height;
+    }
+
+    public double getHeight() {
+        return viewContext.h(getCanvasHeight() - viewContext.getMarginTop() - viewContext.getMarginBottom());
+    }
+
+    public GC getGC() {
+        return gc;
+    }
+
+    public void setGC(GC gc) {
+        this.gc = gc;
+    }
+
+    public void setModel(M model) {
+        this.model = model;
+        modelUpdated();
+    }
+
+    public M getModel() {
+        return model;
     }
 }

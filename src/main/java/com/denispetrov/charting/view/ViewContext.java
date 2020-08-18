@@ -1,15 +1,9 @@
 package com.denispetrov.charting.view;
 
-import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.ControlEvent;
-import org.eclipse.swt.events.ControlListener;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Drawable;
-import org.eclipse.swt.graphics.GC;
-import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
-import org.eclipse.swt.widgets.Canvas;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -24,7 +18,7 @@ import com.denispetrov.charting.model.HRectangle;
  * ViewContext class is concerned with translation between display and model coordinates. The rest is convenience
  * primitive drawing methods that use model coordinates.
  */
-public class ViewContext implements ControlListener {
+public class ViewContext {
     private static final Logger LOG = LoggerFactory.getLogger(ViewContext.class);
 
     public static enum AxisRange {
@@ -36,22 +30,16 @@ public class ViewContext implements ControlListener {
     public static final int DEFAULT_MARGIN = 10;
     public static final double DEFAULT_SCALE = 1.0;
     public static final int DEFAULT_DRAG_THRESHOLD = 4;
-    public static final int DEFAULT_BACKGROUND_COLOR = SWT.COLOR_BLACK;
-    public static final int DEFAULT_FOREGROUND_COLOR = SWT.COLOR_GRAY;
 
     private int topMargin = DEFAULT_MARGIN, leftMargin = DEFAULT_MARGIN, rightMargin = DEFAULT_MARGIN,
             bottomMargin = DEFAULT_MARGIN;
-    private GC gc;
-    private Canvas canvas;
-    private View view;
+    private View<?> view;
     private double scaleX = DEFAULT_SCALE, scaleY = DEFAULT_SCALE;
     private double baseX = 0.0, baseY = 0.0;
     private double resizeCenterX = 0.0, resizeCenterY = 0.0;
     private int dragThreshold = DEFAULT_DRAG_THRESHOLD;
-    private Object model;
     private Color backgroundColor;
     private Color foregroundColor;
-    private Rectangle mainAreaRectangle = new Rectangle(0, 0, 0, 0);
     private AxisRange xAxisRange = AxisRange.FULL;
     private AxisRange yAxisRange = AxisRange.FULL;
 
@@ -94,30 +82,6 @@ public class ViewContext implements ControlListener {
         setMarginBottom(margin);
     }
 
-    public int getCanvasWidth() {
-        return canvas.getBounds().width;
-    }
-
-    public double getWidth() {
-        return w(getCanvasWidth() - leftMargin - rightMargin);
-    }
-
-    public int getCanvasHeight() {
-        return canvas.getBounds().height;
-    }
-
-    public double getHeight() {
-        return h(getCanvasHeight() - topMargin - bottomMargin);
-    }
-
-    public GC getGC() {
-        return gc;
-    }
-
-    public void setGC(GC gc) {
-        this.gc = gc;
-    }
-
     public double getScaleX() {
         return scaleX;
     }
@@ -147,7 +111,7 @@ public class ViewContext implements ControlListener {
             this.baseX = Math.max(0.0, baseX);
             break;
         case NEGATIVE_ONLY:
-            Rectangle mainAreaRectangle = getMainAreaRectangle();
+            Rectangle mainAreaRectangle = view.getMainAreaRectangle();
             double maxBaseX = -w(mainAreaRectangle.width);
             this.baseX = Math.min(baseX, maxBaseX);
             LOG.debug("maxBaseX = {}, baseX = {}", maxBaseX, baseX);
@@ -168,7 +132,7 @@ public class ViewContext implements ControlListener {
             this.baseY = Math.max(0.0, baseY);
             break;
         case NEGATIVE_ONLY:
-            Rectangle mainAreaRectangle = getMainAreaRectangle();
+            Rectangle mainAreaRectangle = view.getMainAreaRectangle();
             double maxBaseY = -h(mainAreaRectangle.height);
             this.baseY = Math.min(baseY, maxBaseY);
             break;
@@ -200,11 +164,11 @@ public class ViewContext implements ControlListener {
     }
 
     public int y(double y) {
-        return getCanvasHeight() - bottomMargin - h(y - baseY);
+        return view.getCanvasHeight() - bottomMargin - h(y - baseY);
     }
 
     public double y(int y) {
-        return h(getCanvasHeight() - bottomMargin - y) + baseY;
+        return h(view.getCanvasHeight() - bottomMargin - y) + baseY;
     }
 
     public FPoint point(Point p) {
@@ -229,80 +193,6 @@ public class ViewContext implements ControlListener {
 
     public Rectangle rectangle(HRectangle fr) {
         return new Rectangle(x(fr.x), y(fr.y) + fr.h, fr.w, fr.h);
-    }
-
-    public void drawRectangle(double x, double y, double width, double height) {
-        gc.drawRectangle(x(x), y(y + height), w(width), h(height));
-    }
-
-    public void drawRectangle(FRectangle rectangle) {
-        gc.drawRectangle(rectangle(rectangle));
-    }
-
-    public void drawRectangle(HRectangle rectangle) {
-        gc.drawRectangle(x(rectangle.x), y(rectangle.y) + rectangle.h, rectangle.w, rectangle.h);
-    }
-
-    public void fillRectangle(double x, double y, double width, double height) {
-        gc.fillRectangle(x(x), y(y + height), w(width), h(height));
-    }
-
-    public void fillRectangle(FRectangle rectangle) {
-        gc.fillRectangle(rectangle(rectangle));
-    }
-
-    public void fillRectangle(HRectangle rectangle) {
-        gc.fillRectangle(x(rectangle.x), y(rectangle.y) + rectangle.h, rectangle.w, rectangle.h);
-    }
-
-    public void drawLine(double x1, double y1, double x2, double y2) {
-        gc.drawLine(x(x1), y(y1), x(x2), y(y2));
-    }
-
-    public void drawPolyLine(double[] polyLine) {
-        int[] pointArray = new int[polyLine.length];
-        for (int i = 0; i < polyLine.length; i += 2) {
-            pointArray[i] = x(polyLine[i]);
-            pointArray[i + 1] = y(polyLine[i + 1]);
-        }
-        gc.drawPolyline(pointArray);
-    }
-
-    public Rectangle drawImage(Image image, double x, double y, DrawParameters drawParameters) {
-        DrawParameters dp = drawParameters;
-        if (dp == null) {
-            dp = new DrawParameters();
-        }
-        Rectangle ib = image.getBounds();
-        Rectangle extent = extent(new FPoint(x, y), new Point(ib.width, ib.height), dp);
-        gc.drawImage(image, extent.x + dp.xMargin, extent.y + dp.yMargin);
-        return extent;
-    }
-
-    public Rectangle drawText(String text, double x, double y, DrawParameters drawParameters) {
-        DrawParameters dp = drawParameters;
-        if (dp == null) {
-            dp = new DrawParameters();
-        }
-        Rectangle extent = extent(new FPoint(x, y), gc.textExtent(text, dp.textExtentFlags), dp);
-        gc.drawText(text, extent.x + dp.xMargin, extent.y + dp.yMargin, dp.isTransparent);
-        return extent;
-    }
-
-    public Rectangle textRectangle(String text, double x, double y, DrawParameters drawParameters) {
-        DrawParameters dp = drawParameters;
-        if (dp == null) {
-            dp = new DrawParameters();
-        }
-        return extent(new FPoint(x, y), gc.textExtent(text, dp.textExtentFlags), dp);
-    }
-
-    public HRectangle textRectangleH(String text, double x, double y, DrawParameters drawParameters) {
-        DrawParameters dp = drawParameters;
-        if (dp == null) {
-            dp = new DrawParameters();
-        }
-        return rectangleH(extent(new FPoint(x, y), gc.textExtent(text, dp.textExtentFlags), dp));
     }
 
     public Rectangle extent(FRectangle r, DrawParameters dp) {
@@ -369,37 +259,9 @@ public class ViewContext implements ControlListener {
         return new Rectangle(ix, iy, width, height);
     }
 
-    public Object getModel() {
-        return this.model;
-    }
-
-    public void setModel(Object model) {
-        this.model = model;
-    }
-
-    public Canvas getCanvas() {
-        return canvas;
-    }
-
-    public void setView(View view) {
-        if (this.canvas != null) {
-            this.canvas.removeControlListener(this);
-        }
+    public void setView(View<?> view) {
         this.view = view;
-        this.canvas = view.getCanvas();
-        this.canvas.addControlListener(this);
-        calculateMainAreaRectangle();
         validateBase();
-        if (backgroundColor == null) {
-            backgroundColor = canvas.getDisplay().getSystemColor(DEFAULT_BACKGROUND_COLOR);
-        }
-        if (foregroundColor == null) {
-            foregroundColor = canvas.getDisplay().getSystemColor(DEFAULT_FOREGROUND_COLOR);
-        }
-    }
-
-    public Rectangle getMainAreaRectangle() {
-        return mainAreaRectangle;
     }
 
     public int getDragThreshold() {
@@ -424,33 +286,6 @@ public class ViewContext implements ControlListener {
 
     public void setForegroundColor(Color foregroundColor) {
         this.foregroundColor = foregroundColor;
-    }
-
-    @Override
-    public void controlMoved(ControlEvent e) {
-    }
-
-    @Override
-    public void controlResized(ControlEvent e) {
-        onCanvasResized();
-        view.contextUpdated();
-    }
-
-    private void onCanvasResized() {
-        Rectangle oldMainAreaRectangle = mainAreaRectangle;
-        calculateMainAreaRectangle();
-        setBaseX(getBaseX() + w(oldMainAreaRectangle.width) * resizeCenterX - w(mainAreaRectangle.width) * resizeCenterX);
-        setBaseY(getBaseY() + h(oldMainAreaRectangle.height) * resizeCenterY - h(mainAreaRectangle.height) * resizeCenterY);
-        LOG.trace("Canvas resized, main area w={} h={}", mainAreaRectangle.width, mainAreaRectangle.height);
-    }
-
-    private void calculateMainAreaRectangle() {
-        Rectangle canvasBounds = canvas.getBounds();
-        mainAreaRectangle = new Rectangle(
-                leftMargin,
-                topMargin,
-                canvasBounds.width - leftMargin - rightMargin,
-                canvasBounds.height - topMargin - bottomMargin);
     }
 
     public AxisRange getXAxisRange() {

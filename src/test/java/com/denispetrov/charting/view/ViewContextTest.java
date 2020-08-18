@@ -24,7 +24,7 @@ public class ViewContextTest {
 
     private Shell shell;
     private Canvas canvas;
-    private View view;
+    private View<Object> view;
     private ViewContext viewContext;
     private static final int CANVAS_WIDTH = 400;
     private static final int CANVAS_HEIGHT = 300;
@@ -45,7 +45,7 @@ public class ViewContextTest {
         canvas = new Canvas(shell, SWT.NONE);
         canvas.setSize(CANVAS_WIDTH,CANVAS_HEIGHT);
         LOG.info("Canvas size {}", canvas.getSize());
-        view = new View();
+        view = new View<>();
         view.setCanvas(canvas);
         view.init();
         viewContext = new ViewContext();
@@ -290,9 +290,9 @@ public class ViewContextTest {
 
     @Test
     public void testDimensions() {
-        assertEquals(CANVAS_WIDTH, viewContext.getCanvasWidth());
-        assertEquals(CANVAS_HEIGHT, viewContext.getCanvasHeight());
-        assertEquals(CANVAS_WIDTH-ViewContext.DEFAULT_MARGIN*2,viewContext.getWidth(), 0.000001);
-        assertEquals(CANVAS_HEIGHT-ViewContext.DEFAULT_MARGIN*2,viewContext.getHeight(), 0.000001);
+        assertEquals(CANVAS_WIDTH, view.getCanvasWidth());
+        assertEquals(CANVAS_HEIGHT, view.getCanvasHeight());
+        assertEquals(CANVAS_WIDTH-ViewContext.DEFAULT_MARGIN*2,view.getWidth(), 0.000001);
+        assertEquals(CANVAS_HEIGHT-ViewContext.DEFAULT_MARGIN*2,view.getHeight(), 0.000001);
     }
 }

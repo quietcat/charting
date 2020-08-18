@@ -10,14 +10,14 @@ import org.eclipse.swt.graphics.Point;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.denispetrov.charting.drawable.Drawable;
 import com.denispetrov.charting.plugin.Clickable;
+import com.denispetrov.charting.plugin.Plugin;
 import com.denispetrov.charting.plugin.Trackable;
 import com.denispetrov.charting.plugin.TrackableObject;
 import com.denispetrov.charting.view.View;
 import com.denispetrov.charting.view.ViewContext;
 
-public class ClickerViewPlugin extends ViewPluginBase implements MouseListener {
+public class ClickerViewPlugin<M> extends PluginAdapter<M> implements MouseListener {
     private static final Logger LOG = LoggerFactory.getLogger(ClickerViewPlugin.class);
 
     enum MouseFn {
@@ -30,13 +30,16 @@ public class ClickerViewPlugin extends ViewPluginBase implements MouseListener {
     private Map<Clickable,Set<TrackableObject>> clickables = new HashMap<>();
     private Point mouseCoordinatesOnMouseDown;
 
-    private TrackerViewPlugin trackerViewPlugin;
+    private TrackerViewPlugin<M> trackerViewPlugin;
+
+    public ClickerViewPlugin(TrackerViewPlugin<M> trackerViewPlugin) {
+        this.trackerViewPlugin = trackerViewPlugin;
+    }
 
     @Override
-    public void setView(View view) {
+    public void setView(View<M> view) {
         super.setView(view);
         view.getCanvas().addMouseListener(this);
-        trackerViewPlugin = view.findPlugin(TrackerViewPlugin.class);
     }
 
     @Override
@@ -58,7 +61,7 @@ public class ClickerViewPlugin extends ViewPluginBase implements MouseListener {
             mouseFn = MouseFn.BUTTON_DOWN;
             button = e.button;
         }
-        for (Drawable drawable : view.getDrawables()) {
+        for (Plugin<M> drawable : view.getPlugins()) {
             if (Clickable.class.isAssignableFrom(drawable.getClass())) {
                 ((Clickable)drawable).mouseDown(clickables, e.button, e.x, e.y);
             }
@@ -77,7 +80,7 @@ public class ClickerViewPlugin extends ViewPluginBase implements MouseListener {
                 }
             }
         }
-        for (Drawable drawable : view.getDrawables()) {
+        for (Plugin<M> drawable : view.getPlugins()) {
             if (Clickable.class.isAssignableFrom(drawable.getClass())) {
                 ((Clickable)drawable).mouseUp(e.button, e.x, e.y);
             }

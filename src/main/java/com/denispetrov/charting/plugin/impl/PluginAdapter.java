@@ -1,14 +1,13 @@
 package com.denispetrov.charting.plugin.impl;
 
-import com.denispetrov.charting.plugin.ViewPlugin;
+import com.denispetrov.charting.plugin.Plugin;
 import com.denispetrov.charting.view.View;
 
-public abstract class ViewPluginBase implements ViewPlugin {
+public class PluginAdapter<M> implements Plugin<M> {
 
-    protected View view;
-
+    protected View<M> view;
     @Override
-    public void setView(View view) {
+    public void setView(View<M> view) {
         this.view = view;
     }
 
@@ -23,4 +22,9 @@ public abstract class ViewPluginBase implements ViewPlugin {
     @Override
     public void contextUpdated() {
     }
+
+    @Override
+    public void draw(View<M> view, M model) {
+    }
+
 }

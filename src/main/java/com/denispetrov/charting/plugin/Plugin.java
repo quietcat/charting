@@ -2,14 +2,15 @@ package com.denispetrov.charting.plugin;
 
 import com.denispetrov.charting.view.View;
 
-public interface ViewPlugin {
+public interface Plugin<M> {
 
-    public void setView(View view);
+    void setView(View<M> view);
 
-    public void modelUpdated();
+    void modelUpdated();
 
     void modelUpdated(Object component, Object item);
 
     void contextUpdated();
 
+    void draw(View<M> view, M model);
 }

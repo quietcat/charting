@@ -4,7 +4,7 @@ import com.denispetrov.charting.model.FPoint;
 
 /**
  * Classes implementing this interface are responsible for updating coordinates on objects that are being dragged.
- * The intention is that a class implementing {@link com.denispetrov.charting.drawable.Drawable} that deal with
+ * The intention is that a class implementing {@link com.denispetrov.charting.plugin.Drawable} that deal with
  * drawing the instances of Object and inherently know the actual type of the object and how to update it.
  */
 public interface Draggable {

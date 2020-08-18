@@ -9,7 +9,7 @@ import com.denispetrov.charting.plugin.*;
 import com.denispetrov.charting.view.View;
 import com.denispetrov.charting.view.ViewContext;
 
-public class DraggerViewPlugin extends ViewPluginBase implements MouseMoveListener {
+public class DraggerViewPlugin<M> extends PluginAdapter<M> implements MouseMoveListener {
 
     private enum MouseFn {
         NONE, MAYBE_DRAGGING, DRAGGING
@@ -22,13 +22,16 @@ public class DraggerViewPlugin extends ViewPluginBase implements MouseMoveListen
     private FPoint trackableObjectOrigin = new FPoint(0, 0);
     private TrackableObject trackableObject;
     private Draggable draggable;
-    private TrackerViewPlugin trackerViewPlugin;
+    private TrackerViewPlugin<M> trackerViewPlugin;
+
+    public DraggerViewPlugin(TrackerViewPlugin<M> trackerViewPlugin) {
+        this.trackerViewPlugin = trackerViewPlugin;
+    }
 
     @Override
-    public void setView(View view) {
+    public void setView(View<M> view) {
         super.setView(view);
         view.getCanvas().addMouseMoveListener(this);
-        trackerViewPlugin = view.findPlugin(TrackerViewPlugin.class);
     }
 
     @Override
