@@ -1,12 +1,13 @@
 package com.denispetrov.charting.view;
 
-import java.util.LinkedList;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.swt.events.ControlEvent;
 import org.eclipse.swt.events.ControlListener;
 import org.eclipse.swt.events.PaintEvent;
 import org.eclipse.swt.events.PaintListener;
+import org.eclipse.swt.graphics.Drawable;
 import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Point;
@@ -19,6 +20,7 @@ import com.denispetrov.charting.drawable.DrawParameters;
 import com.denispetrov.charting.model.FPoint;
 import com.denispetrov.charting.model.FRectangle;
 import com.denispetrov.charting.model.HRectangle;
+import com.denispetrov.charting.plugin.DrawablePlugin;
 import com.denispetrov.charting.plugin.Plugin;
 
 /**
@@ -74,7 +76,7 @@ import com.denispetrov.charting.plugin.Plugin;
  * </pre>
  * 
  */
-public class View<M> implements PaintListener, ControlListener {
+public class View implements PaintListener, ControlListener {
 
     private static final Logger LOG = LoggerFactory.getLogger(View.class);
 
@@ -82,22 +84,24 @@ public class View<M> implements PaintListener, ControlListener {
     private Canvas canvas;
 
     private ViewContext viewContext;
-    private List<Plugin<M>> plugins = new LinkedList<>();
+    private List<Plugin> plugins = new ArrayList<>();
+    private List<DrawablePlugin> drawablePlugins = new ArrayList<>();
 
     private Rectangle mainAreaRectangle = new Rectangle(0, 0, 0, 0);
-
-    private M model;
 
     public Rectangle getMainAreaRectangle() {
         return mainAreaRectangle;
     }
 
-    public List<Plugin<M>> getPlugins() {
+    public List<Plugin> getPlugins() {
         return plugins;
     }
 
-    public void addPlugin(Plugin<M> plugin) {
+    public void addPlugin(Plugin plugin) {
         plugins.add(plugin);
+        if (DrawablePlugin.class.isAssignableFrom(plugin.getClass())) {
+            drawablePlugins.add((DrawablePlugin)plugin);
+        }
     }
 
     public Canvas getCanvas() {
@@ -110,7 +114,7 @@ public class View<M> implements PaintListener, ControlListener {
 
     public void setViewContext(ViewContext viewContext) {
         this.viewContext = viewContext;
-        calculateMainAreaRectangle();
+        mainAreaRectangle = calculateMainAreaRectangle();
         this.viewContext.setView(this);
         contextUpdated();
     }
@@ -121,7 +125,7 @@ public class View<M> implements PaintListener, ControlListener {
      */
     public void contextUpdated() {
         LOG.trace("Calling contextUpdated on plugins");
-        for (Plugin<M> plugin : plugins) {
+        for (Plugin plugin : plugins) {
             plugin.contextUpdated();
         }
         LOG.trace("Calling redraw on canvas");
@@ -129,40 +133,15 @@ public class View<M> implements PaintListener, ControlListener {
     }
 
     public void init() {
-        for (Plugin<M> plugin : plugins) {
+        for (Plugin plugin : plugins) {
             plugin.setView(this);
         }
     }
 
     public void setCanvas(Canvas canvas) {
         this.canvas = canvas;
-        this.canvas.addPaintListener(this);
         this.canvas.addControlListener(this);
-    }
-
-    /**
-     * Trigger complete update of internal structures of all plugins and drawables
-     */
-    public void modelUpdated() {
-        for (Plugin<M> viewPlugin : plugins) {
-            viewPlugin.modelUpdated();
-        }
-        canvas.redraw();
-    }
-
-    /**
-     * Trigger a narrow update of one item managed by a specific component. This method
-     * helps reduce the amount of code that needs to run when only one component is updated
-     * as a result of some interactive action, for example. The exact semantics of
-     * component and item is left to the implementation.
-     * @param component The component reference that helps narrow down the scope of the update
-     * @param item The item that has changed
-     */
-    public void modelUpdated(Object component, Object item) {
-        for (Plugin<M> viewPlugin : plugins) {
-            viewPlugin.modelUpdated(component, item);
-        }
-        canvas.redraw();
+        this.canvas.addPaintListener(this);
     }
 
     @Override
@@ -170,8 +149,8 @@ public class View<M> implements PaintListener, ControlListener {
         gc = e.gc;
         LOG.trace("View paint");
         long time0 = System.nanoTime();
-        for (Plugin<M> plugin : plugins) {
-            plugin.draw(this, model);
+        for (DrawablePlugin plugin : drawablePlugins) {
+            plugin.draw();
         }
         LOG.trace("Paint time {} ns", System.nanoTime() - time0);
     }
@@ -306,14 +285,5 @@ public class View<M> implements PaintListener, ControlListener {
 
     public void setGC(GC gc) {
         this.gc = gc;
-    }
-
-    public void setModel(M model) {
-        this.model = model;
-        modelUpdated();
-    }
-
-    public M getModel() {
-        return model;
     }
 }

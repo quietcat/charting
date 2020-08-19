@@ -4,16 +4,17 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.GC;
 
+import com.denispetrov.charting.plugin.DrawablePlugin;
 import com.denispetrov.charting.plugin.impl.PluginAdapter;
 import com.denispetrov.charting.view.View;
 
-public class ViewportBackgroundDrawable<M> extends PluginAdapter<M> {
+public class ViewportBackgroundDrawable extends PluginAdapter implements DrawablePlugin {
 
     public static final int DEFAULT_BACKGROUND_COLOR = SWT.COLOR_BLACK;
     public static final int DEFAULT_FOREGROUND_COLOR = SWT.COLOR_GRAY;
 
     @Override
-    public void draw(View<M> view, M model) {
+    public void draw() {
         Color backgroundColor = view.getViewContext().getBackgroundColor();
         Color foregroundColor = view.getViewContext().getForegroundColor();
         if (backgroundColor == null) {

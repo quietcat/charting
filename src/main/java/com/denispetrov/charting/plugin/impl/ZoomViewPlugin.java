@@ -12,7 +12,7 @@ import org.slf4j.LoggerFactory;
 import com.denispetrov.charting.view.View;
 import com.denispetrov.charting.view.ViewContext;
 
-public class ZoomViewPlugin<M> extends PluginAdapter<M> implements MouseMoveListener, MouseListener, MouseWheelListener {
+public class ZoomViewPlugin extends PluginAdapter implements MouseMoveListener, MouseListener, MouseWheelListener {
 
     private static final Logger LOG = LoggerFactory.getLogger(ZoomViewPlugin.class);
 
@@ -29,7 +29,7 @@ public class ZoomViewPlugin<M> extends PluginAdapter<M> implements MouseMoveList
     private boolean stickyX = false, stickyY = false;
 
     @Override
-    public void setView(View<M> view) {
+    public void setView(View view) {
         LOG.trace("Set view");
         super.setView(view);
         view.getCanvas().addMouseListener(this);
@@ -208,7 +208,7 @@ public class ZoomViewPlugin<M> extends PluginAdapter<M> implements MouseMoveList
         return stickyX;
     }
 
-    public ZoomViewPlugin<M> setStickyX(boolean stickyX) {
+    public ZoomViewPlugin setStickyX(boolean stickyX) {
         this.stickyX = stickyX;
         return this;
     }
@@ -217,7 +217,7 @@ public class ZoomViewPlugin<M> extends PluginAdapter<M> implements MouseMoveList
         return stickyY;
     }
 
-    public ZoomViewPlugin<M> setStickyY(boolean stickyY) {
+    public ZoomViewPlugin setStickyY(boolean stickyY) {
         this.stickyY = stickyY;
         return this;
     }

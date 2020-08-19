@@ -9,7 +9,7 @@ import com.denispetrov.charting.model.FPoint;
 import com.denispetrov.charting.view.View;
 import com.denispetrov.charting.view.ViewContext;
 
-public class PanViewPlugin<M> extends PluginAdapter<M> implements MouseListener, MouseMoveListener {
+public class PanViewPlugin extends PluginAdapter implements MouseListener, MouseMoveListener {
 
     private enum MouseFn {
         NONE, MAYBE_PAN, PAN
@@ -64,7 +64,7 @@ public class PanViewPlugin<M> extends PluginAdapter<M> implements MouseListener,
     }
 
     @Override
-    public void setView(View<M> view) {
+    public void setView(View view) {
         super.setView(view);
         view.getCanvas().addMouseMoveListener(this);
         view.getCanvas().addMouseListener(this);

@@ -2,14 +2,18 @@ package com.denispetrov.charting.plugin.impl;
 
 import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.events.MouseMoveListener;
-import org.eclipse.swt.graphics.*;
+import org.eclipse.swt.graphics.Point;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.denispetrov.charting.model.FPoint;
-import com.denispetrov.charting.plugin.*;
+import com.denispetrov.charting.plugin.Draggable;
+import com.denispetrov.charting.plugin.TrackableObject;
 import com.denispetrov.charting.view.View;
 import com.denispetrov.charting.view.ViewContext;
 
-public class DraggerViewPlugin<M> extends PluginAdapter<M> implements MouseMoveListener {
+public class DraggerViewPlugin extends PluginAdapter implements MouseMoveListener {
+    private static final Logger LOG = LoggerFactory.getLogger(DraggerViewPlugin.class);
 
     private enum MouseFn {
         NONE, MAYBE_DRAGGING, DRAGGING
@@ -22,14 +26,14 @@ public class DraggerViewPlugin<M> extends PluginAdapter<M> implements MouseMoveL
     private FPoint trackableObjectOrigin = new FPoint(0, 0);
     private TrackableObject trackableObject;
     private Draggable draggable;
-    private TrackerViewPlugin<M> trackerViewPlugin;
+    private TrackerViewPlugin trackerViewPlugin;
 
-    public DraggerViewPlugin(TrackerViewPlugin<M> trackerViewPlugin) {
+    public DraggerViewPlugin(TrackerViewPlugin trackerViewPlugin) {
         this.trackerViewPlugin = trackerViewPlugin;
     }
 
     @Override
-    public void setView(View<M> view) {
+    public void setView(View view) {
         super.setView(view);
         view.getCanvas().addMouseMoveListener(this);
     }
@@ -52,7 +56,6 @@ public class DraggerViewPlugin<M> extends PluginAdapter<M> implements MouseMoveL
             origin.x = objectOrigin.x + (viewContext.x(e.x) - mouseOrigin.x);
             origin.y = objectOrigin.y + (viewContext.y(e.y) - mouseOrigin.y);
             draggable.setOrigin(trackableObject.getTarget(), origin);
-            view.modelUpdated(draggable, trackableObject);
             break;
         case NONE:
             break;
@@ -74,6 +77,7 @@ public class DraggerViewPlugin<M> extends PluginAdapter<M> implements MouseMoveL
     }
 
     public void endDrag() {
+        LOG.debug("End drag {} {}", draggable, trackableObject);
         FPoint origin = draggable.getOrigin(trackableObject.getTarget());
         trackableObject.getFRect().x = trackableObjectOrigin.x + (origin.x - objectOrigin.x);
         trackableObject.getFRect().y = trackableObjectOrigin.y + (origin.y - objectOrigin.y);

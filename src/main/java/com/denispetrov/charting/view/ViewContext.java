@@ -33,7 +33,7 @@ public class ViewContext {
 
     private int topMargin = DEFAULT_MARGIN, leftMargin = DEFAULT_MARGIN, rightMargin = DEFAULT_MARGIN,
             bottomMargin = DEFAULT_MARGIN;
-    private View<?> view;
+    private View view;
     private double scaleX = DEFAULT_SCALE, scaleY = DEFAULT_SCALE;
     private double baseX = 0.0, baseY = 0.0;
     private double resizeCenterX = 0.0, resizeCenterY = 0.0;
@@ -259,7 +259,7 @@ public class ViewContext {
         return new Rectangle(ix, iy, width, height);
     }
 
-    public void setView(View<?> view) {
+    public void setView(View view) {
         this.view = view;
         validateBase();
     }

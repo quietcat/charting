@@ -17,7 +17,7 @@ import com.denispetrov.charting.plugin.TrackableObject;
 import com.denispetrov.charting.view.View;
 import com.denispetrov.charting.view.ViewContext;
 
-public class ClickerViewPlugin<M> extends PluginAdapter<M> implements MouseListener {
+public class ClickerViewPlugin extends PluginAdapter implements MouseListener {
     private static final Logger LOG = LoggerFactory.getLogger(ClickerViewPlugin.class);
 
     enum MouseFn {
@@ -30,14 +30,14 @@ public class ClickerViewPlugin<M> extends PluginAdapter<M> implements MouseListe
     private Map<Clickable,Set<TrackableObject>> clickables = new HashMap<>();
     private Point mouseCoordinatesOnMouseDown;
 
-    private TrackerViewPlugin<M> trackerViewPlugin;
+    private TrackerViewPlugin trackerViewPlugin;
 
-    public ClickerViewPlugin(TrackerViewPlugin<M> trackerViewPlugin) {
+    public ClickerViewPlugin(TrackerViewPlugin trackerViewPlugin) {
         this.trackerViewPlugin = trackerViewPlugin;
     }
 
     @Override
-    public void setView(View<M> view) {
+    public void setView(View view) {
         super.setView(view);
         view.getCanvas().addMouseListener(this);
     }
@@ -61,7 +61,7 @@ public class ClickerViewPlugin<M> extends PluginAdapter<M> implements MouseListe
             mouseFn = MouseFn.BUTTON_DOWN;
             button = e.button;
         }
-        for (Plugin<M> drawable : view.getPlugins()) {
+        for (Plugin drawable : view.getPlugins()) {
             if (Clickable.class.isAssignableFrom(drawable.getClass())) {
                 ((Clickable)drawable).mouseDown(clickables, e.button, e.x, e.y);
             }
@@ -80,7 +80,7 @@ public class ClickerViewPlugin<M> extends PluginAdapter<M> implements MouseListe
                 }
             }
         }
-        for (Plugin<M> drawable : view.getPlugins()) {
+        for (Plugin drawable : view.getPlugins()) {
             if (Clickable.class.isAssignableFrom(drawable.getClass())) {
                 ((Clickable)drawable).mouseUp(e.button, e.x, e.y);
             }

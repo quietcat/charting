@@ -31,7 +31,7 @@ import com.denispetrov.charting.view.ViewContext;
  * 
  * See {@link com.denispetrov.charting.plugin.impl.ClickerViewPlugin} for a use example
  */
-public class TrackerViewPlugin<M> extends PluginAdapter<M> implements MouseMoveListener {
+public class TrackerViewPlugin extends PluginAdapter implements MouseMoveListener {
     private static final Logger LOG = LoggerFactory.getLogger(TrackerViewPlugin.class);
 
     enum MouseFn {
@@ -50,7 +50,7 @@ public class TrackerViewPlugin<M> extends PluginAdapter<M> implements MouseMoveL
     private TrackableObject firstTrackableObjectUnderMouse = null;
 
     @Override
-    public void setView(View<M> view) {
+    public void setView(View view) {
         super.setView(view);
         view.getCanvas().setCursor(cursorDefault);
         view.getCanvas().addMouseMoveListener(this);
