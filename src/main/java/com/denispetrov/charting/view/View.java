@@ -7,7 +7,6 @@ import org.eclipse.swt.events.ControlEvent;
 import org.eclipse.swt.events.ControlListener;
 import org.eclipse.swt.events.PaintEvent;
 import org.eclipse.swt.events.PaintListener;
-import org.eclipse.swt.graphics.Drawable;
 import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Point;
@@ -16,16 +15,16 @@ import org.eclipse.swt.widgets.Canvas;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.denispetrov.charting.drawable.DrawParameters;
+import com.denispetrov.charting.layer.DrawableLayer;
+import com.denispetrov.charting.layer.Layer;
+import com.denispetrov.charting.layer.drawable.DrawParameters;
 import com.denispetrov.charting.model.FPoint;
 import com.denispetrov.charting.model.FRectangle;
 import com.denispetrov.charting.model.HRectangle;
-import com.denispetrov.charting.plugin.DrawablePlugin;
-import com.denispetrov.charting.plugin.Plugin;
 
 /**
- * A view manages an instance of SWT Canvas and holds lists of plugins ({@link Plugin}), 
- * drawables ({@link Drawable}), and maintains a view context ({@link ViewContext})
+ * A view manages an instance of SWT Canvas and holds lists of layers ({@link Layer}), 
+ * and maintains a view context ({@link ViewContext})
  * 
  * Typical view initialization sequence is as follows:
  * <pre>
@@ -34,22 +33,21 @@ import com.denispetrov.charting.plugin.Plugin;
     View view = new View();
     view.setCanvas(canvas);
     
-    // add plugins
-    view.addViewPlugin(new TrackerViewPlugin());
-    view.addViewPlugin(new PanViewPlugin());
-    view.addViewPlugin(new ZoomViewPlugin());
-    view.addViewPlugin(new ClickerViewPlugin());
-    view.addViewPlugin(new DraggerViewPlugin());
+    // add service layers
+    view.addLayer(new TrackerServiceLayer());
+    view.addLayer(new PanServcieLayer());
+    view.addLayer(new ZoomServiceLayer());
+    view.addLayer(new ClickerServiceLayer());
+    view.addLayer(new DraggerServiceLayer());
     . . .
+    // add global layers
+    view.addLayer(new ViewportBackgroundLayer());
+    view.addLayer(new ViewportXAxisLayer());
+    view.addLayer(new ViewportYAxisLayer());
+    view.addLayer(new ViewportZeroMarkLayer());
     
-    // add drawables
-    view.addDrawable(new ViewportBackgroundDrawable());
-    view.addDrawable(new ViewportXAxisDrawable());
-    view.addDrawable(new ViewportYAxisDrawable());
-    view.addDrawable(new ViewportZeroMarkDrawable());
-    
-    view.addDrawable(new ExampleModelRectDrawable());
-    view.addDrawable(new ExampleModelDraggableRectDrawable());
+    view.addModelLayer(new ExampleModelRectLayer());
+    view.addModelLayer(new ExampleModelDraggableRectLayer());
     . . .
     
     view.init();
@@ -71,36 +69,37 @@ import com.denispetrov.charting.plugin.Plugin;
     . . .
 
     // set model
-    view.setModel(model);
+    view.modelUpdated(model);
     }
  * </pre>
  * 
  */
 public class View implements PaintListener, ControlListener {
-
     private static final Logger LOG = LoggerFactory.getLogger(View.class);
 
     private GC gc;
     private Canvas canvas;
 
     private ViewContext viewContext;
-    private List<Plugin> plugins = new ArrayList<>();
-    private List<DrawablePlugin> drawablePlugins = new ArrayList<>();
+    private List<Layer> layers = new ArrayList<>();
+    private List<DrawableLayer> drawableLayers = new ArrayList<>();
 
     private Rectangle mainAreaRectangle = new Rectangle(0, 0, 0, 0);
+
+    private long paintTime;
 
     public Rectangle getMainAreaRectangle() {
         return mainAreaRectangle;
     }
 
-    public List<Plugin> getPlugins() {
-        return plugins;
+    public List<Layer> getLayers() {
+        return layers;
     }
 
-    public void addPlugin(Plugin plugin) {
-        plugins.add(plugin);
-        if (DrawablePlugin.class.isAssignableFrom(plugin.getClass())) {
-            drawablePlugins.add((DrawablePlugin)plugin);
+    public void addLayer(Layer layer) {
+        layers.add(layer);
+        if (DrawableLayer.class.isAssignableFrom(layer.getClass())) {
+            drawableLayers.add((DrawableLayer)layer);
         }
     }
 
@@ -120,21 +119,21 @@ public class View implements PaintListener, ControlListener {
     }
 
     /**
-     * Plugins and other code manipulating view context should call this method in the end
-     * to cause the view to update its drawables and plugins and cause a redraw of the canvas
+     * Layers and other code manipulating view context should call this method in the end
+     * to cause the view to update its layers and cause a redraw of the canvas
      */
     public void contextUpdated() {
-        LOG.trace("Calling contextUpdated on plugins");
-        for (Plugin plugin : plugins) {
-            plugin.contextUpdated();
+        LOG.trace("Calling contextUpdated on layers");
+        for (Layer layer : layers) {
+            layer.contextUpdated();
         }
         LOG.trace("Calling redraw on canvas");
         canvas.redraw();
     }
 
     public void init() {
-        for (Plugin plugin : plugins) {
-            plugin.setView(this);
+        for (Layer layer : layers) {
+            layer.setView(this);
         }
     }
 
@@ -147,12 +146,11 @@ public class View implements PaintListener, ControlListener {
     @Override
     public void paintControl(PaintEvent e) {
         gc = e.gc;
-        LOG.trace("View paint");
         long time0 = System.nanoTime();
-        for (DrawablePlugin plugin : drawablePlugins) {
-            plugin.draw();
+        for (DrawableLayer drawableLayer : drawableLayers) {
+            drawableLayer.draw();
         }
-        LOG.trace("Paint time {} ns", System.nanoTime() - time0);
+        paintTime = System.nanoTime() - time0;
     }
 
     @Override
@@ -285,5 +283,9 @@ public class View implements PaintListener, ControlListener {
 
     public void setGC(GC gc) {
         this.gc = gc;
+    }
+
+    public long getPaintTime() {
+        return paintTime;
     }
 }

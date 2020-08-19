@@ -1,4 +1,4 @@
-package com.denispetrov.charting.plugin.impl;
+package com.denispetrov.charting.layer.service;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.MouseEvent;
@@ -12,9 +12,8 @@ import org.slf4j.LoggerFactory;
 import com.denispetrov.charting.view.View;
 import com.denispetrov.charting.view.ViewContext;
 
-public class ZoomViewPlugin extends PluginAdapter implements MouseMoveListener, MouseListener, MouseWheelListener {
-
-    private static final Logger LOG = LoggerFactory.getLogger(ZoomViewPlugin.class);
+public class ZoomServiceLayer extends LayerAdapter implements MouseMoveListener, MouseListener, MouseWheelListener {
+    private static final Logger LOG = LoggerFactory.getLogger(ZoomServiceLayer.class);
 
     private static enum MouseFn {
         NONE, X_SCALING, Y_SCALING, ZOOMING
@@ -208,7 +207,7 @@ public class ZoomViewPlugin extends PluginAdapter implements MouseMoveListener, 
         return stickyX;
     }
 
-    public ZoomViewPlugin setStickyX(boolean stickyX) {
+    public ZoomServiceLayer setStickyX(boolean stickyX) {
         this.stickyX = stickyX;
         return this;
     }
@@ -217,7 +216,7 @@ public class ZoomViewPlugin extends PluginAdapter implements MouseMoveListener, 
         return stickyY;
     }
 
-    public ZoomViewPlugin setStickyY(boolean stickyY) {
+    public ZoomServiceLayer setStickyY(boolean stickyY) {
         this.stickyY = stickyY;
         return this;
     }

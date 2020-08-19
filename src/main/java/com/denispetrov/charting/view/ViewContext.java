@@ -7,25 +7,20 @@ import org.eclipse.swt.graphics.Rectangle;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.denispetrov.charting.drawable.DrawParameters;
+import com.denispetrov.charting.layer.drawable.DrawParameters;
+import com.denispetrov.charting.model.AxisRange;
 import com.denispetrov.charting.model.FPoint;
 import com.denispetrov.charting.model.FRectangle;
 import com.denispetrov.charting.model.HRectangle;
 
 /**
- * A view context encapsulates all information needed by {@link Drawable}s and {@link Plugin}s to represent the given
- * {@link Model}. A model is an opaque object that specific Drawables and Plugins are able to interpret. The bulk of
- * ViewContext class is concerned with translation between display and model coordinates. The rest is convenience
+ * A view context encapsulates all information needed by {@link Drawable}s and {@link Layer}s to represent the given
+ * {@link Model}. A model is an opaque object that specific Layers are able to interpret. The bulk of
+ * {@link ViewContext} class is concerned with translation between display and model coordinates. The rest is convenience
  * primitive drawing methods that use model coordinates.
  */
 public class ViewContext {
     private static final Logger LOG = LoggerFactory.getLogger(ViewContext.class);
-
-    public static enum AxisRange {
-        FULL,
-        POSITIVE_ONLY,
-        NEGATIVE_ONLY
-    }
 
     public static final int DEFAULT_MARGIN = 10;
     public static final double DEFAULT_SCALE = 1.0;
@@ -114,7 +109,7 @@ public class ViewContext {
             Rectangle mainAreaRectangle = view.getMainAreaRectangle();
             double maxBaseX = -w(mainAreaRectangle.width);
             this.baseX = Math.min(baseX, maxBaseX);
-            LOG.debug("maxBaseX = {}, baseX = {}", maxBaseX, baseX);
+            LOG.trace("maxBaseX = {}, baseX = {}", maxBaseX, baseX);
             break;
         }
     }

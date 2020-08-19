@@ -1,9 +1,9 @@
-package com.denispetrov.charting.plugin.impl;
+package com.denispetrov.charting.layer.service;
 
-import com.denispetrov.charting.plugin.Plugin;
+import com.denispetrov.charting.layer.Layer;
 import com.denispetrov.charting.view.View;
 
-public class PluginAdapter implements Plugin {
+public class LayerAdapter implements Layer {
 
     protected View view;
     @Override

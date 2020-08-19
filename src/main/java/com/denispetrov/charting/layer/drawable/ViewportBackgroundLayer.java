@@ -1,14 +1,13 @@
-package com.denispetrov.charting.drawable;
+package com.denispetrov.charting.layer.drawable;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.GC;
 
-import com.denispetrov.charting.plugin.DrawablePlugin;
-import com.denispetrov.charting.plugin.impl.PluginAdapter;
-import com.denispetrov.charting.view.View;
+import com.denispetrov.charting.layer.DrawableLayer;
+import com.denispetrov.charting.layer.service.LayerAdapter;
 
-public class ViewportBackgroundDrawable extends PluginAdapter implements DrawablePlugin {
+public class ViewportBackgroundLayer extends LayerAdapter implements DrawableLayer {
 
     public static final int DEFAULT_BACKGROUND_COLOR = SWT.COLOR_BLACK;
     public static final int DEFAULT_FOREGROUND_COLOR = SWT.COLOR_GRAY;

@@ -1,4 +1,4 @@
-package com.denispetrov.charting.plugin.impl;
+package com.denispetrov.charting.layer.service;
 
 import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.events.MouseListener;
@@ -9,7 +9,7 @@ import com.denispetrov.charting.model.FPoint;
 import com.denispetrov.charting.view.View;
 import com.denispetrov.charting.view.ViewContext;
 
-public class PanViewPlugin extends PluginAdapter implements MouseListener, MouseMoveListener {
+public class PanServiceLayer extends LayerAdapter implements MouseListener, MouseMoveListener {
 
     private enum MouseFn {
         NONE, MAYBE_PAN, PAN

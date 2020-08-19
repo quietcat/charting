@@ -18,4 +18,15 @@ public class FRectangle {
         this.w = rect.w;
         this.h = rect.h;
     }
+
+    public static void copyRect(FRectangle src, FRectangle dst) {
+        dst.x = src.x;
+        dst.y = src.y;
+        dst.w = src.w;
+        dst.h = src.h;
+    }
+
+    public boolean contains(double fx, double fy) {
+        return (fx >= x && fx < x + w && fy >= y && fy < y + h);
+    }
 }

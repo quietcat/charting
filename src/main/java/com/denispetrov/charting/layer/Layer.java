@@ -1,8 +1,8 @@
-package com.denispetrov.charting.plugin;
+package com.denispetrov.charting.layer;
 
 import com.denispetrov.charting.view.View;
 
-public interface Plugin {
+public interface Layer {
 
     void setView(View view);
 
