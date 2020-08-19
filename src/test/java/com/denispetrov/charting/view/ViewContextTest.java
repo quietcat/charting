@@ -49,7 +49,7 @@ public class ViewContextTest {
         view.setCanvas(canvas);
         view.init();
         viewContext = new ViewContext();
-        viewContext.setView(view);
+        view.setViewContext(viewContext);
     }
 
     @After

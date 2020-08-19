@@ -34,13 +34,10 @@ public class TrackerServiceLayer extends LayerAdapter implements MouseMoveListen
     }
 
     private MouseFn mouseFn = MouseFn.NONE;
-//    private Map<Trackable, Set<TrackableObject>> objectsBeingTracked = new HashMap<>();
     private Cursor cursorDefault = Display.getDefault().getSystemCursor(SWT.CURSOR_ARROW);
     private Cursor cursorDefaultTrack = Display.getDefault().getSystemCursor(SWT.CURSOR_HAND);
     private Cursor cursorHidden;
     private boolean cursorIsHidden = false;
-//    private Point mouseXY = new Point(0, 0);
-//    private FPoint fMouseXY = new FPoint(0, 0);
     private TrackableLayer topTrackableUnderMouse = null;
     private TrackableObject topTrackableObjectUnderMouse = null;
     private TrackableStack trackableStack = new TrackableStack();
@@ -69,10 +66,6 @@ public class TrackerServiceLayer extends LayerAdapter implements MouseMoveListen
         sourceData.transparentPixel = 0;
         cursorHidden = new Cursor(view.getCanvas().getDisplay(), sourceData, 0, 0);
     }
-
-//    public Collection<TrackableObject> getTrackables(Trackable trackable) {
-//        return objectsBeingTracked.get(trackable);
-//    }
 
     @Override
     public void mouseMove(MouseEvent e) {
@@ -119,45 +112,7 @@ public class TrackerServiceLayer extends LayerAdapter implements MouseMoveListen
             }
         }
         mouseFn = newMouseFn;
-//        if (track )
-//        if (mouseFn == MouseFn.NONE) {
-//            cursorTrack = topTrackableUnderMouse.getCursor();
-//            if (cursorTrack == null) {
-//                cursorTrack = cursorDefaultTrack;
-//            }
-//            if (!cursorIsHidden) {
-//                view.getCanvas().setCursor(cursorTrack);
-//            }
-//            mouseFn = MouseFn.TRACK;
-//        }
-//    } else {
-//        if (mouseFn == MouseFn.TRACK) {
-//            if (!cursorIsHidden) {
-//                view.getCanvas().setCursor(cursorDefault);
-//            }
-//            mouseFn = MouseFn.NONE;
-//        }
     }
-
-    //    public Map<Trackable, Set<TrackableObject>> getObjectsUnderMouse(int x, int y) {
-//        Map<Trackable, Set<TrackableObject>> objectsUnderMouse = new HashMap<>();
-//        ViewContext viewContext = view.getViewContext();
-//        objectsUnderMouse.clear();
-//        for (Trackable t : objectsBeingTracked.keySet()) {
-//            Set<TrackableObject> trackable = objectsBeingTracked.get(t);
-//            for (TrackableObject to : trackable) {
-//                if (isIn(viewContext, x, y, to)) {
-//                    Set<TrackableObject> trackingObjectsForTrackable = objectsUnderMouse.get(t);
-//                    if (trackingObjectsForTrackable == null) {
-//                        trackingObjectsForTrackable = new HashSet<>();
-//                        objectsUnderMouse.put(t, trackingObjectsForTrackable);
-//                    }
-//                    trackingObjectsForTrackable.add(to);
-//                }
-//            }
-//        }
-//        return objectsUnderMouse;
-//    }
 
     public void clearTrackableObjects(TrackableLayer trackable) {
         TrackableStackEntry entry = trackableStack.lookupEntry(trackable);
@@ -167,16 +122,6 @@ public class TrackerServiceLayer extends LayerAdapter implements MouseMoveListen
     public void addTrackableObject(TrackableLayer trackable, TrackableObject trackableObject) {
         trackableStack.addTrackableObject(trackable, trackableObject);
     }
-
-//    @Override
-//    public void contextUpdated() {
-//        ViewContext viewContext = view.getViewContext();
-//        for (Set<TrackableObject> trackable : objectsBeingTracked.values()) {
-//            for (TrackableObject trackableObject : trackable) {
-//                trackableObject.contextUpdated(viewContext);
-//            }
-//        }
-//    }
 
     public Cursor getCursorDefault() {
         return cursorDefault;
