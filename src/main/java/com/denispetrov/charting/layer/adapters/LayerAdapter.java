@@ -1,4 +1,4 @@
-package com.denispetrov.charting.layer.service;
+package com.denispetrov.charting.layer.adapters;
 
 import com.denispetrov.charting.layer.Layer;
 import com.denispetrov.charting.view.View;

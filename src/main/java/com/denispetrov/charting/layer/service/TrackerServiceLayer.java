@@ -15,6 +15,7 @@ import org.slf4j.LoggerFactory;
 import com.denispetrov.charting.layer.Layer;
 import com.denispetrov.charting.layer.TrackableLayer;
 import com.denispetrov.charting.layer.TrackableObject;
+import com.denispetrov.charting.layer.adapters.LayerAdapter;
 import com.denispetrov.charting.layer.service.trackable.TrackableStack;
 import com.denispetrov.charting.layer.service.trackable.TrackableStackEntry;
 import com.denispetrov.charting.view.View;
@@ -116,7 +117,11 @@ public class TrackerServiceLayer extends LayerAdapter implements MouseMoveListen
 
     public void clearTrackableObjects(TrackableLayer trackable) {
         TrackableStackEntry entry = trackableStack.lookupEntry(trackable);
-        entry.clear();
+        if (entry != null) {
+            entry.clear();
+        } else {
+            LOG.trace("Clear trackable objects called for non-existent trackable");
+        }
     }
 
     public void addTrackableObject(TrackableLayer trackable, TrackableObject trackableObject) {

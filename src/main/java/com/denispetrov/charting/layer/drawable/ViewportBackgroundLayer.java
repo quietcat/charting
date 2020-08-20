@@ -5,7 +5,7 @@ import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.GC;
 
 import com.denispetrov.charting.layer.DrawableLayer;
-import com.denispetrov.charting.layer.service.LayerAdapter;
+import com.denispetrov.charting.layer.adapters.LayerAdapter;
 
 public class ViewportBackgroundLayer extends LayerAdapter implements DrawableLayer {
 
@@ -18,9 +18,11 @@ public class ViewportBackgroundLayer extends LayerAdapter implements DrawableLay
         Color foregroundColor = view.getViewContext().getForegroundColor();
         if (backgroundColor == null) {
             backgroundColor = view.getCanvas().getDisplay().getSystemColor(DEFAULT_BACKGROUND_COLOR);
+            view.getViewContext().setBackgroundColor(backgroundColor);
         }
         if (foregroundColor == null) {
             foregroundColor = view.getCanvas().getDisplay().getSystemColor(DEFAULT_FOREGROUND_COLOR);
+            view.getViewContext().setForegroundColor(foregroundColor);
         }
         GC gc = view.getGC();
         gc.setBackground(backgroundColor);

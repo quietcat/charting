@@ -5,6 +5,7 @@ import org.eclipse.swt.events.MouseListener;
 import org.eclipse.swt.events.MouseMoveListener;
 import org.eclipse.swt.graphics.Point;
 
+import com.denispetrov.charting.layer.adapters.LayerAdapter;
 import com.denispetrov.charting.model.FPoint;
 import com.denispetrov.charting.view.View;
 import com.denispetrov.charting.view.ViewContext;

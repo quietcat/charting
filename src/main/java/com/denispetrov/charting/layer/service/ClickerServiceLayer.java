@@ -9,6 +9,7 @@ import org.slf4j.LoggerFactory;
 import com.denispetrov.charting.layer.ClickableLayer;
 import com.denispetrov.charting.layer.TrackableLayer;
 import com.denispetrov.charting.layer.TrackableObject;
+import com.denispetrov.charting.layer.adapters.LayerAdapter;
 import com.denispetrov.charting.view.View;
 
 public class ClickerServiceLayer extends LayerAdapter implements MouseListener {
