@@ -1,19 +1,20 @@
 package com.denispetrov.charting.layer.service;
 
 import org.eclipse.swt.events.MouseEvent;
-import org.eclipse.swt.events.MouseMoveListener;
 import org.eclipse.swt.graphics.Point;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.denispetrov.charting.layer.DraggableLayer;
+import com.denispetrov.charting.layer.MouseAwareLayer;
+import com.denispetrov.charting.layer.MouseEventType;
 import com.denispetrov.charting.layer.TrackableObject;
 import com.denispetrov.charting.layer.adapters.LayerAdapter;
 import com.denispetrov.charting.model.FPoint;
 import com.denispetrov.charting.view.View;
 import com.denispetrov.charting.view.ViewContext;
 
-public class DraggerServiceLayer extends LayerAdapter implements MouseMoveListener {
+public class DraggerServiceLayer extends LayerAdapter implements MouseAwareLayer {
     private static final Logger LOG = LoggerFactory.getLogger(DraggerServiceLayer.class);
 
     private enum MouseFn {
@@ -36,11 +37,11 @@ public class DraggerServiceLayer extends LayerAdapter implements MouseMoveListen
     @Override
     public void setView(View view) {
         super.setView(view);
-        view.getCanvas().addMouseMoveListener(this);
     }
 
     @Override
-    public void mouseMove(MouseEvent e) {
+    public boolean mouseEvent(MouseEventType eventType, MouseEvent e) {
+        if (eventType != MouseEventType.MOVE) return false;
         switch (mouseFn) {
         case MAYBE_DRAGGING:
             int dragThreshold = view.getViewContext().getDragThreshold();
@@ -63,6 +64,7 @@ public class DraggerServiceLayer extends LayerAdapter implements MouseMoveListen
         }
         mouseXY.x = e.x;
         mouseXY.y = e.y;
+        return false;
     }
 
     public boolean beginDrag(DraggableLayer draggable, TrackableObject trackableObject) {
@@ -101,4 +103,5 @@ public class DraggerServiceLayer extends LayerAdapter implements MouseMoveListen
     public boolean isDragging() {
         return mouseFn == MouseFn.DRAGGING;
     }
+
 }

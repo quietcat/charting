@@ -2,7 +2,6 @@ package com.denispetrov.charting.layer.service;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.MouseEvent;
-import org.eclipse.swt.events.MouseMoveListener;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Cursor;
 import org.eclipse.swt.graphics.ImageData;
@@ -13,6 +12,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.denispetrov.charting.layer.Layer;
+import com.denispetrov.charting.layer.MouseAwareLayer;
+import com.denispetrov.charting.layer.MouseEventType;
 import com.denispetrov.charting.layer.TrackableLayer;
 import com.denispetrov.charting.layer.TrackableObject;
 import com.denispetrov.charting.layer.adapters.LayerAdapter;
@@ -27,7 +28,7 @@ import com.denispetrov.charting.view.View;
  * 
  * See {@link com.denispetrov.charting.layer.service.ClickerServiceLayer} for a use example
  */
-public class TrackerServiceLayer extends LayerAdapter implements MouseMoveListener {
+public class TrackerServiceLayer extends LayerAdapter implements MouseAwareLayer {
     private static final Logger LOG = LoggerFactory.getLogger(TrackerServiceLayer.class);
 
     private enum MouseFn {
@@ -47,7 +48,6 @@ public class TrackerServiceLayer extends LayerAdapter implements MouseMoveListen
     public void setView(View view) {
         super.setView(view);
         view.getCanvas().setCursor(cursorDefault);
-        view.getCanvas().addMouseMoveListener(this);
         // create a cursor with a transparent image
         setupInvisibleCursor();
         for (Layer layers : view.getLayers()) {
@@ -69,12 +69,12 @@ public class TrackerServiceLayer extends LayerAdapter implements MouseMoveListen
     }
 
     @Override
-    public void mouseMove(MouseEvent e) {
-
+    public boolean mouseEvent(MouseEventType eventType, MouseEvent e) {
+        if (eventType != MouseEventType.MOVE) return false;
         if (!view.getMainAreaRectangle().contains(e.x, e.y)) {
             topTrackableUnderMouse = null;
             topTrackableObjectUnderMouse = null;
-            return;
+            return false;
         }
 
         double fx = view.getViewContext().x(e.x);
@@ -90,15 +90,15 @@ public class TrackerServiceLayer extends LayerAdapter implements MouseMoveListen
                     topTrackableUnderMouse = entry.getTrackable();
                     topTrackableObjectUnderMouse = trackableObject;
                     setMouseFn(MouseFn.TRACK);
-                    return;
+                    return false;
                 }
             }
         }
         setMouseFn(MouseFn.NONE);
         topTrackableUnderMouse = null;
         topTrackableObjectUnderMouse = null;
+        return false;
     }
-
 
     private void setMouseFn(MouseFn newMouseFn) {
         if (mouseFn != newMouseFn && !cursorIsHidden) {

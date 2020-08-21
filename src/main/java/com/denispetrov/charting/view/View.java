@@ -1,10 +1,15 @@
 package com.denispetrov.charting.view;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import org.eclipse.swt.events.ControlEvent;
 import org.eclipse.swt.events.ControlListener;
+import org.eclipse.swt.events.MouseEvent;
+import org.eclipse.swt.events.MouseListener;
+import org.eclipse.swt.events.MouseMoveListener;
+import org.eclipse.swt.events.MouseWheelListener;
 import org.eclipse.swt.events.PaintEvent;
 import org.eclipse.swt.events.PaintListener;
 import org.eclipse.swt.graphics.GC;
@@ -17,6 +22,8 @@ import org.slf4j.LoggerFactory;
 
 import com.denispetrov.charting.layer.DrawableLayer;
 import com.denispetrov.charting.layer.Layer;
+import com.denispetrov.charting.layer.MouseAwareLayer;
+import com.denispetrov.charting.layer.MouseEventType;
 import com.denispetrov.charting.layer.drawable.DrawParameters;
 import com.denispetrov.charting.model.FPoint;
 import com.denispetrov.charting.model.FRectangle;
@@ -74,7 +81,7 @@ import com.denispetrov.charting.model.HRectangle;
  * </pre>
  * 
  */
-public class View implements PaintListener, ControlListener {
+public class View implements PaintListener, ControlListener, MouseListener, MouseMoveListener, MouseWheelListener {
     private static final Logger LOG = LoggerFactory.getLogger(View.class);
 
     private GC gc;
@@ -83,6 +90,7 @@ public class View implements PaintListener, ControlListener {
     private ViewContext viewContext;
     private List<Layer> layers = new ArrayList<>();
     private List<DrawableLayer> drawableLayers = new ArrayList<>();
+    private List<MouseAwareLayer> mouseAwareLayers = new ArrayList<>();
 
     private Rectangle mainAreaRectangle = new Rectangle(0, 0, 0, 0);
 
@@ -100,6 +108,9 @@ public class View implements PaintListener, ControlListener {
         layers.add(layer);
         if (DrawableLayer.class.isAssignableFrom(layer.getClass())) {
             drawableLayers.add((DrawableLayer)layer);
+        }
+        if (MouseAwareLayer.class.isAssignableFrom(layer.getClass())) {
+            mouseAwareLayers.add((MouseAwareLayer)layer);
         }
     }
 
@@ -132,6 +143,7 @@ public class View implements PaintListener, ControlListener {
     }
 
     public void init() {
+        Collections.reverse(mouseAwareLayers);
         for (Layer layer : layers) {
             layer.setView(this);
         }
@@ -139,8 +151,11 @@ public class View implements PaintListener, ControlListener {
 
     public void setCanvas(Canvas canvas) {
         this.canvas = canvas;
-        this.canvas.addControlListener(this);
-        this.canvas.addPaintListener(this);
+        canvas.addControlListener(this);
+        canvas.addPaintListener(this);
+        canvas.addMouseWheelListener(this);
+        canvas.addMouseMoveListener(this);
+        canvas.addMouseListener(this);
     }
 
     @Override
@@ -288,4 +303,38 @@ public class View implements PaintListener, ControlListener {
     public long getPaintTime() {
         return paintTime;
     }
+
+    @Override
+    public void mouseDoubleClick(MouseEvent e) {
+        propagateMouseEvent(MouseEventType.DOUBLE_CLICK, e);
+    }
+
+    @Override
+    public void mouseDown(MouseEvent e) {
+        propagateMouseEvent(MouseEventType.BUTTON_DOWN, e);
+    }
+
+    @Override
+    public void mouseUp(MouseEvent e) {
+        propagateMouseEvent(MouseEventType.BUTTON_UP, e);
+    }
+
+    @Override
+    public void mouseScrolled(MouseEvent e) {
+        propagateMouseEvent(MouseEventType.SCROLL, e);
+    }
+
+    @Override
+    public void mouseMove(MouseEvent e) {
+        propagateMouseEvent(MouseEventType.MOVE, e);
+    }
+
+    private void propagateMouseEvent(MouseEventType eventType, MouseEvent event) {
+        for (MouseAwareLayer layer : mouseAwareLayers) {
+            if (layer.mouseEvent(eventType, event)) {
+                break;
+            }
+        }
+    }
+
 }
