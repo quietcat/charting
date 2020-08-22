@@ -49,7 +49,7 @@ public class ViewContextTest {
         view.setCanvas(canvas);
         view.init();
         viewContext = new ViewContext();
-        viewContext.setView(view);
+        view.setViewContext(viewContext);
     }
 
     @After
@@ -290,9 +290,9 @@ public class ViewContextTest {
 
     @Test
     public void testDimensions() {
-        assertEquals(CANVAS_WIDTH, viewContext.getCanvasWidth());
-        assertEquals(CANVAS_HEIGHT, viewContext.getCanvasHeight());
-        assertEquals(CANVAS_WIDTH-ViewContext.DEFAULT_MARGIN*2,viewContext.getWidth(), 0.000001);
-        assertEquals(CANVAS_HEIGHT-ViewContext.DEFAULT_MARGIN*2,viewContext.getHeight(), 0.000001);
+        assertEquals(CANVAS_WIDTH, view.getCanvasWidth());
+        assertEquals(CANVAS_HEIGHT, view.getCanvasHeight());
+        assertEquals(CANVAS_WIDTH-ViewContext.DEFAULT_MARGIN*2,view.getWidth(), 0.000001);
+        assertEquals(CANVAS_HEIGHT-ViewContext.DEFAULT_MARGIN*2,view.getHeight(), 0.000001);
     }
 }

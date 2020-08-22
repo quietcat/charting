@@ -1,20 +1,19 @@
-package com.denispetrov.charting.plugin.impl;
+package com.denispetrov.charting.layer.service;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.MouseEvent;
-import org.eclipse.swt.events.MouseListener;
-import org.eclipse.swt.events.MouseMoveListener;
-import org.eclipse.swt.events.MouseWheelListener;
 import org.eclipse.swt.graphics.Cursor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.denispetrov.charting.layer.MouseAwareLayer;
+import com.denispetrov.charting.layer.MouseEventType;
+import com.denispetrov.charting.layer.adapters.LayerAdapter;
 import com.denispetrov.charting.view.View;
 import com.denispetrov.charting.view.ViewContext;
 
-public class ZoomViewPlugin extends ViewPluginBase implements MouseMoveListener, MouseListener, MouseWheelListener {
-
-    private static final Logger LOG = LoggerFactory.getLogger(ZoomViewPlugin.class);
+public class ZoomServiceLayer extends LayerAdapter implements MouseAwareLayer {
+    private static final Logger LOG = LoggerFactory.getLogger(ZoomServiceLayer.class);
 
     private static enum MouseFn {
         NONE, X_SCALING, Y_SCALING, ZOOMING
@@ -30,88 +29,71 @@ public class ZoomViewPlugin extends ViewPluginBase implements MouseMoveListener,
 
     @Override
     public void setView(View view) {
+        LOG.trace("Set view");
         super.setView(view);
-        view.getCanvas().addMouseListener(this);
-        view.getCanvas().addMouseWheelListener(this);
-        view.getCanvas().addMouseMoveListener(this);
         cursorTrackX = view.getCanvas().getDisplay().getSystemCursor(SWT.CURSOR_SIZEWE);
         cursorTrackY = view.getCanvas().getDisplay().getSystemCursor(SWT.CURSOR_SIZENS);
         cursorDefault = view.getCanvas().getCursor();
     }
 
     @Override
-    public void mouseDoubleClick(MouseEvent e) {
-        // TODO Auto-generated method stub
-        
-    }
-
-    @Override
-    public void mouseDown(MouseEvent e) {
-        // TODO Auto-generated method stub
-        
-    }
-
-    @Override
-    public void mouseUp(MouseEvent e) {
-        // TODO Auto-generated method stub
-        
-    }
-
-    @Override
-    public void mouseMove(MouseEvent e) {
+    public boolean mouseEvent(MouseEventType eventType, MouseEvent e) {
         ViewContext viewContext = view.getViewContext();
-        if (e.x >= viewContext.getMarginLeft() && e.x < viewContext.getCanvasWidth() - viewContext.getMarginRight() 
-                && e.y >= viewContext.getCanvasHeight() - viewContext.getMarginBottom() && e.y < viewContext.getCanvasHeight()) {
-            if (mouseFn != MouseFn.X_SCALING) {
-                view.getCanvas().setCursor(cursorTrackX);
-                mouseFn = MouseFn.X_SCALING;
-            }
-        } else if (e.x >= 0 && e.x < viewContext.getMarginLeft() && e.y >= viewContext.getMarginTop() && e.y < viewContext.getCanvasHeight() - viewContext.getMarginBottom()) {
-            if (mouseFn != MouseFn.Y_SCALING) {
-                view.getCanvas().setCursor(cursorTrackY);
-                mouseFn = MouseFn.Y_SCALING;
-            }
-        } else if (viewContext.getMainAreaRectangle().contains(e.x, e.y)) {
-            if (mouseFn != MouseFn.ZOOMING) {
-                view.getCanvas().setCursor(cursorDefault);
-                mouseFn = MouseFn.ZOOMING;
-            }
-        } else {
+        switch (eventType) {
+        case SCROLL:
             if (mouseFn != MouseFn.NONE) {
-                view.getCanvas().setCursor(cursorDefault);
-                mouseFn = MouseFn.NONE;
+                double x = viewContext.x(e.x);
+                double y = viewContext.y(e.y);
+                double m = 1.1;
+                if (e.count < 0) {
+                    m = 1 / m;
+                }
+                switch (mouseFn) {
+                case X_SCALING:
+                    stickyScaleX(viewContext, m, x);
+                    view.contextUpdated();
+                    return true;
+                case Y_SCALING:
+                    stickyScaleY(viewContext, m, y);
+                    view.contextUpdated();
+                    return true;
+                case ZOOMING:
+                    stickyScaleX(viewContext, m, x);
+                    stickyScaleY(viewContext, m, y);
+                    view.contextUpdated();
+                    return true;
+                default:;
+                }
             }
+            break;
+        case MOVE:
+            if (e.x >= viewContext.getMarginLeft() && e.x < view.getCanvasWidth() - viewContext.getMarginRight()
+                    && e.y >= view.getCanvasHeight() - viewContext.getMarginBottom() && e.y < view.getCanvasHeight()) {
+                if (mouseFn != MouseFn.X_SCALING) {
+                    view.getCanvas().setCursor(cursorTrackX);
+                    mouseFn = MouseFn.X_SCALING;
+                }
+            } else if (e.x >= 0 && e.x < viewContext.getMarginLeft() && e.y >= viewContext.getMarginTop()
+                    && e.y < view.getCanvasHeight() - viewContext.getMarginBottom()) {
+                if (mouseFn != MouseFn.Y_SCALING) {
+                    view.getCanvas().setCursor(cursorTrackY);
+                    mouseFn = MouseFn.Y_SCALING;
+                }
+            } else if (view.getMainAreaRectangle().contains(e.x, e.y)) {
+                if (mouseFn != MouseFn.ZOOMING) {
+                    view.getCanvas().setCursor(cursorDefault);
+                    mouseFn = MouseFn.ZOOMING;
+                }
+            } else {
+                if (mouseFn != MouseFn.NONE) {
+                    view.getCanvas().setCursor(cursorDefault);
+                    mouseFn = MouseFn.NONE;
+                }
+            }
+            break;
+        default:;
         }
-    }
-
-    @Override
-    public void mouseScrolled(MouseEvent e) {
-        if (mouseFn != MouseFn.NONE) {
-            ViewContext viewContext = view.getViewContext();
-            double x = viewContext.x(e.x);
-            double y = viewContext.y(e.y);
-            double m = 1.1;
-            if (e.count < 0) {
-                m = 1 / m;
-            }
-            switch (mouseFn) {
-            case X_SCALING:
-                stickyScaleX(viewContext, m, x);
-                view.contextUpdated();
-                break;
-            case Y_SCALING:
-                stickyScaleY(viewContext, m, y);
-                view.contextUpdated();
-                break;
-            case ZOOMING:
-                stickyScaleX(viewContext, m, x);
-                stickyScaleY(viewContext, m, y);
-                view.contextUpdated();
-                break;
-            default:
-                break;
-            }
-        }
+        return false;
     }
 
     /**
@@ -137,7 +119,7 @@ public class ZoomViewPlugin extends ViewPluginBase implements MouseMoveListener,
                 }
                 break;
             case NEGATIVE_ONLY:
-                double scaledMainAreaWidth = viewContext.w(viewContext.getMainAreaRectangle().width);
+                double scaledMainAreaWidth = viewContext.w(view.getMainAreaRectangle().width);
                 if (Math.abs(viewContext.getBaseX() + scaledMainAreaWidth) < Math.abs(viewContext.getBaseX()) / 1000000.0) {
                     scaleX(viewContext, m, 0.0);
                 } else {
@@ -170,7 +152,7 @@ public class ZoomViewPlugin extends ViewPluginBase implements MouseMoveListener,
                 }
                 break;
             case NEGATIVE_ONLY:
-                double scaledMainAreaHeight = viewContext.h(viewContext.getMainAreaRectangle().height);
+                double scaledMainAreaHeight = viewContext.h(view.getMainAreaRectangle().height);
                 if (Math.abs(viewContext.getBaseY() + scaledMainAreaHeight) < Math.abs(viewContext.getBaseY()) / 1000000.0) {
                     scaleY(viewContext, m, 0.0);
                 } else {
@@ -213,7 +195,7 @@ public class ZoomViewPlugin extends ViewPluginBase implements MouseMoveListener,
         return stickyX;
     }
 
-    public ZoomViewPlugin setStickyX(boolean stickyX) {
+    public ZoomServiceLayer setStickyX(boolean stickyX) {
         this.stickyX = stickyX;
         return this;
     }
@@ -222,7 +204,7 @@ public class ZoomViewPlugin extends ViewPluginBase implements MouseMoveListener,
         return stickyY;
     }
 
-    public ZoomViewPlugin setStickyY(boolean stickyY) {
+    public ZoomServiceLayer setStickyY(boolean stickyY) {
         this.stickyY = stickyY;
         return this;
     }
